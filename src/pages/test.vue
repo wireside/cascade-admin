@@ -17,7 +17,7 @@
 						variant="tonal"
 						:loading="loading"
 						prepend-icon="mdi-refresh"
-						@click="loadData"
+						@click="refetchData"
 					>
 						Обновить
 					</v-btn>
@@ -352,15 +352,31 @@ meta:
 </route>
 
 <script setup>
-	import { testApi } from "@/helpers/testApi";
+	import { getDeviceIndex } from "@/client";
+	import { deleteDeviceDeleteMutation, deleteSessionDeleteMutation, getAdminIndexQuery, getClientIndexQuery, getClientIndexQueryKey, getSessionIndexQuery, getSessionIndexQueryKey, postClientRegisterMutation, postSessionPauseMutation, postSessionResumeMutation, postSessionStartMutation } from "@/client/@pinia/colada.gen";
+	import { useMutation, useQuery, useQueryCache } from "@pinia/colada";
+
+	const {
+		data: adminsData,
+		refetch: adminsRefetch,
+	} = useQuery(getAdminIndexQuery());
+
+	const {
+		data: clientsData,
+		refetch: clientsRefetch,
+	} = useQuery(getClientIndexQuery());
+
+	const {
+		data: sessionsData,
+		refetch: sessionsRefetch,
+	} = useQuery(getSessionIndexQuery());
+
+	const queryCache = useQueryCache();
 
 	const loading = ref(false);
 	const errorMessage = ref("");
 	const actionKey = ref("");
-	const admins = ref([]);
-	const clients = ref([]);
 	const devices = ref([]);
-	const sessions = ref([]);
 	const now = ref(Date.now());
 	let refreshTimerId = 0;
 	let reloadTimerId = 0;
@@ -382,6 +398,12 @@ meta:
 		open: false,
 		text: "",
 	});
+
+	const admins = computed(() => ensureArray(adminsData.value));
+
+	const clients = computed(() => ensureArray(clientsData.value));
+
+	const sessions = computed(() => ensureArray(sessionsData.value?.items));
 
 	const sessionByDeviceId = computed(() => {
 		return new Map(sessions.value.map((session) => [session.deviceId, session]));
@@ -420,14 +442,14 @@ meta:
 	});
 
 	onMounted(() => {
-		loadData();
+		loadDevices();
 
 		refreshTimerId = window.setInterval(() => {
 			now.value = Date.now();
 		}, 1000);
 
 		reloadTimerId = window.setInterval(() => {
-			loadData({ silent: true });
+			refetchData({ silent: true });
 		}, 4000);
 	});
 
@@ -436,7 +458,24 @@ meta:
 		window.clearInterval(reloadTimerId);
 	});
 
-	async function loadData({ silent = false } = {}) {
+	async function loadDevices() {
+		try {
+			const locationIds = [...new Set(admins.value.map((admin) => admin.locationId).filter(Boolean))];
+			const deviceResponses = await Promise.all(
+				locationIds.map((locationId) =>
+					getDeviceIndex({
+						query: { locationId, pageSize: 200 },
+					})
+				)
+			);
+			devices.value = deviceResponses.flatMap((response) => ensureArray(response?.items));
+		}
+		catch (error) {
+			errorMessage.value = error?.message || "Не удалось загрузить тестовые данные";
+		}
+	}
+
+	async function refetchData({ silent = false } = {}) {
 		if (!silent) {
 			loading.value = true;
 		}
@@ -444,19 +483,13 @@ meta:
 		errorMessage.value = "";
 
 		try {
-			const [adminsResponse, clientsResponse, sessionsResponse] = await Promise.all([
-				testApi.getAdmins(),
-				testApi.getClients(),
-				testApi.getSessions(),
+			await Promise.all([
+				adminsRefetch(),
+				clientsRefetch(),
+				sessionsRefetch(),
 			]);
 
-			admins.value = ensureArray(adminsResponse);
-			clients.value = ensureArray(clientsResponse);
-			sessions.value = ensureArray(sessionsResponse?.items);
-
-			const locationIds = [...new Set(admins.value.map((admin) => admin.locationId).filter(Boolean))];
-			const deviceResponses = await Promise.all(locationIds.map((locationId) => testApi.getDevices(locationId)));
-			devices.value = deviceResponses.flatMap((response) => ensureArray(response?.items));
+			await loadDevices();
 		}
 		catch (error) {
 			errorMessage.value = error?.message || "Не удалось загрузить тестовые данные";
@@ -571,13 +604,19 @@ meta:
 	}
 
 	async function submitBind() {
+		const { mutateAsync } = useMutation(postClientRegisterMutation());
+
 		const fingerprint = bindDialog.fingerprint;
 
 		await runAction(`bind:${fingerprint}`, async () => {
-			await testApi.registerClient({
-				fingerprint,
-				name: bindDialog.name,
-			});
+			await mutateAsync({
+					query: {
+						fingerprint,
+						name: bindDialog.name,
+					}
+				}
+			);
+			await queryCache.invalidateQueries({ key: getClientIndexQueryKey() });
 
 			bindDialog.open = false;
 			showSnackbar("Устройство привязано");
@@ -585,13 +624,18 @@ meta:
 	}
 
 	async function submitSession() {
+		const { mutateAsync } = useMutation(postSessionStartMutation()); // TODO 
+
 		const deviceId = sessionDialog.deviceId;
 
 		await runAction(`start:${deviceId}`, async () => {
-			await testApi.startSession({
-				deviceId,
-				durationMinutes: sessionDialog.durationMinutes,
+			await mutateAsync({
+				query: {
+					deviceId,
+					duration: sessionDialog.durationMinutes,
+				}
 			});
+			await queryCache.invalidateQueries({ key: getSessionIndexQueryKey() });
 
 			sessionDialog.open = false;
 			showSnackbar("Сессия запущена");
@@ -599,29 +643,62 @@ meta:
 	}
 
 	async function unbindDevice(deviceId) {
+		const { mutateAsync } = useMutation(deleteDeviceDeleteMutation());
+
 		await runAction(`unbind:${deviceId}`, async () => {
-			await testApi.deleteDevice(deviceId);
+			await mutateAsync({
+				query: {
+					id: deviceId,
+				}
+			});
+			await queryCache.invalidateQueries({ key: getClientIndexQueryKey() });
+			await queryCache.invalidateQueries({ key: getSessionIndexQueryKey() });
+
 			showSnackbar("Устройство отвязано");
 		});
 	}
 
 	async function pauseSession(sessionId) {
+		const { mutateAsync } = useMutation(postSessionPauseMutation());
+
 		await runAction(`pause:${sessionId}`, async () => {
-			await testApi.pauseSession(sessionId);
+			await mutateAsync({
+				query: {
+					id: sessionId,
+				}
+			});
+			await queryCache.invalidateQueries({ key: getSessionIndexQueryKey() });
+
 			showSnackbar("Сессия поставлена на паузу");
 		});
 	}
 
 	async function resumeSession(sessionId) {
+		const { mutateAsync } = useMutation(postSessionResumeMutation());
+
 		await runAction(`resume:${sessionId}`, async () => {
-			await testApi.resumeSession(sessionId);
+			await mutateAsync({
+				query: {
+					id: sessionId,
+				}
+			});
+			await queryCache.invalidateQueries({ key: getSessionIndexQueryKey() });
+
 			showSnackbar("Сессия продолжена");
 		});
 	}
 
 	async function deleteSession(sessionId) {
+		const { mutateAsync } = useMutation(deleteSessionDeleteMutation());
+
 		await runAction(`session-delete:${sessionId}`, async () => {
-			await testApi.deleteSession(sessionId);
+			await mutateAsync({
+				query: {
+					id: sessionId,
+				}
+			});
+			await queryCache.invalidateQueries({ key: getSessionIndexQueryKey() });
+
 			showSnackbar("Сессия удалена");
 		});
 	}
@@ -632,7 +709,6 @@ meta:
 
 		try {
 			await action();
-			await loadData({ silent: true });
 		}
 		catch (error) {
 			errorMessage.value = error?.message || "Операция завершилась с ошибкой";

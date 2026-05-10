@@ -8,6 +8,7 @@ import Pages from "vite-plugin-pages";
 import Vuetify, {transformAssetUrls} from "vite-plugin-vuetify";
 import VueMacros from "unplugin-vue-macros/vite";
 import autoprefixer from "autoprefixer";
+import { heyApiPlugin } from "@hey-api/vite-plugin";
 
 // Utilities
 import {defineConfig} from "vite";
@@ -65,6 +66,15 @@ export default defineConfig({
 				"src/store",
 				"src/helpers",
 			],
+		}),
+		heyApiPlugin({
+			config: {
+				input: "https://vozhak-club-central.shintio.space/swagger/v1/swagger.json",
+				output: "src/client",
+				plugins: [
+					"@pinia/colada",
+				],
+			},
 		}),
 	],
 	define: {"process.env": {}},
