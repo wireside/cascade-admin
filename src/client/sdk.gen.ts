@@ -18,9 +18,9 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
     meta?: Record<string, unknown>;
 };
 
-export const getAdminIndex = <ThrowOnError extends boolean = false>(options?: Options<GetAdminIndexData, ThrowOnError>) => (options?.client ?? client).get<GetAdminIndexResponses, unknown, ThrowOnError>({ url: '/Admin/Index', ...options });
+export const getAdminIndex = <ThrowOnError extends boolean = true>(options?: Options<GetAdminIndexData, ThrowOnError>) => (options?.client ?? client).get<GetAdminIndexResponses, unknown, ThrowOnError>({ url: '/Admin/Index', ...options });
 
-export const postAuthRegister = <ThrowOnError extends boolean = false>(options?: Options<PostAuthRegisterData, ThrowOnError>) => (options?.client ?? client).post<PostAuthRegisterResponses, unknown, ThrowOnError>({
+export const postAuthRegister = <ThrowOnError extends boolean = true>(options?: Options<PostAuthRegisterData, ThrowOnError>) => (options?.client ?? client).post<PostAuthRegisterResponses, unknown, ThrowOnError>({
     url: '/Auth/Register',
     ...options,
     headers: {
@@ -29,7 +29,7 @@ export const postAuthRegister = <ThrowOnError extends boolean = false>(options?:
     }
 });
 
-export const postAuthLogin = <ThrowOnError extends boolean = false>(options?: Options<PostAuthLoginData, ThrowOnError>) => (options?.client ?? client).post<PostAuthLoginResponses, unknown, ThrowOnError>({
+export const postAuthLogin = <ThrowOnError extends boolean = true>(options?: Options<PostAuthLoginData, ThrowOnError>) => (options?.client ?? client).post<PostAuthLoginResponses, unknown, ThrowOnError>({
     url: '/Auth/Login',
     ...options,
     headers: {
@@ -38,7 +38,7 @@ export const postAuthLogin = <ThrowOnError extends boolean = false>(options?: Op
     }
 });
 
-export const postAuthConfirmPhone = <ThrowOnError extends boolean = false>(options?: Options<PostAuthConfirmPhoneData, ThrowOnError>) => (options?.client ?? client).post<PostAuthConfirmPhoneResponses, unknown, ThrowOnError>({
+export const postAuthConfirmPhone = <ThrowOnError extends boolean = true>(options?: Options<PostAuthConfirmPhoneData, ThrowOnError>) => (options?.client ?? client).post<PostAuthConfirmPhoneResponses, unknown, ThrowOnError>({
     url: '/Auth/ConfirmPhone',
     ...options,
     headers: {
@@ -47,7 +47,7 @@ export const postAuthConfirmPhone = <ThrowOnError extends boolean = false>(optio
     }
 });
 
-export const postAuthResendPhoneCode = <ThrowOnError extends boolean = false>(options?: Options<PostAuthResendPhoneCodeData, ThrowOnError>) => (options?.client ?? client).post<PostAuthResendPhoneCodeResponses, unknown, ThrowOnError>({
+export const postAuthResendPhoneCode = <ThrowOnError extends boolean = true>(options?: Options<PostAuthResendPhoneCodeData, ThrowOnError>) => (options?.client ?? client).post<PostAuthResendPhoneCodeResponses, unknown, ThrowOnError>({
     url: '/Auth/ResendPhoneCode',
     ...options,
     headers: {
@@ -56,34 +56,34 @@ export const postAuthResendPhoneCode = <ThrowOnError extends boolean = false>(op
     }
 });
 
-export const getAuthMe = <ThrowOnError extends boolean = false>(options?: Options<GetAuthMeData, ThrowOnError>) => (options?.client ?? client).get<GetAuthMeResponses, unknown, ThrowOnError>({ url: '/Auth/Me', ...options });
+export const getAuthMe = <ThrowOnError extends boolean = true>(options?: Options<GetAuthMeData, ThrowOnError>) => (options?.client ?? client).get<GetAuthMeResponses, unknown, ThrowOnError>({ url: '/Auth/Me', ...options });
 
-export const postAuthLogout = <ThrowOnError extends boolean = false>(options?: Options<PostAuthLogoutData, ThrowOnError>) => (options?.client ?? client).post<PostAuthLogoutResponses, unknown, ThrowOnError>({ url: '/Auth/Logout', ...options });
+export const postAuthLogout = <ThrowOnError extends boolean = true>(options?: Options<PostAuthLogoutData, ThrowOnError>) => (options?.client ?? client).post<PostAuthLogoutResponses, unknown, ThrowOnError>({ url: '/Auth/Logout', ...options });
 
-export const getClientIndex = <ThrowOnError extends boolean = false>(options?: Options<GetClientIndexData, ThrowOnError>) => (options?.client ?? client).get<GetClientIndexResponses, unknown, ThrowOnError>({ url: '/Client/Index', ...options });
+export const getClientIndex = <ThrowOnError extends boolean = true>(options?: Options<GetClientIndexData, ThrowOnError>) => (options?.client ?? client).get<GetClientIndexResponses, unknown, ThrowOnError>({ url: '/Client/Index', ...options });
 
-export const postClientRegister = <ThrowOnError extends boolean = false>(options?: Options<PostClientRegisterData, ThrowOnError>) => (options?.client ?? client).post<PostClientRegisterResponses, unknown, ThrowOnError>({ url: '/Client/Register', ...options });
+export const postClientRegister = <ThrowOnError extends boolean = true>(options?: Options<PostClientRegisterData, ThrowOnError>) => (options?.client ?? client).post<PostClientRegisterResponses, unknown, ThrowOnError>({ url: '/Client/Register', ...options });
 
-export const getClusterIndex = <ThrowOnError extends boolean = false>(options?: Options<GetClusterIndexData, ThrowOnError>) => (options?.client ?? client).get<GetClusterIndexResponses, unknown, ThrowOnError>({ url: '/Cluster/Index', ...options });
+export const getClusterIndex = <ThrowOnError extends boolean = true>(options?: Options<GetClusterIndexData, ThrowOnError>) => (options?.client ?? client).get<GetClusterIndexResponses, unknown, ThrowOnError>({ url: '/Cluster/Index', ...options });
 
-export const getDeviceIndex = <ThrowOnError extends boolean = false>(options?: Options<GetDeviceIndexData, ThrowOnError>) => (options?.client ?? client).get<GetDeviceIndexResponses, unknown, ThrowOnError>({ url: '/Device/Index', ...options });
+export const getDeviceIndex = <ThrowOnError extends boolean = true>(options?: Options<GetDeviceIndexData, ThrowOnError>) => (options?.client ?? client).get<GetDeviceIndexResponses, unknown, ThrowOnError>({ url: '/Device/Index', ...options });
 
-export const deleteDeviceDelete = <ThrowOnError extends boolean = false>(options?: Options<DeleteDeviceDeleteData, ThrowOnError>) => (options?.client ?? client).delete<DeleteDeviceDeleteResponses, unknown, ThrowOnError>({ url: '/Device/Delete', ...options });
+export const deleteDeviceDelete = <ThrowOnError extends boolean = true>(options?: Options<DeleteDeviceDeleteData, ThrowOnError>) => (options?.client ?? client).delete<DeleteDeviceDeleteResponses, unknown, ThrowOnError>({ url: '/Device/Delete', ...options });
 
-export const getLocationIndex = <ThrowOnError extends boolean = false>(options?: Options<GetLocationIndexData, ThrowOnError>) => (options?.client ?? client).get<GetLocationIndexResponses, unknown, ThrowOnError>({ url: '/Location/Index', ...options });
+export const getLocationIndex = <ThrowOnError extends boolean = true>(options?: Options<GetLocationIndexData, ThrowOnError>) => (options?.client ?? client).get<GetLocationIndexResponses, unknown, ThrowOnError>({ url: '/Location/Index', ...options });
 
-export const getOrganizationIndex = <ThrowOnError extends boolean = false>(options?: Options<GetOrganizationIndexData, ThrowOnError>) => (options?.client ?? client).get<GetOrganizationIndexResponses, unknown, ThrowOnError>({ url: '/Organization/Index', ...options });
+export const getOrganizationIndex = <ThrowOnError extends boolean = true>(options?: Options<GetOrganizationIndexData, ThrowOnError>) => (options?.client ?? client).get<GetOrganizationIndexResponses, unknown, ThrowOnError>({ url: '/Organization/Index', ...options });
 
-export const getSessionIndex = <ThrowOnError extends boolean = false>(options?: Options<GetSessionIndexData, ThrowOnError>) => (options?.client ?? client).get<GetSessionIndexResponses, unknown, ThrowOnError>({ url: '/Session/Index', ...options });
+export const getSessionIndex = <ThrowOnError extends boolean = true>(options?: Options<GetSessionIndexData, ThrowOnError>) => (options?.client ?? client).get<GetSessionIndexResponses, unknown, ThrowOnError>({ url: '/Session/Index', ...options });
 
-export const postSessionStart = <ThrowOnError extends boolean = false>(options?: Options<PostSessionStartData, ThrowOnError>) => (options?.client ?? client).post<PostSessionStartResponses, unknown, ThrowOnError>({ url: '/Session/Start', ...options });
+export const postSessionStart = <ThrowOnError extends boolean = true>(options?: Options<PostSessionStartData, ThrowOnError>) => (options?.client ?? client).post<PostSessionStartResponses, unknown, ThrowOnError>({ url: '/Session/Start', ...options });
 
-export const postSessionPause = <ThrowOnError extends boolean = false>(options?: Options<PostSessionPauseData, ThrowOnError>) => (options?.client ?? client).post<PostSessionPauseResponses, unknown, ThrowOnError>({ url: '/Session/Pause', ...options });
+export const postSessionPause = <ThrowOnError extends boolean = true>(options?: Options<PostSessionPauseData, ThrowOnError>) => (options?.client ?? client).post<PostSessionPauseResponses, unknown, ThrowOnError>({ url: '/Session/Pause', ...options });
 
-export const postSessionResume = <ThrowOnError extends boolean = false>(options?: Options<PostSessionResumeData, ThrowOnError>) => (options?.client ?? client).post<PostSessionResumeResponses, unknown, ThrowOnError>({ url: '/Session/Resume', ...options });
+export const postSessionResume = <ThrowOnError extends boolean = true>(options?: Options<PostSessionResumeData, ThrowOnError>) => (options?.client ?? client).post<PostSessionResumeResponses, unknown, ThrowOnError>({ url: '/Session/Resume', ...options });
 
-export const deleteSessionDelete = <ThrowOnError extends boolean = false>(options?: Options<DeleteSessionDeleteData, ThrowOnError>) => (options?.client ?? client).delete<DeleteSessionDeleteResponses, unknown, ThrowOnError>({ url: '/Session/Delete', ...options });
+export const deleteSessionDelete = <ThrowOnError extends boolean = true>(options?: Options<DeleteSessionDeleteData, ThrowOnError>) => (options?.client ?? client).delete<DeleteSessionDeleteResponses, unknown, ThrowOnError>({ url: '/Session/Delete', ...options });
 
-export const getTestIndex = <ThrowOnError extends boolean = false>(options?: Options<GetTestIndexData, ThrowOnError>) => (options?.client ?? client).get<GetTestIndexResponses, unknown, ThrowOnError>({ url: '/Test/Index', ...options });
+export const getTestIndex = <ThrowOnError extends boolean = true>(options?: Options<GetTestIndexData, ThrowOnError>) => (options?.client ?? client).get<GetTestIndexResponses, unknown, ThrowOnError>({ url: '/Test/Index', ...options });
 
-export const getZoneIndex = <ThrowOnError extends boolean = false>(options?: Options<GetZoneIndexData, ThrowOnError>) => (options?.client ?? client).get<GetZoneIndexResponses, unknown, ThrowOnError>({ url: '/Zone/Index', ...options });
+export const getZoneIndex = <ThrowOnError extends boolean = true>(options?: Options<GetZoneIndexData, ThrowOnError>) => (options?.client ?? client).get<GetZoneIndexResponses, unknown, ThrowOnError>({ url: '/Zone/Index', ...options });

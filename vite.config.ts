@@ -72,6 +72,10 @@ export default defineConfig({
 				input: "https://vozhak-club-central.shintio.space/swagger/v1/swagger.json",
 				output: "src/client",
 				plugins: [
+					{
+						name: '@hey-api/client-fetch',
+						throwOnError: true,
+					},
 					"@pinia/colada",
 				],
 			},

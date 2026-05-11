@@ -17,7 +17,7 @@
 						variant="tonal"
 						:loading="loading"
 						prepend-icon="mdi-refresh"
-						@click="refetchData"
+						@click="reloadData"
 					>
 						Обновить
 					</v-btn>
@@ -449,7 +449,7 @@ meta:
 		}, 1000);
 
 		reloadTimerId = window.setInterval(() => {
-			refetchData({ silent: true });
+			reloadData({ silent: true });
 		}, 4000);
 	});
 
@@ -475,7 +475,7 @@ meta:
 		}
 	}
 
-	async function refetchData({ silent = false } = {}) {
+	async function reloadData({ silent = false } = {}) {
 		if (!silent) {
 			loading.value = true;
 		}
