@@ -10,8 +10,13 @@ $primary-font-family: "SF Pro Display", sans-serif !default;
 		),
 	),
 	$border-radius-root: 8px,
-    $button-font-size: 15px,
-    $button-font-weight: 500,
+  $button-font-size: 15px,
+  $button-font-weight: 500,
 	$field-font-size: 14px,
 	$input-font-size: 14px,
+	$grid-breakpoints: (
+		'md': 767px,
+		'lg': 1099px,
+		'xl': 1599px,
+	)
 );
