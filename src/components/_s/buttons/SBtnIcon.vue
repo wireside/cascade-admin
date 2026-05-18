@@ -55,3 +55,9 @@
 		},
 	});
 </script>
+
+<style lang="scss">
+	.s-btn-icon {
+		min-width: 43px !important;
+	}
+</style>

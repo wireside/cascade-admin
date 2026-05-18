@@ -53,7 +53,7 @@ export default createVuetify({
 				colors: {
 					white: "#FFFFFF",
 					background: "#090909",
-					surface: "#0F0F0F",
+					surface: "rgba(17, 17, 17, 0.6)",
 					primary: "rgb(171, 244, 62)",
 					secondary: "#999999",
 					error: "#DE3D3D",
