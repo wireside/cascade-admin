@@ -13,13 +13,18 @@ import { createRulesPlugin } from "vuetify/labs/rules";
 export function registerPlugins(app) {
 	app
 		.use(vuetify)
-		.use(createRulesPlugin({
-			aliases: {
-				phone: err => {
-					return v => (/^\d{10}$/.test(v)) || err || "Введите правильный номер телефона";
+		.use(
+			createRulesPlugin(
+				{
+					aliases: {
+						phone: (err) => {
+							return (v) => /^\d{10}$/.test(v) || err || "Введите правильный номер телефона";
+						},
+					},
 				},
-			},
-		}, vuetify.locale))
+				vuetify.locale
+			)
+		)
 		.use(router)
 		.use(pinia);
 }

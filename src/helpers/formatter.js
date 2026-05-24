@@ -1,6 +1,6 @@
 ﻿export const $formatter = {
 	asPercent(value, round = false, digits = 2) {
-		return this.asNumber((round ? Math.round(value * 100) : value * 100), digits) + "%";
+		return this.asNumber(round ? Math.round(value * 100) : value * 100, digits) + "%";
 	},
 	asNumber(value, digits = 2) {
 		return parseFloat(value).toLocaleString(locale, {
@@ -20,9 +20,11 @@
 			money /= 1000;
 		}
 
-		return `${parseFloat(money).toLocaleString("en", {
-			minimumFractionDigits: 0,
-			maximumFractionDigits: 2,
-		}).replaceAll(",", " ")}${suffix}`;
+		return `${parseFloat(money)
+			.toLocaleString("en", {
+				minimumFractionDigits: 0,
+				maximumFractionDigits: 2,
+			})
+			.replaceAll(",", " ")}${suffix}`;
 	},
 };

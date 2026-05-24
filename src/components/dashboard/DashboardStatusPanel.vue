@@ -1,56 +1,83 @@
 <template>
-	<article class="dashboard-card panel">
-		<header class="panel__header">
-			<div class="panel__title">
-				<v-icon icon="mdi-monitor" size="18" />
-				<span>Статус</span>
-			</div>
-			<button type="button" class="panel__action"><v-icon icon="mdi-arrow-top-right" size="18" /></button>
-		</header>
+	<s-dashboard-panel
+		title="Статус"
+		icon="mdi-monitor"
+		width="368"
+	>
+		<template #header-action>
+			<v-btn
+				icon
+				variant="tonal"
+				color="transparent"
+				width="36"
+				height="36"
+				rounded
+				density="comfortable"
+				class="bg-opacity-5 bg-white"
+			>
+				<v-icon
+					icon="mdi-arrow-top-right"
+					size="25"
+					color="white"
+					class="opacity-30"
+				/>
+			</v-btn>
+		</template>
 
 		<div
-			v-if="loading"
-			class="dashboard-skeleton-list"
+			v-if="testStore.loading"
+			class="d-flex flex-column ga-4"
 		>
 			<div
 				v-for="item in statusItems"
 				:key="item.label"
-				class="dashboard-skeleton-tile dashboard-skeleton-tile--row"
 			>
-				<v-skeleton-loader type="list-item-avatar-two-line" />
+				<v-skeleton-loader
+					type="list-item"
+					height="38"
+				/>
 			</div>
 		</div>
 
-		<div
-			v-else
-			class="status-list"
-		>
+		<div v-else>
 			<div
-				v-for="item in statusItems"
+				v-for="(item, index) in statusItems"
 				:key="item.label"
-				class="status-list__row"
+				class="d-flex flex-column ga-4"
 			>
-				<div class="status-list__label">
-					<span class="status-list__icon" :style="{ backgroundColor: item.color }">
-						<v-icon :icon="item.icon" size="13" />
-					</span>
-					<span>{{ item.label }}</span>
+				<div class="d-flex justify-space-between align-center">
+					<div class="d-flex ga-2 align-center">
+						<div
+							:class="`bg-${item.color}`"
+							class="pa-1 rounded-md d-flex align-center justify-center"
+						>
+							<s-smart-icon
+								:icon="item.icon"
+								size="14"
+							/>
+						</div>
+						<span>{{ item.label }}</span>
+					</div>
+					<div class="">{{ item.value }}</div>
 				</div>
-				<div class="status-list__value">{{ item.value }}</div>
+
+				<v-divider
+					v-if="index < statusItems.length - 1"
+					class="opacity-20 mb-4"
+				/>
 			</div>
 		</div>
-	</article>
+	</s-dashboard-panel>
 </template>
 
 <script setup>
+	const testStore = useTestStore();
 	const statusItems = [
-		{ label: "Устройства", value: "28", color: "rgba(255, 255, 255, 0.2)", icon: "mdi-monitor" },
-		{ label: "Включены", value: "27", color: "#0ca157", icon: "mdi-power" },
-		{ label: "Активные сеансы", value: "10", color: "#257ff9", icon: "mdi-account" },
-		{ label: "Обслуживание", value: "2", color: "#f37d1d", icon: "mdi-traffic-cone" },
-		{ label: "Высокий доступ", value: "0", color: "#de3e3d", icon: "mdi-code-tags" },
-		{ label: "Без оболочки", value: "1", color: "#af2e2d", icon: "mdi-alert-circle-outline" },
+		{ label: "Устройства", value: "28", color: "secondary", icon: "mdi:monitor" },
+		{ label: "Включены", value: "27", color: "green", icon: "mdi:power" },
+		{ label: "Активные сеансы", value: "10", color: "blue", icon: "mdi:account" },
+		{ label: "Обслуживание", value: "2", color: "orange", icon: "mdi:traffic-cone" },
+		{ label: "Высокий доступ", value: "0", color: "red", icon: "mdi:code-tags" },
+		{ label: "Без оболочки", value: "1", color: "error", icon: "mdi:alert-circle-outline" },
 	];
-
-	let loading = $ref(true);
 </script>

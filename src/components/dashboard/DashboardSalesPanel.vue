@@ -1,53 +1,53 @@
 <template>
-	<article class="dashboard-card panel">
-		<header class="panel__header">
-			<div class="panel__title">
-				<v-icon icon="mdi-history" size="18" />
-				<span>Продажи</span>
-			</div>
-			<div class="panel__segmented">
-				<button v-for="tab in salesTabs" :key="tab" type="button" class="panel__segment" :class="{ 'panel__segment--active': tab === activeSalesTab }">
+	<s-dashboard-panel
+		title="Продажи"
+		icon="mdi-history"
+	>
+		<template #header-action>
+			<v-btn-toggle
+				v-model="activeSalesTab"
+				class="rounded-md h-100 pa-1 bg-white bg-opacity-5 d-flex ga-1 text-white"
+				mandatory
+				selected-class="bg-primary"
+				color="black"
+			>
+				<v-btn
+					v-for="tab in salesTabs"
+					:key="tab"
+					:value="tab"
+					:ripple="null"
+					height="28"
+					class="rounded-md"
+					variant="plain"
+				>
 					{{ tab }}
-				</button>
-			</div>
-		</header>
+				</v-btn>
+			</v-btn-toggle>
+		</template>
 
-		<div
-			v-if="loading"
-			class="dashboard-skeleton-table"
-		>
-			<v-skeleton-loader type="table" />
-		</div>
-
-		<div
-			v-else
-			class="table-shell"
-		>
-			<table class="dashboard-table">
-				<thead>
-					<tr>
-						<th v-for="column in salesColumns" :key="column">
-							<span>{{ column }}</span>
-							<v-icon icon="mdi-swap-vertical" size="12" />
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="row in salesRows" :key="row.name">
-						<td class="dashboard-table__strong">{{ row.name }}</td>
-						<td>{{ row.quantity }}</td>
-						<td>{{ row.amount }}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</article>
+		<s-data-table
+			:columns="salesColumnsConfig"
+			:rows="salesRows"
+			:loading="loading"
+			table-height="312"
+		/>
+	</s-dashboard-panel>
 </template>
 
 <script setup>
+	const testStore = useTestStore();
+
+	let activeSalesTab = $ref("Товары");
+
+	const loading = $computed(() => testStore.loading);
+
 	const salesTabs = ["Товары", "Тарифы", "Услуги"];
-	const activeSalesTab = "Товары";
-	const salesColumns = ["Никнейм", "Количество", "Стоимость"];
+
+	const salesColumnsConfig = [
+		{ key: "name", label: "Никнейм", flex: 2, strong: true },
+		{ key: "quantity", label: "Количество", flex: 1 },
+		{ key: "amount", label: "Стоимость", flex: 1 },
+	];
 	const salesRows = [
 		{ name: "Monster Rio Punch", quantity: "3", amount: "375 ₽" },
 		{ name: "Adrenaline Extra 0,449", quantity: "2", amount: "205 ₽" },
@@ -55,6 +55,4 @@
 		{ name: "Рис с курицей и овощами", quantity: "1", amount: "380 ₽" },
 		{ name: "Рис с курицей и овощами", quantity: "1", amount: "380 ₽" },
 	];
-
-	let loading = $ref(true);
 </script>

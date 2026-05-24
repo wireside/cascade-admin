@@ -45,7 +45,7 @@ $transition: v.$transition-duration v.$standard-easing;
 
 		&-top {
 			@extend .hover-scale-center;
-			
+
 			transform-origin: top center;
 		}
 	}

@@ -1,7 +1,5 @@
 ﻿<template>
-	<v-date-input
-		prepend-icon=""
-	>
+	<v-date-input prepend-icon="">
 		<template
 			v-for="(_, slot) of $slots"
 			v-slot:[slot]="scope"
@@ -94,18 +92,18 @@
 		},
 	});
 
-	const appearance = $computed(() => props.hideCounter ? "none" : "auto");
-	const textAlign = $computed(() => props.centered ? "center" : "left");
+	const appearance = $computed(() => (props.hideCounter ? "none" : "auto"));
+	const textAlign = $computed(() => (props.centered ? "center" : "left"));
 </script>
 
 <style scoped>
-.s-text-field {
-	::v-deep(input) {
-		text-align: v-bind(textAlign);
+	.s-text-field {
+		::v-deep(input) {
+			text-align: v-bind(textAlign);
+		}
 	}
-}
 
-::v-deep(input[type=number]::-webkit-inner-spin-button) {
-	appearance: v-bind(appearance) !important;
-}
+	::v-deep(input[type="number"]::-webkit-inner-spin-button) {
+		appearance: v-bind(appearance) !important;
+	}
 </style>

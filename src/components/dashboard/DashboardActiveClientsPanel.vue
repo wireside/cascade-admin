@@ -1,59 +1,66 @@
 <template>
-	<article class="dashboard-card panel">
-		<header class="panel__header">
-			<div class="panel__title">
-				<v-icon icon="mdi-lightning-bolt-outline" size="18" />
-				<span>Активные клиенты</span>
-			</div>
-			<div class="panel__segmented">
-				<button v-for="tab in ['Неделя', 'День']" :key="tab" type="button" class="panel__segment" :class="{ 'panel__segment--active': tab === 'День' }">
+	<s-dashboard-panel
+		title="Активные клиенты"
+		icon="mdi-lightning-bolt-outline"
+		width="752"
+	>
+		<template #header-action>
+			<v-btn-toggle
+				v-model="activeClientTab"
+				class="rounded-md h-100 pa-1 bg-white bg-opacity-5 d-flex ga-1 text-white"
+				mandatory
+				selected-class="bg-primary"
+				color="black"
+			>
+				<v-btn
+					v-for="tab in clientTabs"
+					:key="tab"
+					:value="tab"
+					:ripple="null"
+					height="28"
+					class="rounded-md"
+					variant="plain"
+				>
 					{{ tab }}
-				</button>
-			</div>
-		</header>
+				</v-btn>
+			</v-btn-toggle>
+		</template>
 
-		<div
-			v-if="loading"
-			class="dashboard-skeleton-table"
-		>
-			<v-skeleton-loader type="table" />
-		</div>
-
-		<div
-			v-else
-			class="table-shell"
-		>
-			<table class="dashboard-table">
-				<thead>
-					<tr>
-						<th v-for="column in clientColumns" :key="column">
-							<span>{{ column }}</span>
-							<v-icon icon="mdi-swap-vertical" size="12" />
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="row in clientRows" :key="`${row.nickname}-${row.lastVisit}`">
-						<td class="dashboard-table__strong">{{ row.nickname }}</td>
-						<td>{{ row.spent }}</td>
-						<td>{{ row.hours }}</td>
-						<td>{{ row.lastVisit }}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</article>
+		<s-data-table
+			:columns="clientColumns"
+			:rows="clientRows"
+			:loading="loading"
+			table-height="312"
+		/>
+	</s-dashboard-panel>
 </template>
 
 <script setup>
-	const clientColumns = ["Никнейм", "Траты", "Всего часов", "Посл. посещение"];
+	const testStore = useTestStore();
+
+	let activeClientTab = $ref("День");
+
+	const loading = computed(() => testStore.loading);
+
+	const clientTabs = ["День", "Неделя"];
+	const clientColumns = [
+		{ key: "nickname", label: "Никнейм", flex: 2, strong: true },
+		{ key: "spent", label: "Траты", flex: 1 },
+		{ key: "hours", label: "Всего часов", flex: 1 },
+		{ key: "lastVisit", label: "Посл. посещение", flex: 1 },
+	];
 	const clientRows = [
 		{ nickname: "hatekilla", spent: "1 372 ₽", hours: "> 1 ч.", lastVisit: "22 февр. 2026" },
 		{ nickname: "hatekilla", spent: "1 372 ₽", hours: "> 1 ч.", lastVisit: "22 февр. 2026" },
 		{ nickname: "hatekilla", spent: "1 372 ₽", hours: "> 1 ч.", lastVisit: "22 февр. 2026" },
 		{ nickname: "hatekilla", spent: "1 372 ₽", hours: "> 1 ч.", lastVisit: "22 февр. 2026" },
 		{ nickname: "hatekilla", spent: "1 372 ₽", hours: "> 1 ч.", lastVisit: "22 февр. 2026" },
+		{ nickname: "hatekilla", spent: "1 372 ₽", hours: "> 1 ч.", lastVisit: "22 февр. 2026" },
 	];
-
-	let loading = $ref(true);
 </script>
+
+<style scoped lang="scss">
+	.s-dashboard-panel {
+		padding-bottom: 0;
+	}
+</style>

@@ -1,75 +1,112 @@
 <template>
-	<article class="dashboard-card panel devices-section">
-		<header class="panel__header devices-section__header">
-			<div class="devices-section__heading">
-				<div class="devices-section__badge">{{ section.badge }}</div>
-				<div class="panel__title">{{ section.title }}</div>
+	<s-dashboard-panel>
+		<div class="d-flex align-center justify-space-between mb-4">
+			<div class="d-flex align-center ga-2 flex-wrap">
+				<v-chip
+					size="small"
+					variant="flat"
+					class="font-weight-medium rounded-md px-3 py-1"
+					:color="section.tone || 'primary'"
+				>
+					{{ section.badge }}
+				</v-chip>
+				<span class="text-white text-subtitle-1 font-weight-semibold">{{ section.title }}</span>
 			</div>
 
-			<div class="devices-section__actions">
-				<label class="devices-section__select-all">
-					<v-checkbox-btn :model-value="false" />
-					<span>Выбрать все</span>
-				</label>
+			<div class="d-flex align-center flex-wrap ga-3">
+				<div class="d-flex align-center ga-2 text-medium-emphasis">
+					<v-checkbox-btn
+						:model-value="false"
+						density="compact"
+					/>
+					<span class="text-body-2">Выбрать все</span>
+				</div>
 
-				<div class="devices-section__buttons">
-					<button type="button" class="panel__action"><v-icon icon="mdi-cog-outline" size="18" /></button>
-					<button type="button" class="panel__action"><v-icon icon="mdi-delete-outline" size="18" /></button>
+				<div class="d-flex align-center ga-2">
+					<s-btn-icon
+						width="42px"
+						height="42px"
+						icon="mdi:cog-outline"
+						bg-color="surface"
+						class="bg-surface border"
+						title="Настройки устройства"
+					/>
+					<s-btn-icon
+						icon="mdi:delete"
+						rounded="md"
+						variant="tonal"
+						height="42px"
+						width="42px"
+						bg-color="red"
+						color="red"
+					/>
 				</div>
 			</div>
-		</header>
-
-		<div
-			v-if="loading"
-			class="dashboard-skeleton-table"
-		>
-			<v-skeleton-loader type="table" />
 		</div>
 
-		<div
-			v-else
-			class="table-shell"
-		>
-			<table class="dashboard-table devices-table">
-				<thead>
-					<tr>
-						<th v-for="column in columns" :key="column">
-							<span>{{ column }}</span>
-							<v-icon icon="mdi-swap-vertical" size="12" />
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="row in section.rows" :key="`${section.badge}-${row.index}`">
-						<td class="dashboard-table__strong devices-table__index">{{ row.index }}</td>
-						<td class="dashboard-table__strong">{{ row.name }}</td>
-						<td>
-							<span class="devices-chip" :class="`devices-chip--${row.status.tone}`">{{ row.status.label }}</span>
-						</td>
-						<td>
-							<span class="devices-chip" :class="`devices-chip--${row.booking.tone}`">{{ row.booking.label }}</span>
-						</td>
-						<td>{{ row.client }}</td>
-						<td>{{ row.tariff }}</td>
-						<td>{{ row.start }}</td>
-						<td>{{ row.end }}</td>
-						<td>{{ row.app }}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</article>
+		<s-data-table
+			:columns="columns"
+			:rows="tableRows"
+			:loading="loading"
+			:tone="section.tone"
+			table-height="257"
+		/>
+	</s-dashboard-panel>
 </template>
 
 <script setup>
-	defineProps({
+	const props = defineProps({
 		section: {
 			type: Object,
 			required: true,
 		},
 	});
 
-	const columns = ["№", "Название", "Статус", "Бронь", "Клиент", "Тариф", "Начало", "Окончание", "Приложение"];
+	const testStore = useTestStore();
 
-	let loading = $ref(true);
+	const loading = computed(() => testStore.loading);
+
+	const columns = [
+		{ key: "index", label: "№", flex: 0.5, align: "left", strong: true },
+		{ key: "name", label: "Название", flex: 1, strong: true },
+		{ key: "status", label: "Статус", flex: 1.2 },
+		{ key: "booking", label: "Бронь", flex: 1.2 },
+		{ key: "client", label: "Клиент", flex: 1.5 },
+		{ key: "tariff", label: "Тариф", flex: 1.5 },
+		{ key: "start", label: "Начало", flex: 1.1 },
+		{ key: "end", label: "Окончание", flex: 1.1 },
+		{ key: "app", label: "Приложение", flex: 1.8 },
+	];
+
+	const toneToColor = {
+		online: "success",
+		offline: "surface-variant",
+		busy: "info",
+		reserved: "success",
+		idle: "surface-variant",
+		service: "warning",
+	};
+
+	const toBadge = (value) => ({
+		label: value.label,
+		color: value.tone || "primary",
+		variant: "tonal",
+		rounded: "lg",
+		size: "small",
+	});
+
+	const tableRows = computed(() => {
+		return props.section.rows.map((row) => ({
+			...row,
+			status: toBadge(row.status),
+			booking: toBadge(row.booking),
+		}));
+	});
 </script>
+
+<style scoped lang="scss">
+	.s-dashboard-panel {
+		padding-bottom: 0;
+		padding-top: 18px;
+	}
+</style>

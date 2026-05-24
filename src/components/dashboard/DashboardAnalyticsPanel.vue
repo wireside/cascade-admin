@@ -1,114 +1,272 @@
 <template>
-	<article class="dashboard-card panel">
-		<header class="panel__header">
-			<div class="panel__title">
-				<v-icon icon="mdi-finance" size="18" />
-				<span>Аналитика</span>
-			</div>
-			<button type="button" class="panel__action"><v-icon icon="mdi-arrow-top-right" size="18" /></button>
-		</header>
+	<s-dashboard-panel
+		title="Аналитика"
+		icon="mdi-finance"
+		class="analitycs-panel"
+		width="368"
+	>
+		<template #header-action>
+			<v-btn
+				icon
+				variant="tonal"
+				color="transparent"
+				width="36"
+				height="36"
+				rounded
+				density="comfortable"
+				class="bg-opacity-5 bg-white"
+			>
+				<v-icon
+					icon="mdi-arrow-top-right"
+					size="25"
+					color="white"
+					class="opacity-30"
+				/>
+			</v-btn>
+		</template>
 
 		<div
-			v-if="loading"
-			class="dashboard-skeleton-panel"
+			v-if="testStore.loading"
+			class="d-flex flex-column"
 		>
-			<div class="dashboard-skeleton-chart">
-				<v-skeleton-loader type="image" />
-			</div>
-			<div class="dashboard-skeleton-list">
+			<v-skeleton-loader
+				type="image"
+				height="168"
+			/>
+			<div class="d-flex flex-column ga-4">
 				<div
 					v-for="series in analyticsSummary"
 					:key="series.label"
-					class="dashboard-skeleton-tile dashboard-skeleton-tile--row"
+					class="py-1"
 				>
-					<v-skeleton-loader type="list-item-two-line" />
+					<v-skeleton-loader
+						type="list-item"
+						height="35"
+					/>
 				</div>
 			</div>
 		</div>
 
-		<template v-else>
-			<div class="analytics-chart">
-				<div class="analytics-chart__labels analytics-chart__labels--y">
-					<span v-for="value in chartScale" :key="value">{{ value }}</span>
-				</div>
-
-				<div class="analytics-chart__plot">
-					<div v-for="value in chartScale" :key="`line-${value}`" class="analytics-chart__line" />
-					<svg viewBox="0 0 320 180" class="analytics-chart__svg" preserveAspectRatio="none">
-						<polyline
-							v-for="series in analyticsSeries"
-							:key="series.label"
-							:points="buildChartLine(series.values)"
-							fill="none"
-							:stroke="series.color"
-							stroke-width="3"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						/>
-						<g v-for="series in analyticsSeries" :key="`${series.label}-points`">
-							<circle
-								v-for="(value, index) in series.values"
-								:key="`${series.label}-${index}`"
-								:cx="chartX(index)"
-								:cy="chartY(value)"
-								r="4"
-								:fill="series.color"
-								stroke="#090909"
-								stroke-width="2"
-							/>
-						</g>
-					</svg>
-
-					<div class="analytics-chart__labels analytics-chart__labels--x">
-						<span v-for="label in chartLabels" :key="label">{{ label }}</span>
-					</div>
-				</div>
+		<div
+			v-else
+			class="d-flex flex-column ga-3 w-100"
+		>
+			<div class="w-100">
+				<VChart
+					class="w-100"
+					:option="chartOptions"
+					style="width: 314px; height: 168px"
+					autoresize
+				/>
 			</div>
 
-			<div class="analytics-summary">
-				<div
-					v-for="series in analyticsSummary"
+			<div>
+				<template
+					v-for="(series, index) in analyticsSummary"
 					:key="series.label"
-					class="analytics-summary__row"
 				>
-					<div class="analytics-summary__label">
-						<span class="analytics-summary__dot" :style="{ backgroundColor: series.color }" />
-						<span>{{ series.label }}</span>
+					<div class="d-flex flex-column ga-3">
+						<div class="d-flex align-center justify-space-between">
+							<div class="d-inline-flex align-center ga-3">
+								<v-avatar
+									:color="series.color"
+									size="8"
+								/>
+								<span class="analitycs-panel__label font-weight-regular">{{ series.label }}</span>
+							</div>
+							<div
+								:class="series.delta.startsWith('-') ? 'bg-error text-error' : 'bg-primary text-primary'"
+								class="font-weight-bold bg-opacity-30 py-1 px-3 rounded-sm"
+							>
+								<span>{{ series.delta }}</span>
+							</div>
+						</div>
+
+						<v-divider
+							v-if="index < analyticsSummary.length - 1"
+							class="opacity-20 mb-4"
+						/>
 					</div>
-					<div class="analytics-summary__delta" :class="{ 'analytics-summary__delta--negative': series.delta.startsWith('-') }">
-						{{ series.delta }}
-					</div>
-				</div>
+				</template>
 			</div>
-		</template>
-	</article>
+		</div>
+	</s-dashboard-panel>
 </template>
 
 <script setup>
-	const chartScale = [50, 40, 30, 20, 10, 0];
-	const chartLabels = ["25 февр.", "26 февр.", "25 февр."];
+	import { computed } from "vue";
+	import VChart from "vue-echarts";
+	import { LineChart } from "echarts/charts";
+	import {
+		GridComponent,
+		TooltipComponent,
+		LegendComponent,
+		TitleComponent,
+		MarkPointComponent,
+		MarkLineComponent,
+	} from "echarts/components";
+	import { CanvasRenderer } from "echarts/renderers";
+	import { use } from "echarts/core";
+
+	use([
+		LineChart,
+		GridComponent,
+		TooltipComponent,
+		LegendComponent,
+		TitleComponent,
+		MarkPointComponent,
+		MarkLineComponent,
+		CanvasRenderer,
+	]);
+
+	const testStore = useTestStore();
 	const analyticsSeries = [
-		{ label: "Клиенты", color: "#abf43e", values: [28, 21, 20, 30, 31] },
-		{ label: "Товары", color: "#257ff9", values: [39, 49, 47, 25, 19] },
-		{ label: "Услуги", color: "#f39c36", values: [39, 31, 24, 29, 31] },
+		{ label: "Клиенты", color: "#abf43e", values: [28, 20, 33] },
+		{ label: "Товары", color: "#257ff9", values: [40, 49, 18] },
+		{ label: "Услуги", color: "#f39c36", values: [24, 30, 26] },
 	];
 	const analyticsSummary = [
 		{ label: "Клиенты", color: "#abf43e", delta: "+ 3%" },
 		{ label: "Товары", color: "#257ff9", delta: "- 20%" },
 		{ label: "Услуги", color: "#f39c36", delta: "+ 3%" },
 	];
+	const chartLabels = ["25 февр.", "26 февр.", "25 февр."];
+	const minY = 0;
+	const maxY = 50;
 
-	let loading = $ref(true);
-
-	function chartX(index) {
-		return analyticsSeries[0].values.length === 1 ? 0 : (index / (analyticsSeries[0].values.length - 1)) * 320;
-	}
-
-	function chartY(value) {
-		return 180 - (value / 50) * 180;
-	}
-
-	function buildChartLine(values) {
-		return values.map((value, index) => `${chartX(index)},${chartY(value)}`).join(" ");
-	}
+	const chartOptions = computed(() => ({
+		backgroundColor: "transparent",
+		grid: {
+			left: 0,
+			right: 4,
+			top: 0,
+			bottom: 0,
+		},
+		tooltip: {
+			show: true,
+			trigger: "axis",
+			axisPointer: {
+				type: "line",
+				lineStyle: {
+					color: "rgba(255, 255, 255, 0.2)",
+					width: 1,
+				},
+			},
+			backgroundColor: "rgba(9, 9, 9, 0.95)",
+			borderColor: "rgba(255, 255, 255, 0.12)",
+			textStyle: {
+				color: "#ffffff",
+			},
+		},
+		xAxis: {
+			type: "category",
+			data: chartLabels,
+			axisTick: { show: false },
+			axisLine: {
+				show: true,
+				lineStyle: {
+					color: "rgba(255, 255, 255, 0.4)",
+					width: 1,
+				},
+			},
+			axisLabel: {
+				show: true,
+				margin: 8,
+				color: "rgba(255, 255, 255, 0.4)",
+				fontSize: 12,
+				formatter: (value, idx) => {
+					if (idx === 0) return `{start|${value}}`;
+					if (idx === chartLabels.length - 1) return `{end|${value}}`;
+					return value;
+				},
+				rich: {
+					start: {
+						padding: [0, 0, 0, 46],
+						fontSize: 12,
+						color: "rgba(255, 255, 255, 0.4)",
+					},
+					end: {
+						padding: [0, 48, 0, 0],
+						fontSize: 12,
+						color: "rgba(255, 255, 255, 0.4)",
+					},
+				},
+			},
+			splitLine: { show: false },
+			boundaryGap: false,
+		},
+		yAxis: {
+			type: "value",
+			min: minY,
+			max: maxY,
+			splitNumber: 5,
+			axisTick: { show: false },
+			axisLine: {
+				show: true,
+				lineStyle: {
+					color: "rgba(255, 255, 255, 0.4)",
+					width: 1,
+				},
+			},
+			axisLabel: {
+				show: true,
+				margin: 8,
+				color: "rgba(255, 255, 255, 0.4)",
+				fontSize: 12,
+				formatter: (value) => {
+					if (value === minY) return `{bottom|${value}}`;
+					if (value === maxY) return `{top|${value}}`;
+					return value;
+				},
+				rich: {
+					bottom: {
+						padding: [0, 0, 10, 0],
+						fontSize: 12,
+						color: "rgba(255, 255, 255, 0.4)",
+					},
+					top: {
+						padding: [9, 0, 0, 0],
+						fontSize: 12,
+						color: "rgba(255, 255, 255, 0.4)",
+					},
+				},
+			},
+			splitLine: { show: false },
+		},
+		series: analyticsSeries.map((series) => ({
+			name: series.label,
+			type: "line",
+			data: series.values,
+			smooth: true,
+			symbol: "circle",
+			symbolSize: 8,
+			showSymbol: true,
+			connectNulls: true,
+			lineStyle: {
+				color: series.color,
+				width: 2,
+				type: "dashed",
+			},
+			itemStyle: {
+				color: series.color,
+				borderColor: "#090909",
+				borderWidth: 3,
+			},
+			emphasis: { disabled: true },
+		})),
+		color: analyticsSeries.map((series) => series.color),
+		legend: { show: false },
+		animation: false,
+	}));
 </script>
+
+<style lang="scss">
+	.analitycs-panel {
+		padding-bottom: 22px;
+
+		&__label {
+			font-size: 16px;
+			line-height: 100%;
+		}
+	}
+</style>

@@ -1,41 +1,48 @@
 <template>
-	<div class="dashboard-card goods-grid">
-		<div
-			v-if="loading"
-			class="dashboard-skeleton-grid dashboard-skeleton-grid--2"
+	<s-dashboard-panel width="486">
+		<v-row
+			v-if="testStore.loading"
+			gap="10px"
 		>
-			<div
+			<v-col
 				v-for="item in categoryMetrics"
+				cols="12"
+				md="6"
 				:key="item.label"
-				class="dashboard-skeleton-tile dashboard-skeleton-tile--metric"
 			>
-				<v-skeleton-loader type="heading, text" />
-			</div>
-		</div>
+				<v-skeleton-loader
+					type="heading"
+					height="72"
+				/>
+			</v-col>
+		</v-row>
 
-		<template v-else>
-			<article
+		<v-row
+			v-else
+			gap="15px"
+			class="gr-3"
+		>
+			<v-col
 				v-for="item in categoryMetrics"
+				cols="6"
 				:key="item.label"
-				class="goods-grid__tile"
 			>
-				<div class="metric-tile__label">
-					<v-icon :icon="item.icon" size="14" />
-					<span>{{ item.label }}</span>
-				</div>
-				<div class="metric-tile__value"><span class="metric-tile__currency">₽</span>{{ item.value }}</div>
-			</article>
-		</template>
-	</div>
+				<s-finance-tile
+					v-bind="item"
+					tone="white"
+				/>
+			</v-col>
+		</v-row>
+	</s-dashboard-panel>
 </template>
 
 <script setup>
 	const categoryMetrics = [
-		{ label: "Товары", value: "12 080.45", icon: "mdi-store-outline" },
-		{ label: "Тарифы", value: "12 080", icon: "mdi-timelapse" },
-		{ label: "Услуги", value: "12 080.45", icon: "mdi-tag-outline" },
-		{ label: "Траты с депозита", value: "12 080.45", icon: "mdi-wallet-plus-outline" },
+		{ label: "Товары", value: "12 080.45", icon: "mdi:store-outline" },
+		{ label: "Тарифы", value: "12 080", icon: "mdi:timelapse" },
+		{ label: "Услуги", value: "12 080.45", icon: "mdi:tag-outline" },
+		{ label: "Траты с депозита", value: "12 080.45", icon: "mdi:wallet-plus-outline" },
 	];
 
-	let loading = $ref(true);
+	const testStore = useTestStore();
 </script>

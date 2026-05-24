@@ -6,7 +6,7 @@
 	>
 		<div
 			class="rounded"
-			:class="[`text-${color}`, `bg-${background}`, `pa-${padding}`, (border ? 'border' : '')]"
+			:class="[`text-${color}`, `bg-${background}`, `pa-${padding}`, border ? 'border' : '']"
 		>
 			<slot />
 		</div>
@@ -34,10 +34,7 @@
 	});
 </script>
 
-<style
-	lang="scss"
-	scoped
->
+<style lang="scss" scoped>
 	.s-tooltip {
 		& > :deep(.v-overlay__content) {
 			padding: 0;

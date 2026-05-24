@@ -165,8 +165,7 @@
 							v-if="!onlineMachines.length && !loading"
 							cols="12"
 						>
-							<v-sheet class="test-empty">
-							</v-sheet>
+							<v-sheet class="test-empty"></v-sheet>
 						</v-col>
 					</v-row>
 				</section>
@@ -274,7 +273,8 @@
 				<v-card-title>Привязать устройство</v-card-title>
 				<v-card-text>
 					<div class="mb-4 text-medium-emphasis">
-						Fingerprint: <span class="machine-card__mono">{{ bindDialog.fingerprint }}</span>
+						Fingerprint:
+						<span class="machine-card__mono">{{ bindDialog.fingerprint }}</span>
 					</div>
 					<v-text-field
 						v-model="bindDialog.name"
@@ -341,7 +341,6 @@
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
-
 	</div>
 </template>
 
@@ -353,23 +352,26 @@ meta:
 
 <script setup>
 	import { getDeviceIndex } from "@/client";
-	import { deleteDeviceDeleteMutation, deleteSessionDeleteMutation, getAdminIndexQuery, getClientIndexQuery, getClientIndexQueryKey, getSessionIndexQuery, getSessionIndexQueryKey, postClientRegisterMutation, postSessionPauseMutation, postSessionResumeMutation, postSessionStartMutation } from "@/client/@pinia/colada.gen";
+	import {
+		deleteDeviceDeleteMutation,
+		deleteSessionDeleteMutation,
+		getAdminIndexQuery,
+		getClientIndexQuery,
+		getClientIndexQueryKey,
+		getSessionIndexQuery,
+		getSessionIndexQueryKey,
+		postClientRegisterMutation,
+		postSessionPauseMutation,
+		postSessionResumeMutation,
+		postSessionStartMutation,
+	} from "@/client/@pinia/colada.gen";
 	import { useMutation, useQuery, useQueryCache } from "@pinia/colada";
 
-	const {
-		data: adminsData,
-		refetch: adminsRefetch,
-	} = useQuery(getAdminIndexQuery());
+	const { data: adminsData, refetch: adminsRefetch } = useQuery(getAdminIndexQuery());
 
-	const {
-		data: clientsData,
-		refetch: clientsRefetch,
-	} = useQuery(getClientIndexQuery());
+	const { data: clientsData, refetch: clientsRefetch } = useQuery(getClientIndexQuery());
 
-	const {
-		data: sessionsData,
-		refetch: sessionsRefetch,
-	} = useQuery(getSessionIndexQuery());
+	const { data: sessionsData, refetch: sessionsRefetch } = useQuery(getSessionIndexQuery());
 
 	const queryCache = useQueryCache();
 
@@ -424,11 +426,7 @@ meta:
 	});
 
 	const offlineMachines = computed(() => {
-		const onlineDeviceIds = new Set(
-			clients.value
-				.map((client) => client.device?.id)
-				.filter(Boolean),
-		);
+		const onlineDeviceIds = new Set(clients.value.map((client) => client.device?.id).filter(Boolean));
 
 		return devices.value
 			.filter((device) => !onlineDeviceIds.has(device.id))
@@ -469,8 +467,7 @@ meta:
 				)
 			);
 			devices.value = deviceResponses.flatMap((response) => ensureArray(response?.items));
-		}
-		catch (error) {
+		} catch (error) {
 			errorMessage.value = error?.message || "Не удалось загрузить тестовые данные";
 		}
 	}
@@ -483,18 +480,12 @@ meta:
 		errorMessage.value = "";
 
 		try {
-			await Promise.all([
-				adminsRefetch(),
-				clientsRefetch(),
-				sessionsRefetch(),
-			]);
+			await Promise.all([adminsRefetch(), clientsRefetch(), sessionsRefetch()]);
 
 			await loadDevices();
-		}
-		catch (error) {
+		} catch (error) {
 			errorMessage.value = error?.message || "Не удалось загрузить тестовые данные";
-		}
-		finally {
+		} finally {
 			if (!silent) {
 				loading.value = false;
 			}
@@ -572,9 +563,7 @@ meta:
 		const minutes = Math.floor((totalSeconds % 3600) / 60);
 		const seconds = totalSeconds % 60;
 
-		return [hours, minutes, seconds]
-			.map((part) => String(part).padStart(2, "0"))
-			.join(":");
+		return [hours, minutes, seconds].map((part) => String(part).padStart(2, "0")).join(":");
 	}
 
 	function parseDurationToMilliseconds(value) {
@@ -587,7 +576,7 @@ meta:
 		}
 
 		const [hours, minutes, seconds] = value.split(":").map((part) => Number(part) || 0);
-		return (((hours * 60) + minutes) * 60 + seconds) * 1000;
+		return ((hours * 60 + minutes) * 60 + seconds) * 1000;
 	}
 
 	function openBindDialog(machine) {
@@ -610,12 +599,11 @@ meta:
 
 		await runAction(`bind:${fingerprint}`, async () => {
 			await mutateAsync({
-					query: {
-						fingerprint,
-						name: bindDialog.name,
-					}
-				}
-			);
+				query: {
+					fingerprint,
+					name: bindDialog.name,
+				},
+			});
 			await queryCache.invalidateQueries({ key: getClientIndexQueryKey() });
 
 			bindDialog.open = false;
@@ -624,7 +612,7 @@ meta:
 	}
 
 	async function submitSession() {
-		const { mutateAsync } = useMutation(postSessionStartMutation()); // TODO 
+		const { mutateAsync } = useMutation(postSessionStartMutation()); // TODO
 
 		const deviceId = sessionDialog.deviceId;
 
@@ -633,7 +621,7 @@ meta:
 				query: {
 					deviceId,
 					duration: sessionDialog.durationMinutes,
-				}
+				},
 			});
 			await queryCache.invalidateQueries({ key: getSessionIndexQueryKey() });
 
@@ -649,7 +637,7 @@ meta:
 			await mutateAsync({
 				query: {
 					id: deviceId,
-				}
+				},
 			});
 			await queryCache.invalidateQueries({ key: getClientIndexQueryKey() });
 			await queryCache.invalidateQueries({ key: getSessionIndexQueryKey() });
@@ -665,7 +653,7 @@ meta:
 			await mutateAsync({
 				query: {
 					id: sessionId,
-				}
+				},
 			});
 			await queryCache.invalidateQueries({ key: getSessionIndexQueryKey() });
 
@@ -680,7 +668,7 @@ meta:
 			await mutateAsync({
 				query: {
 					id: sessionId,
-				}
+				},
 			});
 			await queryCache.invalidateQueries({ key: getSessionIndexQueryKey() });
 
@@ -695,7 +683,7 @@ meta:
 			await mutateAsync({
 				query: {
 					id: sessionId,
-				}
+				},
 			});
 			await queryCache.invalidateQueries({ key: getSessionIndexQueryKey() });
 
@@ -709,11 +697,9 @@ meta:
 
 		try {
 			await action();
-		}
-		catch (error) {
+		} catch (error) {
 			errorMessage.value = error?.message || "Операция завершилась с ошибкой";
-		}
-		finally {
+		} finally {
 			actionKey.value = "";
 		}
 	}
@@ -725,220 +711,219 @@ meta:
 </script>
 
 <style scoped lang="scss">
-.test-page {
-	min-height: 100vh;
-	position: relative;
-	background:
-		radial-gradient(circle at top left, rgba(171, 244, 62, 0.08), transparent 22%),
-		radial-gradient(circle at bottom right, rgba(37, 127, 249, 0.08), transparent 18%),
-		#090909;
-	color: rgba(255, 255, 255, 0.96);
-}
+	.test-page {
+		min-height: 100vh;
+		position: relative;
+		background:
+			radial-gradient(circle at top left, rgba(171, 244, 62, 0.08), transparent 22%),
+			radial-gradient(circle at bottom right, rgba(37, 127, 249, 0.08), transparent 18%), #090909;
+		color: rgba(255, 255, 255, 0.96);
+	}
 
-.test-page__backdrop {
-	position: absolute;
-	inset: 0;
-	background: linear-gradient(180deg, rgba(9, 9, 9, 0.72), rgba(9, 9, 9, 0.92));
-}
+	.test-page__backdrop {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(180deg, rgba(9, 9, 9, 0.72), rgba(9, 9, 9, 0.92));
+	}
 
-.test-page__container {
-	position: relative;
-	z-index: 1;
-	padding: 40px 32px 56px;
-	max-width: 1680px;
-}
-
-.test-page__hero {
-	display: flex;
-	align-items: flex-start;
-	justify-content: space-between;
-	gap: 24px;
-	margin-bottom: 28px;
-}
-
-.test-page__eyebrow {
-	font-size: 12px;
-	text-transform: uppercase;
-	letter-spacing: 0.16em;
-	color: rgba(255, 255, 255, 0.42);
-	margin-bottom: 14px;
-}
-
-.test-page__title {
-	margin: 0;
-	font-size: clamp(32px, 4vw, 52px);
-	line-height: 0.96;
-	font-weight: 700;
-}
-
-.test-page__subtitle {
-	margin: 14px 0 0;
-	max-width: 620px;
-	font-size: 16px;
-	line-height: 1.5;
-	color: rgba(255, 255, 255, 0.64);
-}
-
-.test-page__hero-actions {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: flex-end;
-	gap: 10px;
-}
-
-.test-page__sections {
-	display: grid;
-	gap: 28px;
-}
-
-.test-section__header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 16px;
-	margin-bottom: 14px;
-}
-
-.test-section__title {
-	font-size: 24px;
-	font-weight: 600;
-	line-height: 1.1;
-}
-
-.test-section__caption {
-	margin-top: 6px;
-	font-size: 14px;
-	color: rgba(255, 255, 255, 0.5);
-}
-
-.machine-card {
-	height: 100%;
-	border: 1px solid rgba(255, 255, 255, 0.08);
-	background: rgba(17, 17, 17, 0.72);
-	backdrop-filter: blur(12px);
-}
-
-.machine-card--new {
-	border-color: rgba(244, 187, 62, 0.4);
-}
-
-.machine-card--bound {
-	border-color: rgba(114, 172, 255, 0.28);
-}
-
-.machine-card--active {
-	border-color: rgba(37, 127, 249, 0.5);
-	box-shadow: inset 0 0 0 1px rgba(37, 127, 249, 0.18);
-}
-
-.machine-card--paused {
-	border-color: rgba(244, 187, 62, 0.42);
-}
-
-.machine-card--offline {
-	border-color: rgba(255, 255, 255, 0.06);
-}
-
-.machine-card__avatar {
-	width: 40px;
-	height: 40px;
-	border-radius: 12px;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	background: rgba(37, 127, 249, 0.18);
-	color: #9fc5ff;
-}
-
-.machine-card__avatar--offline {
-	background: rgba(255, 255, 255, 0.08);
-	color: rgba(255, 255, 255, 0.72);
-}
-
-.machine-card__title {
-	font-size: 20px;
-	font-weight: 600;
-	line-height: 1.1;
-}
-
-.machine-card__subtitle {
-	color: rgba(255, 255, 255, 0.52);
-}
-
-.machine-card__body {
-	display: grid;
-	gap: 16px;
-}
-
-.machine-card__chips {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 8px;
-}
-
-.machine-card__meta {
-	display: grid;
-	gap: 10px;
-}
-
-.machine-card__meta-row {
-	display: flex;
-	align-items: baseline;
-	justify-content: space-between;
-	gap: 16px;
-	font-size: 14px;
-}
-
-.machine-card__meta-row span {
-	color: rgba(255, 255, 255, 0.48);
-}
-
-.machine-card__meta-row strong {
-	color: rgba(255, 255, 255, 0.94);
-	text-align: right;
-	font-weight: 500;
-}
-
-.machine-card__mono {
-	font-family: ui-monospace, SFMono-Regular, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-	font-size: 12px;
-	letter-spacing: 0.02em;
-}
-
-.machine-card__actions {
-	flex-wrap: wrap;
-	gap: 8px;
-	padding: 14px 16px 16px;
-}
-
-.test-empty {
-	padding: 28px;
-	border-radius: 20px;
-	border: 1px dashed rgba(255, 255, 255, 0.14);
-	background: rgba(255, 255, 255, 0.03);
-}
-
-.test-empty__title {
-	font-size: 18px;
-	font-weight: 600;
-	margin-bottom: 6px;
-}
-
-.test-empty__text {
-	color: rgba(255, 255, 255, 0.56);
-}
-
-@media (max-width: 959px) {
 	.test-page__container {
-		padding: 28px 18px 40px;
+		position: relative;
+		z-index: 1;
+		padding: 40px 32px 56px;
+		max-width: 1680px;
 	}
 
 	.test-page__hero {
-		flex-direction: column;
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 24px;
+		margin-bottom: 28px;
+	}
+
+	.test-page__eyebrow {
+		font-size: 12px;
+		text-transform: uppercase;
+		letter-spacing: 0.16em;
+		color: rgba(255, 255, 255, 0.42);
+		margin-bottom: 14px;
+	}
+
+	.test-page__title {
+		margin: 0;
+		font-size: clamp(32px, 4vw, 52px);
+		line-height: 0.96;
+		font-weight: 700;
+	}
+
+	.test-page__subtitle {
+		margin: 14px 0 0;
+		max-width: 620px;
+		font-size: 16px;
+		line-height: 1.5;
+		color: rgba(255, 255, 255, 0.64);
 	}
 
 	.test-page__hero-actions {
-		justify-content: flex-start;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		gap: 10px;
 	}
-}
+
+	.test-page__sections {
+		display: grid;
+		gap: 28px;
+	}
+
+	.test-section__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		margin-bottom: 14px;
+	}
+
+	.test-section__title {
+		font-size: 24px;
+		font-weight: 600;
+		line-height: 1.1;
+	}
+
+	.test-section__caption {
+		margin-top: 6px;
+		font-size: 14px;
+		color: rgba(255, 255, 255, 0.5);
+	}
+
+	.machine-card {
+		height: 100%;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: rgba(17, 17, 17, 0.72);
+		backdrop-filter: blur(12px);
+	}
+
+	.machine-card--new {
+		border-color: rgba(244, 187, 62, 0.4);
+	}
+
+	.machine-card--bound {
+		border-color: rgba(114, 172, 255, 0.28);
+	}
+
+	.machine-card--active {
+		border-color: rgba(37, 127, 249, 0.5);
+		box-shadow: inset 0 0 0 1px rgba(37, 127, 249, 0.18);
+	}
+
+	.machine-card--paused {
+		border-color: rgba(244, 187, 62, 0.42);
+	}
+
+	.machine-card--offline {
+		border-color: rgba(255, 255, 255, 0.06);
+	}
+
+	.machine-card__avatar {
+		width: 40px;
+		height: 40px;
+		border-radius: 12px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(37, 127, 249, 0.18);
+		color: #9fc5ff;
+	}
+
+	.machine-card__avatar--offline {
+		background: rgba(255, 255, 255, 0.08);
+		color: rgba(255, 255, 255, 0.72);
+	}
+
+	.machine-card__title {
+		font-size: 20px;
+		font-weight: 600;
+		line-height: 1.1;
+	}
+
+	.machine-card__subtitle {
+		color: rgba(255, 255, 255, 0.52);
+	}
+
+	.machine-card__body {
+		display: grid;
+		gap: 16px;
+	}
+
+	.machine-card__chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.machine-card__meta {
+		display: grid;
+		gap: 10px;
+	}
+
+	.machine-card__meta-row {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 16px;
+		font-size: 14px;
+	}
+
+	.machine-card__meta-row span {
+		color: rgba(255, 255, 255, 0.48);
+	}
+
+	.machine-card__meta-row strong {
+		color: rgba(255, 255, 255, 0.94);
+		text-align: right;
+		font-weight: 500;
+	}
+
+	.machine-card__mono {
+		font-family: ui-monospace, SFMono-Regular, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+		font-size: 12px;
+		letter-spacing: 0.02em;
+	}
+
+	.machine-card__actions {
+		flex-wrap: wrap;
+		gap: 8px;
+		padding: 14px 16px 16px;
+	}
+
+	.test-empty {
+		padding: 28px;
+		border-radius: 20px;
+		border: 1px dashed rgba(255, 255, 255, 0.14);
+		background: rgba(255, 255, 255, 0.03);
+	}
+
+	.test-empty__title {
+		font-size: 18px;
+		font-weight: 600;
+		margin-bottom: 6px;
+	}
+
+	.test-empty__text {
+		color: rgba(255, 255, 255, 0.56);
+	}
+
+	@media (max-width: 959px) {
+		.test-page__container {
+			padding: 28px 18px 40px;
+		}
+
+		.test-page__hero {
+			flex-direction: column;
+		}
+
+		.test-page__hero-actions {
+			justify-content: flex-start;
+		}
+	}
 </style>

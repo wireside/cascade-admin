@@ -5,13 +5,13 @@ import Fonts from "unplugin-fonts/vite";
 import Layouts from "vite-plugin-vue-layouts-next";
 import Vue from "@vitejs/plugin-vue";
 import Pages from "vite-plugin-pages";
-import Vuetify, {transformAssetUrls} from "vite-plugin-vuetify";
+import Vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 import VueMacros from "unplugin-vue-macros/vite";
 import autoprefixer from "autoprefixer";
 import { heyApiPlugin } from "@hey-api/vite-plugin";
 
 // Utilities
-import {defineConfig} from "vite";
+import { defineConfig } from "vite";
 import path from "path";
 
 // https://vitejs.dev/config/
@@ -51,9 +51,7 @@ export default defineConfig({
 				"@vueuse/core",
 				"pinia",
 				{
-					"vuetify": [
-						"useTheme",
-					],
+					vuetify: ["useTheme"],
 				},
 			],
 			dts: "./src/auto-imports.d.ts",
@@ -61,11 +59,7 @@ export default defineConfig({
 				enabled: true,
 			},
 			vueTemplate: true,
-			dirs: [
-				"src/composables",
-				"src/store",
-				"src/helpers",
-			],
+			dirs: ["src/composables", "src/store", "src/helpers"],
 		}),
 		heyApiPlugin({
 			config: {
@@ -73,7 +67,7 @@ export default defineConfig({
 				output: "src/client",
 				plugins: [
 					{
-						name: '@hey-api/client-fetch',
+						name: "@hey-api/client-fetch",
 						throwOnError: true,
 					},
 					"@pinia/colada",
@@ -81,7 +75,7 @@ export default defineConfig({
 			},
 		}),
 	],
-	define: {"process.env": {}},
+	define: { "process.env": {} },
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "src"),
@@ -91,18 +85,14 @@ export default defineConfig({
 	},
 	css: {
 		postcss: {
-			plugins: [
-				autoprefixer(),
-			],
+			plugins: [autoprefixer()],
 		},
 	},
 	server: {
 		port: 8080,
 		open: "/",
 		warmup: {
-			clientFiles: [
-				"./src/pages/index.vue",
-			],
+			clientFiles: ["./src/pages/index.vue"],
 		},
 	},
 });

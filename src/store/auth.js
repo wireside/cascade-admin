@@ -24,7 +24,7 @@ export const useAuthStore = defineStore("auth", {
 		initialized: false,
 	}),
 	getters: {
-		isAuthenticated: state => Boolean(state.token && state.user),
+		isAuthenticated: (state) => Boolean(state.token && state.user),
 	},
 	actions: {
 		setSession(token, user) {

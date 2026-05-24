@@ -1,33 +1,33 @@
 <template>
 	<div class="dashboard-page d-flex flex-column ga-3 pa-0">
-		<section>
-			<v-row gap="12px">
-				<v-col cols="12" lg="6">
+		<section class="d-flex flex-wrap flex-xl-nowrap ga-4 align-stretch justify-items-stretch">
+			<div class="d-flex ga-4 w-100">
+				<div class="flex-grow-1">
 					<dashboard-summary-metrics />
-				</v-col>
-				<v-col>
+				</div>
+				<div class="flex-grow-1">
 					<dashboard-cash-metrics />
-				</v-col>
-			</v-row>
-			<v-row gap="12px">
-				<v-col cols="12" lg="8">
-					<dashboard-category-metrics />
-				</v-col>
-				<v-col cols="4" class="flex-grow-1">
-					<dashboard-profile-card />
-				</v-col>
-			</v-row>
+				</div>
+			</div>
+			<div class="d-flex ga-4 w-100">
+				<div class="flex-grow-1">
+					<dashboard-category-metrics class="w-100" />
+				</div>
+				<div>
+					<dashboard-profile-card class="h-100" />
+				</div>
+			</div>
 		</section>
 
-		<section class="dashboard-grid dashboard-grid--middle">
-			<dashboard-analytics-panel />
-			<dashboard-status-panel />
-			<dashboard-bookings-panel />
+		<section class="d-flex ga-4 align-stretch flex-wrap flex-xl-nowrap">
+			<div><dashboard-analytics-panel class="h-100" /></div>
+			<div class="flex-grow-1"><dashboard-status-panel class="h-100" /></div>
+			<div class="flex-xl-grow-0 flex-grow-1"><dashboard-bookings-panel class="h-100" /></div>
 		</section>
 
-		<section class="dashboard-grid dashboard-grid--bottom">
-			<dashboard-active-clients-panel />
-			<dashboard-sales-panel />
+		<section class="d-flex ga-4 flex-wrap flex-xl-nowrap">
+			<dashboard-active-clients-panel class="w-100" />
+			<dashboard-sales-panel class="w-100" />
 		</section>
 	</div>
 </template>
@@ -37,5 +37,3 @@ meta:
   layout: default
   title: Дашборд
 </route>
-
-<style src="@/assets/styles/admin-panels.scss" lang="scss"></style>

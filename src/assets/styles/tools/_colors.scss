@@ -10,9 +10,14 @@ $opacityStep: 1; // округлений нет, следите за остат�
 @each $name in $gradients {
 	$var-name: --v-theme-#{$name};
 	$color: rgb(var($var-name));
-	$gradient: rgb(var(#{$var-name})) 0, rgb(var(#{$var-name}-gradient)) 100%;
-	$gradient-center: rgba(var(#{$var-name}), 0.4) 0%, rgba(var(#{$var-name}-gradient), 0.4) 50%, rgba(var(#{$var-name}), 0.4) 100%;
-	
+	$gradient:
+		rgb(var(#{$var-name})) 0,
+		rgb(var(#{$var-name}-gradient)) 100%;
+	$gradient-center:
+		rgba(var(#{$var-name}), 0.4) 0%,
+		rgba(var(#{$var-name}-gradient), 0.4) 50%,
+		rgba(var(#{$var-name}), 0.4) 100%;
+
 	.bg-#{$name} {
 		&:not(svg, path) {
 			background: rgb(var($var-name)) !important;
@@ -28,10 +33,14 @@ $opacityStep: 1; // округлений нет, следите за остат�
 
 				@for $opacity from 1 to math.div(100, $opacityStep) {
 					&.bg-opacity-#{$opacity} {
-						background: linear-gradient(var(--v-theme-gradient-direction), rgba(var(#{$var-name}), math.div($opacity, math.div(100, $opacityStep))) 0, rgba(var(#{$var-name}-gradient), math.div($opacity, math.div(100, $opacityStep))) 100%) !important;
+						background: linear-gradient(
+							var(--v-theme-gradient-direction),
+							rgba(var(#{$var-name}), math.div($opacity, math.div(100, $opacityStep))) 0,
+							rgba(var(#{$var-name}-gradient), math.div($opacity, math.div(100, $opacityStep))) 100%
+						) !important;
 					}
 				}
-		
+
 				&-center {
 					background: linear-gradient(90deg, $gradient-center), rgb(var(#{$var-name})) !important;
 				}
@@ -42,7 +51,8 @@ $opacityStep: 1; // округлений нет, следите за остат�
 
 				@for $opacity from 1 to math.div(100, $opacityStep) {
 					&.bg-opacity-#{$opacity} {
-						background: $highlight-gradient, rgba(var(#{$var-name}), math.div($opacity, math.div(100, $opacityStep))) !important;
+						background:
+							$highlight-gradient, rgba(var(#{$var-name}), math.div($opacity, math.div(100, $opacityStep))) !important;
 					}
 				}
 
@@ -51,7 +61,13 @@ $opacityStep: 1; // округлений нет, следите за остат�
 
 					@for $opacity from 1 to math.div(100, $opacityStep) {
 						&.bg-opacity-#{$opacity} {
-							background: $highlight-gradient, linear-gradient(var(--v-theme-gradient-direction), rgba(var(#{$var-name}), math.div($opacity, math.div(100, $opacityStep))) 0, rgba(var(#{$var-name}-gradient), math.div($opacity, math.div(100, $opacityStep))) 100%) !important;
+							background:
+								$highlight-gradient,
+								linear-gradient(
+									var(--v-theme-gradient-direction),
+									rgba(var(#{$var-name}), math.div($opacity, math.div(100, $opacityStep))) 0,
+									rgba(var(#{$var-name}-gradient), math.div($opacity, math.div(100, $opacityStep))) 100%
+								) !important;
 						}
 					}
 				}
@@ -60,14 +76,14 @@ $opacityStep: 1; // округлений нет, следите за остат�
 			&.bg-glow {
 				box-shadow: 0 4px 24px rgba(var($var-name), 0.6) !important;
 
-				&-high{
+				&-high {
 					box-shadow: 0 0px 4px rgb(var($var-name)) !important;
 				}
 
 				&-hover:hover {
 					box-shadow: 0 4px 24px rgba(var($var-name), 0.6) !important;
 
-					&-high{
+					&-high {
 						box-shadow: 0 0px 4px rgb(var($var-name)) !important;
 					}
 				}
@@ -132,7 +148,7 @@ $opacityStep: 1; // округлений нет, следите за остат�
 	}
 
 	.text-glow {
-		text-shadow: 0 0 15px #FFFFFF;
+		text-shadow: 0 0 15px #ffffff;
 	}
 
 	.i-#{$name} {
@@ -146,14 +162,14 @@ $opacityStep: 1; // округлений нет, следите за остат�
 	.glow-#{$name} {
 		box-shadow: 0 4px 24px rgba(var($var-name), 0.6) !important;
 
-		&-high{
+		&-high {
 			box-shadow: 0 0px 4px rgb(var($var-name)) !important;
 		}
 
 		&-hover:hover {
 			box-shadow: 0 4px 24px rgba(var($var-name), 0.6) !important;
 
-			&-high{
+			&-high {
 				box-shadow: 0 0px 4px rgb(var($var-name)) !important;
 			}
 		}

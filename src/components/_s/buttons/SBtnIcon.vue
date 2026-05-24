@@ -2,11 +2,11 @@
 	<v-btn
 		class="s-btn-icon"
 		:height="46"
-		:class="{'rounded-circle': !squared}"
+		:class="{ 'rounded-circle': !squared }"
 		:color="bgColor"
 		:variant="variant"
 	>
-		<div :style="{ 'height': `${size}px`, 'width': `${size}px` }">
+		<div :style="{ height: `${size}px`, width: `${size}px` }">
 			<s-smart-icon
 				:color="color"
 				:icon="icon"

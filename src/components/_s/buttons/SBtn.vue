@@ -4,7 +4,7 @@
 			<s-smart-icon
 				:icon="prependIcon"
 				class="mr-1"
-				:class="[(disabled ? 'opacity-5' : '')]"
+				:class="[disabled ? 'opacity-5' : '']"
 			/>
 		</template>
 		<slot />

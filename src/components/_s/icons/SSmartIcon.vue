@@ -37,26 +37,26 @@
 	/>
 </template>
 
-<script
-	setup
-	lang="ts"
->
+<script setup lang="ts">
 	import { Icon as IconifyIcon } from "@iconify/vue";
 	import { useTheme } from "vuetify";
 
-	const props = withDefaults(defineProps<{
-		icon?: string,
-		color?: string,
-		size?: string | number,
-		opacity?: string | number,
-		squared?: boolean,
-	}>(), {
-		icon: "",
-		color: "white",
-		size: 24,
-		opacity: 1,
-		squared: true,
-	});
+	const props = withDefaults(
+		defineProps<{
+			icon?: string;
+			color?: string;
+			size?: string | number;
+			opacity?: string | number;
+			squared?: boolean;
+		}>(),
+		{
+			icon: "",
+			color: "white",
+			size: 24,
+			opacity: 1,
+			squared: true,
+		}
+	);
 
 	const theme = useTheme();
 

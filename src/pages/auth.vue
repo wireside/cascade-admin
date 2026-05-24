@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="w-100 h-screen"
-		:style="{background: 'url(' + background + ') no-repeat center center / cover'}"
+		:style="{ background: 'url(' + background + ') no-repeat center center / cover' }"
 	>
 		<video
 			:src="backgroundVideo"
@@ -31,14 +31,14 @@
 							<div class="d-flex align-center justify-center">
 								<div
 									class="mr-1 cursor-pointer transition-color text-body-large"
-									:class="{'text-disabled': currentTab !== 'auth'}"
+									:class="{ 'text-disabled': currentTab !== 'auth' }"
 									@click="currentTab = 'auth'"
 								>
 									Авторизация
 								</div>
 								<div
 									class="ml-1 cursor-pointer transition-color text-body-large"
-									:class="{'text-disabled': currentTab !== 'registration'}"
+									:class="{ 'text-disabled': currentTab !== 'registration' }"
 									@click="currentTab = 'registration'"
 								>
 									Регистрация
@@ -117,7 +117,7 @@ meta:
 
 	watch(
 		() => [authStore.isAuthenticated, authStore.pendingPhone],
-		() => syncStep(),
+		() => syncStep()
 	);
 
 	function syncStep() {
@@ -162,11 +162,11 @@ meta:
 </script>
 
 <style scoped lang="scss">
-.background-cover {
-	background: rgba(9, 9, 9, 0.9)
-}
+	.background-cover {
+		background: rgba(9, 9, 9, 0.9);
+	}
 
-.auth-card {
-	max-width: 450px;
-}
+	.auth-card {
+		max-width: 450px;
+	}
 </style>

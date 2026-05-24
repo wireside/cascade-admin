@@ -56,7 +56,13 @@ export default createVuetify({
 					surface: "rgba(17, 17, 17, 0.6)",
 					primary: "rgb(171, 244, 62)",
 					secondary: "#999999",
-					error: "#DE3D3D",
+					error: "#AF2E2D",
+					red: "#DE3E3D",
+					purple: "#B640B9",
+					"deep-purple": "#8D5CFC",
+					blue: "#257FF9",
+					orange: "#F37D1D",
+					green: "#0CA157",
 					control: "rgb(9, 9, 9)",
 				},
 				variables: {
@@ -66,6 +72,17 @@ export default createVuetify({
 					"theme-primary-gradient": "#4E8AEE",
 				},
 			},
+		},
+	},
+	display: {
+		mobileBreakpoint: "md",
+		thresholds: {
+			xs: 0,
+			sm: 576,
+			md: 767,
+			lg: 1099,
+			xl: 1920,
+			xxl: 2456,
 		},
 	},
 	locale: {

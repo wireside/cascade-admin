@@ -1,54 +1,59 @@
 <template>
-	<div class="dashboard-card summary-stack">
-		<div
-			v-if="loading"
-			class="dashboard-skeleton-grid dashboard-skeleton-grid--2"
+	<s-dashboard-panel width="522">
+		<v-row
+			v-if="testStore.loading"
+			gap="10px"
 		>
-			<div
+			<v-col
 				v-for="item in summaryMetrics"
 				:key="item.label"
-				class="dashboard-skeleton-tile dashboard-skeleton-tile--metric"
+				cols="12"
+				md="6"
 			>
-				<v-skeleton-loader type="heading, text" />
-			</div>
-		</div>
+				<v-skeleton-loader
+					type="heading"
+					height="72"
+				/>
+			</v-col>
+		</v-row>
 
-		<div
+		<v-row
 			v-else
-			class="summary-stack__grid"
+			gap="10px"
 		>
-			<article
+			<v-col
 				v-for="item in summaryMetrics"
+				cols="6"
+				xl="6"
 				:key="item.label"
-				class="metric-tile"
-				:class="`metric-tile--${item.tone}`"
 			>
-				<div class="metric-tile__meta">
-					<div class="metric-tile__label">
-						<v-icon :icon="item.icon" size="14" />
-						<span>{{ item.label }}</span>
-					</div>
-					<span
-						v-if="item.badge"
-						class="metric-tile__badge"
-						:class="`metric-tile__badge--${item.badgeTone || item.tone}`"
-					>
-						{{ item.badge }}
-					</span>
-				</div>
-				<div class="metric-tile__value"><span class="metric-tile__currency">₽</span>{{ item.value }}</div>
-			</article>
-		</div>
-	</div>
+				<s-finance-tile v-bind="item" />
+			</v-col>
+		</v-row>
+	</s-dashboard-panel>
 </template>
 
 <script setup>
-	const summaryMetrics = [
-		{ label: "Выручка", value: "12 080.45", tone: "violet", icon: "mdi-wallet-outline" },
-		{ label: "Наличные", value: "12 080.45", tone: "lime", icon: "mdi-cash-multiple", badge: "70%" },
-		{ label: "Онлайн пополнения", value: "12 080.45", tone: "orange", icon: "mdi-cellphone-nfc", badge: "30%", badgeTone: "orange" },
-		{ label: "Карта", value: "12 080.45", tone: "blue", icon: "mdi-credit-card-outline", badge: "30%", badgeTone: "blue" },
-	];
+	const testStore = useTestStore();
 
-	let loading = $ref(true);
+	const summaryMetrics = [
+		{ label: "Выручка", value: "12 080.45", tone: "deep-purple", icon: "mdi:cash-register" },
+		{ label: "Наличные", value: "12 080.45", tone: "primary", icon: "mdi:cash", badge: "70%", badgeTone: "primary" },
+		{
+			label: "Онлайн пополнения",
+			value: "12 080.45",
+			tone: "orange",
+			icon: "mdi:line-scan",
+			badge: "30%",
+			badgeTone: "orange",
+		},
+		{
+			label: "Карта",
+			value: "12 080.45",
+			tone: "blue",
+			icon: "mdi:credit-card-outline",
+			badge: "30%",
+			badgeTone: "blue",
+		},
+	];
 </script>

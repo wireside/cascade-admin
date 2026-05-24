@@ -122,10 +122,6 @@
 				rgba(17, 17, 17, 0.15) 75%,
 				rgba(171, 244, 62, 1) 100%
 			);
-			-webkit-mask:
-				linear-gradient(#fff 0 0) content-box,
-				linear-gradient(#000 0 0);
-			-webkit-mask-composite: xor;
 			mask:
 				linear-gradient(#fff 0 0) content-box,
 				linear-gradient(#000 0 0);

@@ -3,20 +3,22 @@ $primary-font-family: "SF Pro Display", sans-serif !default;
 @forward "vuetify/_settings" with (
 	$body-font-family: $primary-font-family,
 	$font-size-root: 14px,
+	$line-height-root: 100%,
+	$table-line-height: 100%,
+	$table-font-size: 16px,
+	$table-header-font-size: 14px,
+	$table-header-height: 38px,
+	$table-row-height: 55px,
+	$table-border: 1px solid rgba(255, 255, 255, 0.2),
 	$typography: (
-		'body-large': (
-			'size': 16px,
-			'weight': 500,
+		"body-large": (
+			"size": 16px,
+			"weight": 500,
 		),
 	),
 	$border-radius-root: 8px,
-  $button-font-size: 15px,
-  $button-font-weight: 500,
+	$button-font-size: 15px,
+	$button-font-weight: 500,
 	$field-font-size: 14px,
-	$input-font-size: 14px,
-	$grid-breakpoints: (
-		'md': 767px,
-		'lg': 1099px,
-		'xl': 1599px,
-	)
+	$input-font-size: 14px
 );

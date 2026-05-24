@@ -1,12 +1,14 @@
 <template>
 	<v-input
-    :width="width + 'px'"
+		:width="width + 'px'"
 		class="search-bar flex-shrink-0"
 		hide-details
 		density="compact"
 	>
 		<template #default>
-			<div class="search-bar__field d-flex align-center ga-2 px-4 position-relative overflow-hidden rounded-md text-white bg-surface">
+			<div
+				class="search-bar__field d-flex align-center ga-2 px-4 position-relative overflow-hidden rounded-md text-white bg-surface"
+			>
 				<v-icon
 					icon="mdi-magnify"
 					color="white"
@@ -49,10 +51,10 @@
 			type: String,
 			default: "Клиент",
 		},
-    width: {
-      type: String,
-      default: "201"
-    }
+		width: {
+			type: String,
+			default: "201",
+		},
 	});
 
 	const clear = () => {
