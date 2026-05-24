@@ -56,3 +56,9 @@
 		{ name: "Рис с курицей и овощами", quantity: "1", amount: "380 ₽" },
 	];
 </script>
+
+<style scoped lang="scss">
+	.s-dashboard-panel {
+		padding-bottom: 0 !important;
+	}
+</style>
