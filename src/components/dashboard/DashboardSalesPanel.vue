@@ -44,9 +44,9 @@
 	const salesTabs = ["Товары", "Тарифы", "Услуги"];
 
 	const salesColumnsConfig = [
-		{ key: "name", label: "Никнейм", flex: 2, strong: true },
-		{ key: "quantity", label: "Количество", flex: 1 },
-		{ key: "amount", label: "Стоимость", flex: 1 },
+		{ key: "name", label: "Никнейм", width: { maxChars: 22 }, strong: true },
+		{ key: "quantity", label: "Количество", width: { maxChars: 10 } },
+		{ key: "amount", label: "Стоимость", width: { maxChars: 10 } },
 	];
 	const salesRows = [
 		{ name: "Monster Rio Punch", quantity: "3", amount: "375 ₽" },

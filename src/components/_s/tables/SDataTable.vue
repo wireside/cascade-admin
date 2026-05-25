@@ -20,8 +20,13 @@
 					<th
 						v-for="(col, idx) in columns"
 						:key="col.key"
-						class="text-white bg-transparent pa-0 pl-6"
-						:style="getHeaderCellStyle(idx)"
+						:class="{
+							'pl-6 text-start': idx === 0,
+							'pr-6 text-end': idx === columns.length - 1,
+							'text-center': idx > 0 && idx < columns.length - 1,
+						}"
+						:style="getColumnSizeStyle(idx)"
+						class="text-white bg-transparent pa-0 px-6"
 					>
 						<span class="d-inline-flex align-center ga-1 opacity-60">
 							<span>{{ col.label }}</span>
@@ -42,8 +47,13 @@
 					<td
 						v-for="(col, colIdx) in columns"
 						:key="col.key"
-						:style="getBodyCellStyle(colIdx, col)"
-						:class="{ 'font-weight-medium': colIdx === 0 || col.strong, 'pl-6': colIdx === 0 }"
+						:style="getColumnSizeStyle(colIdx)"
+						:class="{
+							'font-weight-medium': col.strong,
+							'pl-6 text-start': colIdx === 0,
+							'pr-6 text-end': colIdx === columns.length - 1,
+							'text-center': colIdx > 0 && colIdx < columns.length - 1,
+						}"
 					>
 						<slot
 							:name="`cell-${col.key}`"
@@ -73,8 +83,6 @@
 </template>
 
 <script setup>
-	import { computed } from "vue";
-
 	const props = defineProps({
 		columns: {
 			type: Array,
@@ -98,45 +106,28 @@
 		},
 	});
 
-	const totalFlex = computed(() => {
-		return props.columns.reduce((sum, col) => sum + (col.flex || 1), 0);
-	});
+	const resolveColumnWidth = (index) => {
+		const col = props.columns[index] || {};
 
-	const getColumnAlign = (index) => {
-		const col = props.columns[index];
-		if (col.align) return col.align;
+		if (col.width !== undefined && col.width !== null) {
+			if (typeof col.width === "number") return `${col.width}px`;
+			if (typeof col.width === "string") return col.width;
+			if (typeof col.width === "object") {
+				const chars = col.width.chars || col.width.maxChars;
+				if (chars) return `${chars}ch`;
+				return undefined;
+			}
+		}
 
-		if (index === 0) return "left";
-		if (index === props.columns.length - 1) return "right";
-		return "center";
+		if (col.maxChars) return `${col.maxChars}ch`;
+
+		return undefined;
 	};
 
-	const getColumnWidth = (index) => {
-		const flex = props.columns[index].flex || 1;
-		const percentage = (flex / totalFlex.value) * 100;
-		return `${percentage}%`;
-	};
-
-	const getHeaderCellStyle = (colIndex) => {
-		const align = getColumnAlign(colIndex);
-		const width = getColumnWidth(colIndex);
-
-		return {
-			width,
-			textAlign: align,
-			paddingRight: colIndex === props.columns.length - 1 ? "1.5rem" : 0,
-		};
-	};
-
-	const getBodyCellStyle = (colIndex, col) => {
-		const align = getColumnAlign(colIndex);
-		const width = getColumnWidth(colIndex);
-
-		return {
-			width,
-			textAlign: align,
-			paddingRight: colIndex === props.columns.length - 1 ? "1.5rem" : 0,
-		};
+	const getColumnSizeStyle = (index) => {
+		const resolved = resolveColumnWidth(index);
+		if (!resolved) return {};
+		return { width: resolved, maxWidth: resolved };
 	};
 
 	const isBadgeValue = (value) => {

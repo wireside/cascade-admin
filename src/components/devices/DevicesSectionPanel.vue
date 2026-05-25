@@ -67,15 +67,15 @@
 	const loading = computed(() => testStore.loading);
 
 	const columns = [
-		{ key: "index", label: "№", flex: 0.5, align: "left", strong: true },
-		{ key: "name", label: "Название", flex: 1, strong: true },
-		{ key: "status", label: "Статус", flex: 1.2 },
-		{ key: "booking", label: "Бронь", flex: 1.2 },
-		{ key: "client", label: "Клиент", flex: 1.5 },
-		{ key: "tariff", label: "Тариф", flex: 1.5 },
-		{ key: "start", label: "Начало", flex: 1.1 },
-		{ key: "end", label: "Окончание", flex: 1.1 },
-		{ key: "app", label: "Приложение", flex: 1.8 },
+		{ key: "index", label: "№", width: { maxChars: 4 }, align: "left", strong: true },
+		{ key: "name", label: "Название", width: { maxChars: 14 }, strong: true },
+		{ key: "status", label: "Статус", width: { maxChars: 10 } },
+		{ key: "booking", label: "Бронь", width: { maxChars: 10 } },
+		{ key: "client", label: "Клиент", width: { maxChars: 14 } },
+		{ key: "tariff", label: "Тариф", width: { maxChars: 14 } },
+		{ key: "start", label: "Начало", width: { maxChars: 12 } },
+		{ key: "end", label: "Окончание", width: { maxChars: 12 } },
+		{ key: "app", label: "Приложение", width: { maxChars: 14 } },
 	];
 
 	const toneToColor = {

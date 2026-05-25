@@ -44,10 +44,10 @@
 
 	const clientTabs = ["День", "Неделя"];
 	const clientColumns = [
-		{ key: "nickname", label: "Никнейм", flex: 2, strong: true },
-		{ key: "spent", label: "Траты", flex: 1 },
-		{ key: "hours", label: "Всего часов", flex: 1 },
-		{ key: "lastVisit", label: "Посл. посещение", flex: 1 },
+		{ key: "nickname", label: "Никнейм", width: { maxChars: 18 }, strong: true },
+		{ key: "spent", label: "Траты", width: { maxChars: 12 } },
+		{ key: "hours", label: "Всего часов", width: { maxChars: 12 } },
+		{ key: "lastVisit", label: "Посл. посещение", width: { maxChars: 16 } },
 	];
 	const clientRows = [
 		{ nickname: "hatekilla", spent: "1 372 ₽", hours: "> 1 ч.", lastVisit: "22 февр. 2026" },
