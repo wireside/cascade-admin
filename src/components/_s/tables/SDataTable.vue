@@ -11,7 +11,7 @@
 		<v-data-table
 			v-else
 			:height="tableHeight"
-			class="bg-transparent s-data-table"
+			class="s-data-table overflow-hidden bg-transparent"
 			hide-default-footer
 			fixed-header
 		>
@@ -40,49 +40,67 @@
 			</thead>
 
 			<tbody>
-				<tr
+				<v-hover
 					v-for="(row, rowIdx) in rows"
 					:key="rowIdx"
 				>
-					<td
-						v-for="(col, colIdx) in columns"
-						:key="col.key"
-						:style="getColumnSizeStyle(colIdx)"
-						:class="{
-							'font-weight-medium': col.strong,
-							'pl-6 text-start': colIdx === 0,
-							'pr-6 text-end': colIdx === columns.length - 1,
-							'text-center': colIdx > 0 && colIdx < columns.length - 1,
-						}"
-					>
-						<slot
-							:name="`cell-${col.key}`"
-							:row="row"
-							:value="row[col.key]"
+					<template v-slot="{ isHovering, props }">
+						<tr
+							v-bind="props"
+							:class="{
+								[hoverClass]: isHovering,
+								[`bg-${tone} bg-opacity-10`]: isSelected(row),
+							}"
+							class="cursor-pointer"
+							@click.left="toggleRowSelection(row)"
+							@contextmenu.prevent="onRowRightClick($event, row, rowIdx)"
 						>
-							<template v-if="isBadgeValue(row[col.key])">
-								<v-chip
-									:color="row[col.key].color"
-									:variant="row[col.key].variant || 'tonal'"
-									:class="`bg-${row[col.key].color}`"
-									size="small"
-									class="rounded-md bg-opacity-20 pa-0"
+							<td
+								v-for="(col, colIdx) in columns"
+								:key="col.key"
+								:style="getColumnSizeStyle(colIdx)"
+								:class="{
+									'font-weight-medium': col.strong,
+									'pl-6 text-start': colIdx === 0,
+									'pr-6 text-end': colIdx === columns.length - 1,
+									'text-center': colIdx > 0 && colIdx < columns.length - 1,
+								}"
+							>
+								<slot
+									:name="`cell-${col.key}`"
+									:row="row"
+									:value="row[col.key]"
 								>
-									{{ row[col.key].label }}
-								</v-chip>
-							</template>
-							<template v-else>
-								{{ row[col.key] }}
-							</template>
-						</slot>
-					</td>
-				</tr>
+									<template v-if="isBadgeValue(row[col.key])">
+										<v-chip
+											:color="row[col.key].color"
+											:variant="row[col.key].variant || 'tonal'"
+											:class="`bg-${row[col.key].color}`"
+											size="small"
+											class="rounded-md bg-opacity-20 pa-0"
+										>
+											{{ row[col.key].label }}
+										</v-chip>
+									</template>
+									<template v-else>
+										{{ row[col.key] || "—" }}
+									</template>
+								</slot>
+							</td>
+						</tr>
+					</template>
+				</v-hover>
 			</tbody>
 		</v-data-table>
 	</div>
 </template>
 
 <script setup>
+	const selectedRows = defineModel({
+		type: Array,
+		default: [],
+	});
+
 	const props = defineProps({
 		columns: {
 			type: Array,
@@ -104,7 +122,24 @@
 			type: String,
 			default: "primary",
 		},
+		hoverClass: {
+			type: String,
+			default: "bg-background",
+		},
+		select: {
+			type: Boolean,
+			default: false,
+		},
+		selectKey: {
+			type: [Function, String],
+			default: () =>
+				function (row) {
+					return Object.keys(row)[0];
+				},
+		},
 	});
+
+	const emit = defineEmits(["row-select", "row-unselect", "row-contextmenu"]);
 
 	const resolveColumnWidth = (index) => {
 		const col = props.columns[index] || {};
@@ -133,12 +168,34 @@
 	const isBadgeValue = (value) => {
 		return value && typeof value === "object" && "label" in value;
 	};
+
+	const getRowKey = (row) => (typeof props.selectKey === "function" ? props.selectKey(row) : props.selectKey);
+
+	const isSelected = (row) => {
+		return selectedRows.value.map((s) => s[getRowKey(row)]).includes(row[getRowKey(row)]);
+	};
+
+	const toggleRowSelection = (row) => {
+		const { select } = props;
+		if (!select) return;
+
+		if (isSelected(row)) {
+			selectedRows.value = selectedRows.value.filter((s) => s[getRowKey(s)] !== row[getRowKey(row)]);
+			emit("row-unselect", row);
+		} else {
+			selectedRows.value = [...selectedRows.value, row];
+			emit("row-select", row);
+		}
+	};
+
+	const onRowRightClick = (event, row, rowIdx) => {
+		emit("row-contextmenu", { event, row, rowIdx });
+	};
 </script>
 
 <style scoped lang="scss">
 	.s-data-table {
 		border-radius: 10px !important;
-		overflow: hidden;
 	}
 
 	:deep(.s-data-table > .v-data-table__wrapper),
