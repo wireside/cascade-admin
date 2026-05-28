@@ -49,8 +49,8 @@
 							width="43px"
 							height="43px"
 							icon="mdi:cog-outline"
-							bg-color="surface"
-							class="bg-surface border"
+							class="bg-surface bg-opacity-60 border"
+							variant="plain"
 							title="Настройки"
 						/>
 						<!--
