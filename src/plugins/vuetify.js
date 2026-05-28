@@ -53,7 +53,7 @@ export default createVuetify({
 				colors: {
 					white: "#FFFFFF",
 					background: "#090909",
-					surface: "rgba(17, 17, 17, 0.6)",
+					surface: "#111111",
 					primary: "rgb(171, 244, 62)",
 					secondary: "#999999",
 					error: "#AF2E2D",
@@ -70,6 +70,7 @@ export default createVuetify({
 					"border-opacity": "0.08",
 					"theme-gradient-direction": "90deg",
 					"theme-primary-gradient": "#4E8AEE",
+					"hover-opacity": 0.08,
 				},
 			},
 		},

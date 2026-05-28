@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="s-dashboard-panel bg-surface"
+		class="s-dashboard-panel bg-surface bg-opacity-60"
 		:style="panelStyle"
 	>
 		<header

@@ -7,7 +7,7 @@
 	>
 		<template #default>
 			<div
-				class="search-bar__field d-flex align-center ga-2 px-4 position-relative overflow-hidden rounded-md text-white bg-surface"
+				class="search-bar__field d-flex align-center ga-2 px-4 position-relative overflow-hidden rounded-md text-white bg-surface bg-opacity-60"
 			>
 				<v-icon
 					icon="mdi-magnify"
