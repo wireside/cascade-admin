@@ -27,8 +27,8 @@
 						width="42px"
 						height="42px"
 						icon="mdi:cog-outline"
-						bg-color="surface"
-						class="bg-surface border"
+						variant="plain"
+						class="bg-surface bg-opacity-60 border"
 						title="Настройки устройства"
 					/>
 					<s-btn-icon
@@ -45,11 +45,33 @@
 		</div>
 
 		<s-data-table
+			v-model="selectedRows"
 			:columns="columns"
 			:rows="tableRows"
 			:loading="loading"
 			:tone="section.tone"
+			select
+			hover-class="bg-background"
 			table-height="257"
+			@row-contextmenu="openRowMenu"
+		/>
+
+		<device-control
+			v-model:visible="contextMenu.show"
+			:x="contextMenu.x"
+			:y="contextMenu.y"
+			:menu-target="contextMenu.target"
+			:row="contextMenu.row"
+			@deposit-up="(row) => depositModalRow = row"
+		/>
+
+		<deposit-modal
+			v-if="depositModalOpen"
+			v-model:modal-open="depositModalOpen"
+			:client-name="depositModalRow.name"
+			:username="depositModalRow.client"
+			:start-date="depositModalRow.start"
+			:end-date="depositModalRow.end"
 		/>
 	</s-dashboard-panel>
 </template>
@@ -63,6 +85,29 @@
 	});
 
 	const testStore = useTestStore();
+
+	let depositModalRow = $ref(null);
+
+	let depositModalOpen = $computed({
+		get() {
+			return !!depositModalRow
+		},
+		set(value) {
+			if (!value) {
+				depositModalRow = null;
+			}
+		}
+	})
+
+	const selectedRows = $ref([]);
+	const contextMenu = $ref({
+		show: false,
+		x: 0,
+		y: 0,
+		target: null,
+		row: null,
+		rowIdx: null,
+	});
 
 	const loading = computed(() => testStore.loading);
 
@@ -78,15 +123,6 @@
 		{ key: "app", label: "Приложение", width: { maxChars: 14 } },
 	];
 
-	const toneToColor = {
-		online: "success",
-		offline: "surface-variant",
-		busy: "info",
-		reserved: "success",
-		idle: "surface-variant",
-		service: "warning",
-	};
-
 	const toBadge = (value) => ({
 		label: value.label,
 		color: value.tone || "primary",
@@ -94,6 +130,21 @@
 		rounded: "lg",
 		size: "small",
 	});
+
+	const openRowMenu = ({ event, row, rowIdx }) => {
+		event?.preventDefault?.();
+		contextMenu.show = true;
+		contextMenu.x = event?.clientX || 0;
+		contextMenu.y = event?.clientY || 0;
+		contextMenu.target = event?.target || event?.currentTarget || null;
+		contextMenu.row = row;
+		contextMenu.rowIdx = rowIdx;
+	};
+
+	const onMenuAction = ({ code, row }) => {
+		console.log('menu action', code, row);
+		contextMenu.show = false;
+	};
 
 	const tableRows = computed(() => {
 		return props.section.rows.map((row) => ({
