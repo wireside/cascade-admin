@@ -72,15 +72,10 @@
 									:value="row[col.key]"
 								>
 									<template v-if="isBadgeValue(row[col.key])">
-										<v-chip
-											:color="row[col.key].color"
-											:variant="row[col.key].variant || 'tonal'"
-											:class="`bg-${row[col.key].color}`"
-											size="small"
-											class="rounded-md bg-opacity-20 pa-0"
-										>
-											{{ row[col.key].label }}
-										</v-chip>
+										<s-badge
+											:label="row[col.key].label"
+											:tone="row[col.key].tone"
+										/>
 									</template>
 									<template v-else>
 										{{ row[col.key] || "—" }}
@@ -214,11 +209,5 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-	}
-
-	:deep(.s-data-table .v-chip) {
-		line-height: 100%;
-		font-size: 12px;
-		padding: 7px 10px !important;
 	}
 </style>

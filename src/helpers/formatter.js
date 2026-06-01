@@ -27,4 +27,7 @@
 			})
 			.replaceAll(",", " ")}${suffix}`;
 	},
+	asAmount(money, currency) {
+		return this.asMoney(money) + currency;
+	},
 };

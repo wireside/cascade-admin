@@ -68,7 +68,7 @@
 		<deposit-modal
 			v-if="depositModalOpen"
 			v-model:modal-open="depositModalOpen"
-			:client-name="depositModalRow.name"
+			:client-name="'Алексей'"
 			:username="depositModalRow.client"
 			:start-date="depositModalRow.start"
 			:end-date="depositModalRow.end"
@@ -88,6 +88,17 @@
 
 	let depositModalRow = $ref(null);
 
+	const selectedRows = $ref([]);
+
+	const contextMenu = $ref({
+		show: false,
+		x: 0,
+		y: 0,
+		target: null,
+		row: null,
+		rowIdx: null,
+	});
+
 	let depositModalOpen = $computed({
 		get() {
 			return !!depositModalRow
@@ -99,17 +110,15 @@
 		}
 	})
 
-	const selectedRows = $ref([]);
-	const contextMenu = $ref({
-		show: false,
-		x: 0,
-		y: 0,
-		target: null,
-		row: null,
-		rowIdx: null,
-	});
+	const loading = $computed(() => testStore.loading);
 
-	const loading = computed(() => testStore.loading);
+	const tableRows = $computed(() => {
+		return props.section.rows.map((row) => ({
+			...row,
+			status: toBadge(row.status),
+			booking: toBadge(row.booking),
+		}));
+	});
 
 	const columns = [
 		{ key: "index", label: "№", width: { maxChars: 4 }, align: "left", strong: true },
@@ -123,14 +132,6 @@
 		{ key: "app", label: "Приложение", width: { maxChars: 14 } },
 	];
 
-	const toBadge = (value) => ({
-		label: value.label,
-		color: value.tone || "primary",
-		variant: "tonal",
-		rounded: "lg",
-		size: "small",
-	});
-
 	const openRowMenu = ({ event, row, rowIdx }) => {
 		event?.preventDefault?.();
 		contextMenu.show = true;
@@ -141,17 +142,9 @@
 		contextMenu.rowIdx = rowIdx;
 	};
 
-	const onMenuAction = ({ code, row }) => {
-		console.log('menu action', code, row);
-		contextMenu.show = false;
-	};
-
-	const tableRows = computed(() => {
-		return props.section.rows.map((row) => ({
-			...row,
-			status: toBadge(row.status),
-			booking: toBadge(row.booking),
-		}));
+	const toBadge = (value) => ({
+		label: value.label,
+		tone: value.tone || "primary",
 	});
 </script>
 

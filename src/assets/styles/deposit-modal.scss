@@ -1,0 +1,85 @@
+@use "./variables.scss" as *;
+
+.deposit-modal {
+	border: 1px solid rgba(255, 255, 255, 0.05);
+	border-radius: 18px;
+
+	&__section {
+		border-radius: 10px;
+	}
+
+	&__time {
+		border: 0.5px solid rgba(255, 255, 255, 0.03);
+	}
+
+	&__username {
+		font-size: 24px;
+		line-height: 100%;
+	}
+
+	&__comment {
+		&-field {
+			border-radius: 6px;
+
+			& .v-field {
+				color: white;
+				font-size: 12px;
+				line-height: 140%;
+			}
+		}
+
+		&-available-chars {
+			font-size: 12px;
+			line-height: 140%;
+			bottom: 11px;
+			right: 15px;
+		}
+	}
+
+	&__deposit-up {
+		font-size: 16px;
+	}
+
+	&__quick-amounts-btn, &__payment-method-btn, &__total {
+		border-radius: 6px;
+	}
+
+	&__bonus {
+		font-size: 12px;
+		line-height: 100%;
+	}
+
+	&__total-sum {
+		font-size: 18px;
+	}
+}
+
+.deposit-input {
+
+	& input::-webkit-outer-spin-button,
+	& input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	& input[type=number] {
+		-moz-appearance: textfield;
+	}
+
+  & .v-field {	
+    border-radius: 4px !important;
+		background-color: rgba(var(--v-theme-surface), 1) !important;
+  }
+
+	& .v-field:has(.deposit-input__suffix) {
+		padding-right: 9px !important;
+	}
+
+  & .v-field__input {
+    min-height: 32px !important;
+    max-height: 32px !important;
+    text-align: inherit;
+    padding: 9px 4px 9px 9px !important;
+    border-radius: 4px;
+  }
+}

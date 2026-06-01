@@ -49,7 +49,7 @@ meta:
 				{
 					index: "3",
 					name: "Компьютер 3",
-					status: { label: "Выключен", tone: "error" },
+					status: { label: "Выключен", tone: "red" },
 					booking: { label: "Без брони", tone: "blue" },
 					client: "",
 					tariff: "",
