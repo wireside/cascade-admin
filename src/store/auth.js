@@ -1,3 +1,14 @@
+import { computed, ref } from "vue";
+import { useMutation } from "@pinia/colada";
+import {
+	postAuthConfirmPhoneMutation,
+	postAuthLoginMutation,
+	postAuthLogoutMutation,
+	postAuthRegisterMutation,
+	postAuthResendPhoneCodeMutation,
+} from "@/client/@pinia/colada.gen";
+import { getAuthMe, postAuthLogout } from "@/client/sdk.gen";
+
 const authTokenKey = "auth-token";
 const authUserKey = "auth-user";
 const pendingPhoneKey = "pending-phone";
@@ -15,129 +26,214 @@ function readJson(key) {
 	}
 }
 
-export const useAuthStore = defineStore("auth", {
-	state: () => ({
-		token: localStorage.getItem(authTokenKey),
-		user: readJson(authUserKey),
-		pendingPhone: localStorage.getItem(pendingPhoneKey) || "",
-		pendingDevConfirmationCode: "",
-		initialized: false,
-	}),
-	getters: {
-		isAuthenticated: (state) => Boolean(state.token && state.user),
-	},
-	actions: {
-		setSession(token, user) {
-			this.token = token;
-			this.user = user;
+function normalizeBirthDate(value) {
+	if (!value) {
+		return null;
+	}
 
-			localStorage.setItem(authTokenKey, token);
-			localStorage.setItem(authUserKey, JSON.stringify(user));
-		},
-		clearSession() {
-			this.token = null;
-			this.user = null;
+	if (value instanceof Date) {
+		return value.toISOString();
+	}
 
-			localStorage.removeItem(authTokenKey);
-			localStorage.removeItem(authUserKey);
-		},
-		setPendingConfirmation(phone, devConfirmationCode = "") {
-			this.pendingPhone = phone || "";
-			this.pendingDevConfirmationCode = devConfirmationCode || "";
+	if (typeof value === "string") {
+		const trimmed = value.trim();
+		if (!trimmed) {
+			return null;
+		}
 
-			if (this.pendingPhone) {
-				localStorage.setItem(pendingPhoneKey, this.pendingPhone);
-			} else {
-				localStorage.removeItem(pendingPhoneKey);
-			}
-		},
-		clearPendingConfirmation() {
-			this.pendingPhone = "";
-			this.pendingDevConfirmationCode = "";
+		if (/^\d{2}\.\d{2}\.\d{4}$/.test(trimmed)) {
+			const [day, month, year] = trimmed.split(".");
+			return `${year}-${month}-${day}T00:00:00`;
+		}
 
+		return trimmed;
+	}
+
+	return value;
+}
+
+export const useAuthStore = defineStore("auth", () => {
+	const token = ref(localStorage.getItem(authTokenKey));
+	const user = ref(readJson(authUserKey));
+	const pendingPhone = ref(localStorage.getItem(pendingPhoneKey) || "");
+	const pendingDevConfirmationCode = ref("");
+	const initialized = ref(false);
+
+	const isAuthenticated = computed(() => Boolean(token.value && user.value));
+
+	const loginMutation = useMutation(postAuthLoginMutation());
+	const registerMutation = useMutation(postAuthRegisterMutation());
+	const confirmPhoneMutation = useMutation(postAuthConfirmPhoneMutation());
+	const resendPhoneCodeMutation = useMutation(postAuthResendPhoneCodeMutation());
+	const logoutMutation = useMutation(postAuthLogoutMutation());
+
+	function setSession(tokenValue, userValue) {
+		token.value = tokenValue;
+		user.value = userValue;
+
+		localStorage.setItem(authTokenKey, tokenValue);
+		localStorage.setItem(authUserKey, JSON.stringify(userValue));
+	}
+
+	function clearSession() {
+		token.value = null;
+		user.value = null;
+
+		localStorage.removeItem(authTokenKey);
+		localStorage.removeItem(authUserKey);
+	}
+
+	function setPendingConfirmation(phone, devConfirmationCode = "") {
+		pendingPhone.value = phone || "";
+		pendingDevConfirmationCode.value = devConfirmationCode || "";
+
+		if (pendingPhone.value) {
+			localStorage.setItem(pendingPhoneKey, pendingPhone.value);
+		} else {
 			localStorage.removeItem(pendingPhoneKey);
-		},
-		async bootstrap() {
-			if (this.initialized) {
-				return;
-			}
+		}
+	}
 
-			this.initialized = true;
+	function clearPendingConfirmation() {
+		pendingPhone.value = "";
+		pendingDevConfirmationCode.value = "";
 
-			if (!this.token) {
-				return;
-			}
+		localStorage.removeItem(pendingPhoneKey);
+	}
 
-			if (this.user) {
-				return;
-			}
+	async function bootstrap() {
+		if (initialized.value) {
+			return;
+		}
 
-			try {
-				this.user = await authApi.me(this.token);
-				localStorage.setItem(authUserKey, JSON.stringify(this.user));
-			} catch {
-				this.clearSession();
-			}
-		},
-		async register(payload) {
-			const response = await authApi.register(payload);
+		initialized.value = true;
 
-			if (response.requiresPhoneConfirmation) {
-				this.setPendingConfirmation(response.phone, response.devConfirmationCode);
-			}
+		if (!token.value) {
+			return;
+		}
 
+		if (user.value) {
+			return;
+		}
+
+		try {
+			const response = await getAuthMe({
+				headers: {
+					Authorization: `Bearer ${token.value}`,
+				},
+			});
+
+			user.value = response.data;
+			localStorage.setItem(authUserKey, JSON.stringify(user.value));
+		} catch {
+			clearSession();
+		}
+	}
+
+	async function register(payload) {
+		const response = await registerMutation.mutateAsync({
+			body: {
+				...payload,
+				birthDate: normalizeBirthDate(payload.birthDate),
+			},
+		});
+
+		if (response.requiresPhoneConfirmation) {
+			setPendingConfirmation(response.phone, response.devConfirmationCode);
+		}
+
+		return response;
+	}
+
+	async function login(payload) {
+		const response = await loginMutation.mutateAsync({
+			body: payload,
+		});
+
+		if (response.requiresPhoneConfirmation) {
+			setPendingConfirmation(response.phone, response.devConfirmationCode);
 			return response;
-		},
-		async login(payload) {
-			const response = await authApi.login(payload);
+		}
 
-			if (response.requiresPhoneConfirmation) {
-				this.setPendingConfirmation(response.phone, response.devConfirmationCode);
-				return response;
-			}
+		if (response.isAuthenticated) {
+			setSession(response.authToken, response.user);
+			clearPendingConfirmation();
+		}
 
-			if (response.isAuthenticated) {
-				this.setSession(response.authToken, response.user);
-				this.clearPendingConfirmation();
-			}
+		return response;
+	}
 
-			return response;
-		},
-		async confirmPhone(code) {
-			const response = await authApi.confirmPhone({
-				phone: this.pendingPhone,
+	async function confirmPhone(code) {
+		const response = await confirmPhoneMutation.mutateAsync({
+			body: {
+				phone: pendingPhone.value,
 				code,
-			});
+			},
+		});
 
-			if (response.isAuthenticated) {
-				this.setSession(response.authToken, response.user);
-				this.clearPendingConfirmation();
+		if (response.isAuthenticated) {
+			setSession(response.authToken, response.user);
+			clearPendingConfirmation();
+		}
+
+		return response;
+	}
+
+	async function resendPhoneCode() {
+		if (!pendingPhone.value) {
+			throw new Error("Не найден номер телефона для подтверждения");
+		}
+
+		const response = await resendPhoneCodeMutation.mutateAsync({
+			body: {
+				phone: pendingPhone.value,
+			},
+		});
+
+		setPendingConfirmation(response.phone, response.devConfirmationCode);
+
+		return response;
+	}
+
+	async function logout() {
+		try {
+			if (token.value) {
+				await logoutMutation.mutateAsync({
+					headers: {
+						Authorization: `Bearer ${token.value}`,
+					},
+				});
 			}
-
-			return response;
-		},
-		async resendPhoneCode() {
-			if (!this.pendingPhone) {
-				throw new Error("Не найден номер телефона для подтверждения");
+		} catch {
+			if (token.value) {
+				await postAuthLogout({
+					headers: {
+						Authorization: `Bearer ${token.value}`,
+					},
+				});
 			}
+		} finally {
+			clearSession();
+			clearPendingConfirmation();
+		}
+	}
 
-			const response = await authApi.resendPhoneCode({
-				phone: this.pendingPhone,
-			});
-
-			this.setPendingConfirmation(response.phone, response.devConfirmationCode);
-
-			return response;
-		},
-		async logout() {
-			try {
-				if (this.token) {
-					await authApi.logout(this.token);
-				}
-			} finally {
-				this.clearSession();
-				this.clearPendingConfirmation();
-			}
-		},
-	},
+	return {
+		token,
+		user,
+		pendingPhone,
+		pendingDevConfirmationCode,
+		initialized,
+		isAuthenticated,
+		setSession,
+		clearSession,
+		setPendingConfirmation,
+		clearPendingConfirmation,
+		bootstrap,
+		register,
+		login,
+		confirmPhone,
+		resendPhoneCode,
+		logout,
+	};
 });

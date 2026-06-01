@@ -29,7 +29,6 @@
     "WritableComputedRef": true,
     "acceptHMRUpdate": true,
     "asyncComputed": true,
-    "authApi": true,
     "autoResetRef": true,
     "computed": true,
     "computedAsync": true,
