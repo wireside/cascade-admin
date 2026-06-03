@@ -63,6 +63,7 @@
 			:menu-target="contextMenu.target"
 			:row="contextMenu.row"
 			@deposit-up="(row) => depositModalRow = row"
+			@notification="(row) => notificationModalRow = row"
 		/>
 
 		<deposit-modal
@@ -72,6 +73,11 @@
 			:username="depositModalRow.client"
 			:start-date="depositModalRow.start"
 			:end-date="depositModalRow.end"
+		/>
+
+		<notification-modal
+			v-if="notificationModalOpen"
+			v-model:modal-open="notificationModalOpen"
 		/>
 	</s-dashboard-panel>
 </template>
@@ -87,6 +93,7 @@
 	const testStore = useTestStore();
 
 	let depositModalRow = $ref(null);
+	let notificationModalRow = $ref(null);
 
 	const selectedRows = $ref([]);
 
@@ -101,14 +108,24 @@
 
 	let depositModalOpen = $computed({
 		get() {
-			return !!depositModalRow
+			return !!depositModalRow;
 		},
 		set(value) {
 			if (!value) {
 				depositModalRow = null;
 			}
-		}
-	})
+		},
+	});
+	let notificationModalOpen = $computed({
+		get() {
+			return !!notificationModalRow;
+		},
+		set(value) {
+			if (!value) {
+				notificationModalRow = null;
+			}
+		},
+	});
 
 	const loading = $computed(() => testStore.loading);
 

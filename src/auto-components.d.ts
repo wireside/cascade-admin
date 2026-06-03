@@ -60,6 +60,7 @@ declare module 'vue' {
     SFinanceTile: typeof import('./components/_s/tiles/SFinanceTile.vue')['default']
     SIcon: typeof import('./components/_s/icons/SIcon.vue')['default']
     SMaskInput: typeof import('./components/_s/inputs/SMaskInput.vue')['default']
+    SMessageField: typeof import('./components/_s/inputs/SMessageField.vue')['default']
     SplitCardField: typeof import('./components/inputs/SplitCardField.vue')['default']
     SplitCashField: typeof import('./components/inputs/SplitCashField.vue')['default']
     SplitPaymentField: typeof import('./components/inputs/SplitPaymentField.vue')['default']

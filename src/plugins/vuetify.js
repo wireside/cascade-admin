@@ -64,6 +64,8 @@ export default createVuetify({
 					orange: "#F37D1D",
 					green: "#0CA157",
 					control: "rgb(9, 9, 9)",
+					"content-primary": "#F6F6F6",
+					"content-secondary": "#8B8B8B",
 				},
 				variables: {
 					"border-color": "#FFFFFF",

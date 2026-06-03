@@ -109,8 +109,10 @@
 
 				<v-list-item
 					:density="null"
-					class="px-4 py-0 pointer-events-none opacity-60"
+					:class="{ 'pointer-events-none opacity-60': !row.client.trim() }"
+					class="px-4 py-0"
 					height="34"
+					@click="onNotification"
 				>
 					<div class="d-flex w-100 align-center justify-space-between">
 						<div class="d-flex ga-1 align-center">
@@ -258,7 +260,7 @@
 		},
 	});
 
-	const emit = defineEmits(["update:visible", "deposit-up"]);
+	const emit = defineEmits(["update:visible", "deposit-up", "notification"]);
 
 	const fallbackTarget = $ref(null);
 
@@ -293,6 +295,10 @@
 	const onDepositUp = action(() => {
 		emit("deposit-up", props.row)
 	})
+
+	const onNotification = action(() => {
+		emit("notification", props.row)
+	});
 
 	const closeMenu = () => {
 		menuOpen = false;

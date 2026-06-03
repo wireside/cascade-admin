@@ -1,0 +1,36 @@
+.notification-modal {
+  &__content {
+    position: relative;
+		overflow: hidden;
+    border-radius: 10px;
+
+    &::before {
+			content: "";
+			position: absolute;
+			inset: 0;
+			padding: 1px;
+			border-radius: inherit;
+			pointer-events: none;
+			background: linear-gradient(
+				-67deg,
+				rgba(255, 255, 255, 0.15) 0%,
+				rgba(255, 255, 255, 0) 25%,
+				rgba(255, 255, 255, 0) 50%,
+				rgba(255, 255, 255, 0) 75%,
+				rgba(255, 255, 255, 0.15) 100%
+			);
+			mask:
+				linear-gradient(#fff 0 0) content-box,
+				linear-gradient(#000 0 0);
+			mask-composite: exclude;
+		}
+  }
+  
+  &__title, &__subtitle {
+    line-height: 140%;
+  }
+
+  &__subtitle, &__submit-btn-text {
+    font-size: 12px;
+  }
+}

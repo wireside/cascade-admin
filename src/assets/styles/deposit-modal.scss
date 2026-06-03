@@ -1,8 +1,10 @@
 @use "./variables.scss" as *;
 
 .deposit-modal {
-	border: 1px solid rgba(255, 255, 255, 0.05);
-	border-radius: 18px;
+	&__content {
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		border-radius: 18px;
+	}
 
 	&__section {
 		border-radius: 10px;
@@ -15,25 +17,6 @@
 	&__username {
 		font-size: 24px;
 		line-height: 100%;
-	}
-
-	&__comment {
-		&-field {
-			border-radius: 6px;
-
-			& .v-field {
-				color: white;
-				font-size: 12px;
-				line-height: 140%;
-			}
-		}
-
-		&-available-chars {
-			font-size: 12px;
-			line-height: 140%;
-			bottom: 11px;
-			right: 15px;
-		}
 	}
 
 	&__deposit-up {

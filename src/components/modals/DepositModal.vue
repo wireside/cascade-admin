@@ -5,11 +5,12 @@
 		min-height="597"
 		scrim="rgba(9, 9, 9, 0.70)"
 		transition="fade-transition"
+		class="deposit-modal"
 	>
 		<v-card
 			rounded="xl"
 			elevation="20"
-			class="deposit-modal pa-4 bg-background overflow-hidden"
+			class="deposit-modal__content pa-4 bg-background overflow-hidden"
 		>
 			<v-row gap="10px">
 				<v-col class="pa-0 flex-grow-0">
@@ -98,24 +99,13 @@
 
 						<div class="mb-3 px-4">
 							<div class="opacity-70 mb-3">Комментарий о госте</div>
-							<div class="position-relative">
-								<v-textarea
-									:ref="commentFieldRef"
-									v-model="comment"
-									:variant="null"
-									:maxLength="commentLimit"
-									:rules="[(v) => (v || '').length <= commentLimit || 'Max 200 characters']"
-									hide-details
-									max-height="76"
-									rows="4"
-									no-resize
-									placeholder="Ваше сообщение..."
-									class="deposit-modal__comment-field bg-white bg-opacity-3"
-								/>
-								<div class="deposit-modal__comment-available-chars opacity-60 position-absolute">
-									{{ comment.length }}/{{ commentLimit }}
-								</div>
-							</div>
+							<s-message-field
+								v-model="comment"
+								max-length="30"
+								placeholder="Ваше сообщение..."
+								max-height="76"
+								rows="4"
+							/>
 						</div>
 
 						<div class="px-4 pb-4">
@@ -143,7 +133,7 @@
 				</v-col>
 
 				<v-col class="pa-0">
-					<v-form validate-on="invalid-input">
+					<v-form ref="depositFormRef" @submit.prevent="onSubmit">
 						<v-sheet
 							class="deposit-modal__section d-flex flex-column pa-4 overflow-hidden fill-height"
 							min-height="567"
@@ -228,7 +218,7 @@
 								variant="flat"
 								block
 								height="38"
-								@click="submit"
+								type="submit"
 							>
 								Оплатить счет на {{ formattedDeposit }}
 							</v-btn>
@@ -286,7 +276,7 @@
 		},
 	});
 
-	const emit = defineEmits(["submit", "edit-discount"]);
+	const emit = defineEmits(["submit", "apply-promo", "edit-discount"]);
 
 	const CASH_METHOD = "Наличные";
 	const CARD_METHOD = "Банковская карта";
@@ -294,10 +284,10 @@
 
 	const quickAmounts = [250, 500, 1000, 1500];
 
+	const depositFormRef = $ref(null);
 	const promoFormRef = $ref(null);
 
-	const comment = $ref("");
-	const commentFieldRef = $ref(null);
+	const comment = $ref(null);
 
 	const deposit = $ref(Number(props.initialDeposit) || Number(quickAmounts[0]) || undefined);
 	const currentDeposit = $ref(768);
@@ -309,7 +299,7 @@
 
 	const discountModelValue = $ref(props.discount);
 
-	let promoCode = $ref("");
+	const promoCode = $ref("");
 
 	const promoCodeBonuspercentage = $ref(0);
 
@@ -324,7 +314,8 @@
 		return `${new Intl.NumberFormat("ru-RU").format(amount)} ₽`;
 	};
 
-	const submit = () => {
+	const onSubmit = async () => {
+		await depositFormRef?.validate();
 		emit("submit", {
 			deposit: Number(deposit) || 0,
 			paymentMethod: paymentMethod,
@@ -337,5 +328,8 @@
 
 	const applyPromo = async () => {
 		await promoFormRef?.validate();
+		emit("apply-promo", {
+			promoCode,
+		});
 	};
 </script>
