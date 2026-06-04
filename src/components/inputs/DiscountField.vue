@@ -12,6 +12,7 @@
 			class="deposit-input font-weight-medium"
 			validate-on="blur"
 			@blur="fieldReadonly = true"
+			@focus="handleFocus"
 			@keydown="$utils.filterKeysOnlyNumbers"
 		></v-text-field>
 		<v-btn
@@ -65,6 +66,21 @@
 		const input = inputRef?.$el?.querySelector("input");
 
 		input?.focus();
+	};
+
+	const handleFocus = () => {
+		nextTick(() => {
+			const input = inputRef?.$el?.querySelector("input");
+
+			if (input) {
+				requestAnimationFrame(() => {
+					const val = input.value || "";
+					const len = val.length;
+					const pos = val.endsWith("%") ? Math.max(0, len - 2) : len;
+					input.setSelectionRange(pos, pos);
+				});
+			}
+		});
 	};
 </script>
 

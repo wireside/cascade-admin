@@ -44,7 +44,7 @@
 
 				<v-list-item
 					:density="null"
-					:class="{ 'pointer-events-none opacity-60': !row.client.trim()}"
+					:class="{ 'pointer-events-none opacity-60': !row.client.trim() }"
 					class="px-4 py-0"
 					height="34"
 					@click="onDepositUp"
@@ -286,18 +286,18 @@
 	const resolvedTarget = $computed(() => props.menuTarget || fallbackTarget);
 
 	const action = (f) => {
-		return function(...args) {
+		return function (...args) {
 			closeMenu();
 			f(...args);
-		}
+		};
 	};
 
 	const onDepositUp = action(() => {
-		emit("deposit-up", props.row)
-	})
+		emit("deposit-up", props.row);
+	});
 
 	const onNotification = action(() => {
-		emit("notification", props.row)
+		emit("notification", props.row);
 	});
 
 	const closeMenu = () => {

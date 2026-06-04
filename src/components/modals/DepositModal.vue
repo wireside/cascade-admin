@@ -133,7 +133,10 @@
 				</v-col>
 
 				<v-col class="pa-0">
-					<v-form ref="depositFormRef" @submit.prevent="onSubmit">
+					<v-form
+						ref="depositFormRef"
+						@submit.prevent="onSubmit"
+					>
 						<v-sheet
 							class="deposit-modal__section d-flex flex-column pa-4 overflow-hidden fill-height"
 							min-height="567"

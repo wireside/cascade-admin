@@ -1,9 +1,9 @@
 <template>
 	<v-sheet
-    :width 
-    :height
+		:width
+		:height
 		:class="`bg-${color}`"
-    rounded="xl"
+		rounded="xl"
 		class="s-switch bg-opacity-20 position-relative d-flex align-center cursor-pointer"
 		@click.stop.prevent="onSwitch"
 	>

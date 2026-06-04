@@ -62,8 +62,8 @@
 			:y="contextMenu.y"
 			:menu-target="contextMenu.target"
 			:row="contextMenu.row"
-			@deposit-up="(row) => depositModalRow = row"
-			@notification="(row) => notificationModalRow = row"
+			@deposit-up="(row) => (depositModalRow = row)"
+			@notification="(row) => (notificationModalRow = row)"
 		/>
 
 		<deposit-modal
