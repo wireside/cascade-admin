@@ -39,16 +39,16 @@
 			<template v-if="model === props.splitMethod">
 				<v-col cols="6">
 					<split-payment-field
-							v-model="cashAmountProxy"
-							:placeholder="CASH_METHOD"
-							@beforechange="filterAmountIsNotMoreThenDeposit"
+						v-model="cashAmountProxy"
+						:placeholder="CASH_METHOD"
+						@beforechange="filterAmountIsNotMoreThenDeposit"
 					/>
 				</v-col>
 				<v-col cols="6">
 					<split-payment-field
-							v-model="cardAmountProxy"
-							:placeholder="CARD_METHOD"
-							@beforechange="filterAmountIsNotMoreThenDeposit"
+						v-model="cardAmountProxy"
+						:placeholder="CARD_METHOD"
+						@beforechange="filterAmountIsNotMoreThenDeposit"
 					/>
 				</v-col>
 			</template>
@@ -87,7 +87,7 @@
 			type: String,
 			default: SPLIT_METHOD,
 		},
-	})
+	});
 
 	const paymentMethods = [props.cashMethod, props.cardMethod, props.splitMethod];
 	const paymentMethodsIcons = {
@@ -180,11 +180,11 @@
 		{ immediate: true }
 	);
 
-	const filterAmountIsNotMoreThenDeposit = ({ e, futureValue}) => {
+	const filterAmountIsNotMoreThenDeposit = ({ e, futureValue }) => {
 		if (+futureValue > +props.deposit) {
 			e.preventDefault();
 		}
-	}
+	};
 </script>
 
 <style scoped lang="scss">

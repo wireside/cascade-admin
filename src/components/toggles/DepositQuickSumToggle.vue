@@ -9,7 +9,7 @@
 			<v-col
 				v-for="amount in quickAmounts"
 				:key="amount"
-        cols="3"
+				cols="3"
 			>
 				<v-btn
 					:value="amount"
