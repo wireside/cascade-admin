@@ -18,6 +18,7 @@
 			:offset="[-8, -12]"
 			:target="resolvedTarget"
 			:close-on-content-click="false"
+			close-on-back
 			transition="fade-transition"
 			location="bottom start"
 			scroll-strategy="block"
@@ -29,7 +30,6 @@
 					:density="null"
 					class="px-4 py-0"
 					height="34"
-					@click="onAction('select-tariff')"
 				>
 					<div class="d-flex w-100 align-center justify-space-between">
 						<div class="d-flex ga-1 align-center">
@@ -64,12 +64,11 @@
 					:density="null"
 					class="px-4 py-0"
 					height="34"
-					@click="onAction('booking')"
 				>
 					<div class="d-flex w-100 align-center justify-space-between">
 						<div class="d-flex ga-1 align-center">
 							<v-icon
-								icon="mdi-clock-outline"
+								icon="mdi-clock-edit-outline"
 								size="16"
 							/>
 							<span>Бронирование</span>
@@ -86,25 +85,11 @@
 
 				<v-list-item
 					:density="null"
-					class="px-4 py-0 pointer-events-none opacity-60"
+					class="pa-0"
+					:class="{ 'pointer-events-none opacity-60': !row.client.trim() }"
 					height="34"
 				>
-					<div class="d-flex w-100 align-center justify-space-between">
-						<div class="d-flex ga-1 align-center">
-							<v-icon
-								icon="mdi-currency-rub"
-								size="16"
-							/>
-							<span>Штраф</span>
-						</div>
-
-						<div>
-							<v-icon
-								icon="mdi-chevron-right"
-								size="18"
-							/>
-						</div>
-					</div>
+					<penalty-control :row="row" />
 				</v-list-item>
 
 				<v-list-item
@@ -162,33 +147,16 @@
 
 				<v-list-item
 					:density="null"
-					class="px-4 py-0"
+					class="pa-0"
 					height="34"
-					@click="onAction('power')"
 				>
-					<div class="d-flex w-100 align-center justify-space-between">
-						<div class="d-flex ga-1 align-center">
-							<v-icon
-								icon="mdi-flash-outline"
-								size="16"
-							/>
-							<span>Электропитание</span>
-						</div>
-
-						<div>
-							<v-icon
-								icon="mdi-chevron-right"
-								size="18"
-							/>
-						</div>
-					</div>
+					<electricity-control :row="row" />
 				</v-list-item>
 
 				<v-list-item
 					:density="null"
 					class="px-4 py-0"
 					height="34"
-					@click="onAction('management')"
 				>
 					<div class="d-flex w-100 align-center justify-space-between">
 						<div class="d-flex ga-1 align-center">
@@ -234,6 +202,20 @@
 			</v-list>
 		</v-menu>
 	</div>
+
+	<deposit-modal
+		v-if="depositModalOpen"
+		v-model:modal-open="depositModalOpen"
+		:client-name="'Алексей'"
+		:username="row.client"
+		:start-date="row.start"
+		:end-date="row.end"
+	/>
+
+	<notification-modal
+		v-if="notificationModalOpen"
+		v-model:modal-open="notificationModalOpen"
+	/>
 </template>
 
 <script setup>
@@ -260,9 +242,12 @@
 		},
 	});
 
-	const emit = defineEmits(["update:visible", "deposit-up", "notification"]);
+	const emit = defineEmits(["update:visible"]);
 
 	const fallbackTarget = $ref(null);
+
+	let depositModalOpen = $ref(null);
+	let notificationModalOpen = $ref(null);
 
 	let menuOpen = $computed({
 		get() {
@@ -293,11 +278,11 @@
 	};
 
 	const onDepositUp = action(() => {
-		emit("deposit-up", props.row);
+		depositModalOpen = true;
 	});
 
 	const onNotification = action(() => {
-		emit("notification", props.row);
+		notificationModalOpen = true;
 	});
 
 	const closeMenu = () => {
