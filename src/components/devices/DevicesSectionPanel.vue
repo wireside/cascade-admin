@@ -68,7 +68,7 @@
 					</div>
 
 					<div class="d-flex align-center justify-space-between ga-4 text-no-wrap">
-						<span class="opacity-70">{{ row.client || "—" }}</span>
+						<span class="opacity-70">{{ row.client ? "01.03.26" : "—" }}</span>
 						<v-row gap="2px" align="center">
 							<v-col>{{ row.start.split(':').slice(0, 2).join(':') }}</v-col>
 							<v-col>
