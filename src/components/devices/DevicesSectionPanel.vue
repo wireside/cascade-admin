@@ -52,9 +52,38 @@
 			:tone="section.tone"
 			select
 			hover-class="bg-background"
+			row-hover-popup-delay="500"
 			table-height="257"
 			@row-contextmenu="openRowMenu"
-		/>
+		>
+			<template #row-hover-popup="{ row }">
+				<div class="upcoming-bookings bg-surface bg-opacity-80 px-4 pt-2 pb-3 text-white font-weight-medium border">
+					<div class="d-flex align-center ga-2 mb-2">
+						<v-icon
+							icon="mdi-clock-star-four-points-outline"
+							size="20"
+							class="text-white"
+						/>
+						<span>Ближ. бронирования</span>
+					</div>
+
+					<div class="d-flex align-center justify-space-between ga-4 text-no-wrap">
+						<span class="opacity-70">{{ row.client || "—" }}</span>
+						<v-row gap="2px" align="center">
+							<v-col>{{ row.start.split(':').slice(0, 2).join(':') }}</v-col>
+							<v-col>
+								<v-icon
+									icon="mdi-arrow-right"
+									size="18"
+								/>
+							</v-col>
+							<v-col>{{ row.end.split(':').slice(0, 2).join(':') }}</v-col>
+						</v-row>
+						<span class="opacity-70">{{ row.client || "—" }}</span>
+					</div>
+				</div>
+			</template>
+		</s-data-table>
 
 		<device-control
 			v-model:visible="contextMenu.show"
@@ -88,6 +117,14 @@
 	});
 
 	const loading = $computed(() => testStore.loading);
+
+	const getBookingDate = (start, end) => {
+		const source = typeof start === "string" && start.includes(" ") ? start : end;
+		if (!source || typeof source !== "string") return start || end || "—";
+
+		const [datePart] = source.split(" ");
+		return datePart || source;
+	};
 
 	const tableRows = $computed(() => {
 		return props.section.rows.map((row) => ({
@@ -129,5 +166,11 @@
 	.s-dashboard-panel {
 		padding-bottom: 0;
 		padding-top: 18px;
+	}
+
+	.upcoming-bookings {
+		font-size: 12px;
+		border-radius: 10px;
+		backdrop-filter: blur(8px);
 	}
 </style>
