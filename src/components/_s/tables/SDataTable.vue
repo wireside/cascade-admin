@@ -41,56 +41,88 @@
 
 			<tbody>
 				<v-hover
-					v-for="(row, rowIdx) in rows"
-					:key="rowIdx"
+					v-for="({ row, rowId }, rowIdx) in tableRows"
+					:key="rowId"
 				>
 					<template v-slot="{ isHovering, props }">
-						<tr
-							v-bind="props"
-							:class="{
-								[hoverClass]: isHovering,
-								[`bg-${tone} bg-opacity-10`]: isSelected(row),
-							}"
-							class="cursor-pointer"
-							@click.left="toggleRowSelection(row)"
-							@contextmenu.prevent="onRowRightClick($event, row, rowIdx)"
+						<v-menu
+							:open-on-hover="hasRowHoverPopup"
+							:open-delay="rowHoverPopupDelay"
+							:close-delay="rowHoverPopupCloseDelay"
+							:close-on-content-click="false"
+							:target="hoverPopupTarget"
+							location="end"
+							:offset="rowHoverPopupOffset"
+							transition="fade-transition"
+							content-class="s-data-table__hover-popup-overlay"
 						>
-							<td
-								v-for="(col, colIdx) in columns"
-								:key="col.key"
-								:style="getColumnSizeStyle(colIdx)"
-								:class="{
-									'font-weight-medium': col.strong,
-									'pl-6 text-start': colIdx === 0,
-									'pr-6 text-end': colIdx === columns.length - 1,
-									'text-center': colIdx > 0 && colIdx < columns.length - 1,
-								}"
-							>
-								<slot
-									:name="`cell-${col.key}`"
-									:row="row"
-									:value="row[col.key]"
+							<template #activator="{ props: menuProps }">
+								<tr
+									v-bind="mergeProps(props, menuProps)"
+									:class="{
+										[hoverClass]: isHovering && !isSelected(rowId),
+										[`bg-${tone} bg-opacity-10`]: isSelected(rowId),
+									}"
+									class="cursor-pointer"
+									@click.left="toggleRowSelection(row, rowId)"
+									@contextmenu.prevent="onRowRightClick($event, row, rowIdx)"
+									@mouseenter="onRowMouseEnter"
 								>
-									<template v-if="isBadgeValue(row[col.key])">
-										<s-badge
-											:label="row[col.key].label"
-											:tone="row[col.key].tone"
-										/>
-									</template>
-									<template v-else>
-										{{ row[col.key] || "—" }}
-									</template>
-								</slot>
-							</td>
-						</tr>
+									<td
+										v-for="(col, colIdx) in columns"
+										:key="col.key"
+										:style="getColumnSizeStyle(colIdx)"
+										:class="{
+											'font-weight-medium': col.strong,
+											'pl-6 text-start': colIdx === 0,
+											'pr-6 text-end': colIdx === columns.length - 1,
+											'text-center': colIdx > 0 && colIdx < columns.length - 1,
+										}"
+									>
+										<slot
+											:name="`cell-${col.key}`"
+											:row="row"
+											:value="row[col.key]"
+										>
+											<template v-if="isBadgeValue(row[col.key])">
+												<s-badge
+													:label="row[col.key].label"
+													:tone="row[col.key].tone"
+												/>
+											</template>
+											<template v-else>
+												{{ row[col.key] || "—" }}
+											</template>
+										</slot>
+									</td>
+								</tr>
+							</template>
+
+							<slot
+								name="row-hover-popup"
+								:row="row"
+								:row-idx="rowIdx"
+								:row-id="rowId"
+								:is-hovering="isHovering"
+								:is-selected="isSelected(rowId)"
+							/>
+						</v-menu>
 					</template>
 				</v-hover>
 			</tbody>
 		</v-data-table>
+
+		<div
+			v-if="hasRowHoverPopup"
+			ref="hoverPopupTarget"
+			:style="hoverPopupTargetStyle"
+		/>
 	</div>
 </template>
 
 <script setup>
+	import { mergeProps, useSlots } from "vue";
+
 	const selectedRows = defineModel({
 		type: Array,
 		default: [],
@@ -125,16 +157,50 @@
 			type: Boolean,
 			default: false,
 		},
-		selectKey: {
-			type: [Function, String],
-			default: () =>
-				function (row) {
-					return Object.keys(row)[0];
-				},
+		rowHoverPopupDelay: {
+			type: [Number, String],
+			default: 250,
+		},
+		rowHoverPopupCloseDelay: {
+			type: [Number, String],
+			default: 120,
+		},
+		rowHoverPopupOffset: {
+			type: [Array, Number],
+			default: () => [12, 0],
 		},
 	});
 
 	const emit = defineEmits(["row-select", "row-unselect", "row-contextmenu"]);
+	const slots = useSlots();
+
+	const selectedRowIds = ref([]);
+
+	const hoverPopupTarget = ref(null);
+
+	const hoverPopupPosition = ref({
+		x: 0,
+		y: 0,
+	});
+
+	const tableRows = computed(() =>
+		props.rows.map((row, rowId) => ({
+			row,
+			rowId,
+		}))
+	);
+
+	const hasRowHoverPopup = computed(() => !!slots["row-hover-popup"]);
+
+	const hoverPopupTargetStyle = computed(() => ({
+		position: "fixed",
+		left: `${hoverPopupPosition.value.x}px`,
+		top: `${hoverPopupPosition.value.y}px`,
+		width: "1px",
+		height: "1px",
+		pointerEvents: "none",
+		opacity: 0,
+	}));
 
 	const resolveColumnWidth = (index) => {
 		const col = props.columns[index] || {};
@@ -164,23 +230,34 @@
 		return value && typeof value === "object" && "label" in value;
 	};
 
-	const getRowKey = (row) => (typeof props.selectKey === "function" ? props.selectKey(row) : props.selectKey);
-
-	const isSelected = (row) => {
-		return selectedRows.value.map((s) => s[getRowKey(row)]).includes(row[getRowKey(row)]);
+	const syncSelectedRows = () => {
+		selectedRows.value = tableRows.value
+			.filter(({ rowId }) => selectedRowIds.value.includes(rowId))
+			.map(({ row }) => row);
 	};
 
-	const toggleRowSelection = (row) => {
+	const isSelected = (rowId) => {
+		return selectedRowIds.value.includes(rowId);
+	};
+
+	const toggleRowSelection = (row, rowId) => {
 		const { select } = props;
 		if (!select) return;
 
-		if (isSelected(row)) {
-			selectedRows.value = selectedRows.value.filter((s) => s[getRowKey(s)] !== row[getRowKey(row)]);
+		if (isSelected(rowId)) {
+			selectedRowIds.value = selectedRowIds.value.filter((selectedRowId) => selectedRowId !== rowId);
+			syncSelectedRows();
 			emit("row-unselect", row);
 		} else {
-			selectedRows.value = [...selectedRows.value, row];
+			selectedRowIds.value = [...selectedRowIds.value, rowId];
+			syncSelectedRows();
 			emit("row-select", row);
 		}
+	};
+
+	const onRowMouseEnter = (event) => {
+		hoverPopupPosition.value.x = event.clientX;
+		hoverPopupPosition.value.y = event.clientY;
 	};
 
 	const onRowRightClick = (event, row, rowIdx) => {
@@ -209,5 +286,9 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	:global(.s-data-table__hover-popup-overlay) {
+		pointer-events: none;
 	}
 </style>
