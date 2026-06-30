@@ -8,7 +8,7 @@
 		location="end"
 		:offset="[2, 0]"
 		transition="fade-transition"
-		scroll-strategy="block"
+		scroll-strategy="reposition"
 	>
 		<template #activator="{ props: activatorProps }">
 			<v-sheet
@@ -36,7 +36,11 @@
 			</v-sheet>
 		</template>
 
-		<v-list class="control-menu__content pa-0 pt-2 font-weight-medium bg-surface bg-opacity-80">
+		<v-list
+			class="control-menu__content pa-0 pt-2 font-weight-medium bg-surface bg-opacity-80"
+			@wheel.prevent
+			@touchmove.prevent
+		>
 			<v-list-item
 				v-for="action in actionItems"
 				:key="action.key"

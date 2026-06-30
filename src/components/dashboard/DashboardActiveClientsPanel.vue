@@ -30,6 +30,7 @@
 			:columns="clientColumns"
 			:rows="clientRows"
 			:loading="loading"
+			row-border
 			table-height="312"
 		/>
 	</s-dashboard-panel>
@@ -50,7 +51,6 @@
 		{ key: "lastVisit", label: "Посл. посещение", width: { maxChars: 16 } },
 	];
 	const clientRows = [
-		{ nickname: "hatekilla", spent: "1 372 ₽", hours: "> 1 ч.", lastVisit: "22 февр. 2026" },
 		{ nickname: "hatekilla", spent: "1 372 ₽", hours: "> 1 ч.", lastVisit: "22 февр. 2026" },
 		{ nickname: "hatekilla", spent: "1 372 ₽", hours: "> 1 ч.", lastVisit: "22 февр. 2026" },
 		{ nickname: "hatekilla", spent: "1 372 ₽", hours: "> 1 ч.", lastVisit: "22 февр. 2026" },

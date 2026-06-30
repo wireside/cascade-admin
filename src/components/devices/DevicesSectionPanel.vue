@@ -1,63 +1,109 @@
 <template>
-	<s-dashboard-panel>
-		<div class="d-flex align-center justify-space-between mb-4">
+	<div
+		class="dashboard-panel bg-white bg-opacity-3"
+		:class="{ 'dashboard-panel--expanded': !collapsed }"
+	>
+		<div
+			class="d-flex align-center justify-space-between"
+			:class="{ 'mb-4': !collapsed }"
+		>
 			<div class="d-flex align-center ga-2 flex-wrap">
 				<v-chip
-					size="small"
-					variant="flat"
-					class="font-weight-medium rounded-md px-3 py-1"
+					:size="null"
 					:color="section.tone || 'primary'"
+					variant="flat"
+					class="bootcamp-badge bg-opacity-20 font-weight-medium rounded-md px-3 py-1"
+					:class="`text-${section.tone}`"
 				>
 					{{ section.badge }}
 				</v-chip>
 				<span class="text-white text-subtitle-1 font-weight-semibold">{{ section.title }}</span>
+				<v-btn
+					:density="null"
+					size="16"
+					variant="plain"
+					class="opacity-100"
+				>
+					<v-icon
+						icon="mdi-lead-pencil"
+						size="16"
+						class="opacity-50"
+					/>
+				</v-btn>
 			</div>
 
-			<div class="d-flex align-center flex-wrap ga-3">
-				<div class="d-flex align-center ga-2 text-medium-emphasis">
-					<v-checkbox-btn
-						:model-value="false"
-						density="compact"
+			<div class="d-flex align-center ga-2">
+				<v-btn
+					variant="flat"
+					width="60"
+					height="40"
+					rounded="md"
+					class="devices-section-action devices-section-action--paint text-background px-0"
+					@click="detailsPanelOpen = true"
+				>
+					<v-icon
+						icon="mdi-brush-outline"
+						size="16"
 					/>
-					<span class="text-body-2">Выбрать все</span>
-				</div>
+					<v-icon
+						icon="mdi-chevron-down"
+						size="16"
+						class="ml-1"
+					/>
+				</v-btn>
 
-				<div class="d-flex align-center ga-2">
-					<s-btn-icon
-						width="42px"
-						height="42px"
-						icon="mdi:cog-outline"
-						variant="plain"
-						class="bg-surface bg-opacity-60 border"
-						title="Настройки устройства"
+				<v-btn
+					icon
+					variant="flat"
+					color="red"
+					width="40"
+					height="40"
+					rounded="md"
+					class="devices-section-action bg-opacity-20 text-red"
+				>
+					<v-icon
+						icon="mdi-delete-outline"
+						size="16"
 					/>
-					<s-btn-icon
-						icon="mdi:delete"
-						rounded="md"
-						variant="tonal"
-						height="42px"
-						width="42px"
-						bg-color="red"
-						color="red"
+				</v-btn>
+
+				<v-btn
+					icon
+					variant="flat"
+					color="white"
+					width="40"
+					height="40"
+					rounded="md"
+					class="devices-section-action bg-white bg-opacity-5 text-white"
+					@click="collapsed = !collapsed"
+				>
+					<v-icon
+						:icon="collapsed ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+						size="20"
 					/>
-				</div>
+				</v-btn>
 			</div>
 		</div>
 
 		<s-data-table
+			v-if="!collapsed"
 			v-model="selectedRows"
 			:columns="columns"
 			:rows="tableRows"
 			:loading="loading"
 			:tone="section.tone"
-			select
+			selectable
+			row-border
 			hover-class="bg-background"
 			row-hover-popup-delay="500"
-			table-height="257"
+			table-height="288"
 			@row-contextmenu="openRowMenu"
 		>
 			<template #row-hover-popup="{ row }">
-				<div class="upcoming-bookings bg-surface bg-opacity-80 px-4 pt-2 pb-3 text-white font-weight-medium border">
+				<div
+					v-if="row?.client"
+					class="upcoming-bookings bg-surface bg-opacity-80 px-4 pt-2 pb-3 text-white font-weight-medium"
+				>
 					<div class="d-flex align-center ga-2 mb-2">
 						<v-icon
 							icon="mdi-clock-star-four-points-outline"
@@ -68,31 +114,40 @@
 					</div>
 
 					<div class="d-flex align-center justify-space-between ga-4 text-no-wrap">
-						<span class="opacity-70">{{ row.client ? "01.03.26" : "—" }}</span>
-						<v-row gap="2px" align="center">
-							<v-col>{{ row.start.split(':').slice(0, 2).join(':') }}</v-col>
+						<span class="opacity-70">{{ "01.03.26" }}</span>
+						<v-row
+							gap="2px"
+							align="center"
+						>
+							<v-col>{{ row.start.split(":").slice(0, 2).join(":") }}</v-col>
 							<v-col>
 								<v-icon
 									icon="mdi-arrow-right"
 									size="18"
 								/>
 							</v-col>
-							<v-col>{{ row.end.split(':').slice(0, 2).join(':') }}</v-col>
+							<v-col>{{ row.end.split(":").slice(0, 2).join(":") }}</v-col>
 						</v-row>
-						<span class="opacity-70">{{ row.client || "—" }}</span>
+						<span class="opacity-70">{{ row.client }}</span>
 					</div>
 				</div>
 			</template>
 		</s-data-table>
 
 		<device-control
+			v-if="!collapsed"
 			v-model:visible="contextMenu.show"
 			:x="contextMenu.x"
 			:y="contextMenu.y"
 			:menu-target="contextMenu.target"
 			:row="contextMenu.row"
 		/>
-	</s-dashboard-panel>
+
+		<devices-details-panel
+			v-model:modal-open="detailsPanelOpen"
+			:device="detailsDevice"
+		/>
+	</div>
 </template>
 
 <script setup>
@@ -106,6 +161,8 @@
 	const testStore = useTestStore();
 
 	const selectedRows = $ref([]);
+	let collapsed = $ref(false);
+	let detailsPanelOpen = $ref(false);
 
 	const contextMenu = $ref({
 		show: false,
@@ -117,6 +174,8 @@
 	});
 
 	const loading = $computed(() => testStore.loading);
+
+	const detailsDevice = $computed(() => selectedRows[0] || tableRows[0] || null);
 
 	const getBookingDate = (start, end) => {
 		const source = typeof start === "string" && start.includes(" ") ? start : end;
@@ -135,7 +194,7 @@
 	});
 
 	const columns = [
-		{ key: "index", label: "№", width: { maxChars: 4 }, align: "left", strong: true },
+		{ key: "id", label: "№", width: { maxChars: 4 }, align: "left", strong: true },
 		{ key: "name", label: "Название", width: { maxChars: 14 }, strong: true },
 		{ key: "status", label: "Статус", width: { maxChars: 10 } },
 		{ key: "booking", label: "Бронь", width: { maxChars: 10 } },
@@ -163,14 +222,38 @@
 </script>
 
 <style scoped lang="scss">
-	.s-dashboard-panel {
-		padding-bottom: 0;
-		padding-top: 18px;
+	.dashboard-panel {
+		border-radius: 10px;
+		padding-block: 10px;
+		padding-inline: 20px;
+
+		&--expanded {
+			padding-bottom: 20px !important;
+		}
+	}
+
+	.bootcamp-badge {
+		padding-inline: 10px;
+		padding-block: 0.5px;
+		line-height: 18px;
 	}
 
 	.upcoming-bookings {
 		font-size: 12px;
 		border-radius: 10px;
 		backdrop-filter: blur(8px);
+	}
+
+	.devices-section-action {
+		min-width: 0 !important;
+
+		&--paint {
+			background: linear-gradient(
+				135deg,
+				rgb(var(--v-theme-red)) 0%,
+				rgb(var(--v-theme-orange)) 52%,
+				rgb(var(--v-theme-primary)) 100%
+			) !important;
+		}
 	}
 </style>

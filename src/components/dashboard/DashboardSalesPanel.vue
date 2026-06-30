@@ -29,6 +29,7 @@
 			:columns="salesColumnsConfig"
 			:rows="salesRows"
 			:loading="loading"
+			row-border
 			table-height="312"
 		/>
 	</s-dashboard-panel>

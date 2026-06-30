@@ -9,7 +9,7 @@
 		class="control-menu"
 		location="end"
 		transition="fade-transition"
-		scroll-strategy="block"
+		scroll-strategy="reposition"
 	>
 		<template #activator="{ props: activatorProps }">
 			<v-sheet
@@ -37,7 +37,11 @@
 			</v-sheet>
 		</template>
 
-		<v-list class="control-menu__content pa-0 pt-2 font-weight-medium bg-surface bg-opacity-80">
+		<v-list
+			class="control-menu__content pa-0 pt-2 font-weight-medium bg-surface bg-opacity-80"
+			@wheel.prevent
+			@touchmove.prevent
+		>
 			<v-list-item
 				v-for="action in actionItems"
 				:key="action.minutes"
@@ -49,14 +53,14 @@
 				<div class="d-flex w-100 align-center justify-space-between">
 					<div class="d-flex ga-1 align-center">
 						<v-icon
-              :style="{ color: action.color }"
+							:style="{ color: action.color }"
 							icon="mdi-timer-outline"
 							size="16"
 							class="text-current"
 						/>
-            <span :style="{ color: action.color }">
-              {{ action.label }}
-            </span>
+						<span :style="{ color: action.color }">
+							{{ action.label }}
+						</span>
 					</div>
 				</div>
 			</v-list-item>
@@ -80,7 +84,7 @@
 		{ minutes: 5, label: "5 минут", color: "#F3A81D" },
 		{ minutes: 15, label: "15 минут", color: "#F36F1D" },
 		{ minutes: 30, label: "30 минут", color: "#DE3E3D" },
-		{ minutes: 60, label: "60 минут", color: "error" },
+		{ minutes: 60, label: "60 минут", color: "red" },
 	];
 
 	const onSelect = (minutes) => {

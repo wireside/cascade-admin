@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="s-dashboard-panel bg-surface bg-opacity-60"
+		class="dashboard-panel bg-surface bg-opacity-60"
 		:style="panelStyle"
 	>
 		<header
@@ -52,30 +52,6 @@
 
 <style lang="scss">
 	.s-dashboard-panel {
-		position: relative;
-		overflow: hidden;
-		border-radius: 18px;
-		padding: 25px;
-
-		&::before {
-			content: "";
-			position: absolute;
-			inset: 0;
-			padding: 1px;
-			border-radius: inherit;
-			pointer-events: none;
-			background: linear-gradient(
-				to right,
-				rgba(255, 255, 255, 0.15) 0%,
-				rgba(255, 255, 255, 0) 50%,
-				rgba(255, 255, 255, 0.15) 100%
-			);
-			mask:
-				linear-gradient(#fff 0 0) content-box,
-				linear-gradient(#000 0 0);
-			mask-composite: exclude;
-		}
-
 		&__title {
 			font-size: 20px;
 		}

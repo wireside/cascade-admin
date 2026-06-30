@@ -1,13 +1,14 @@
 <template>
-	<div>
+	<div class="d-flex flex-column ga-4">
+		<devices-toolbar :sections="bootcampSections" />
+
 		<section class="d-flex flex-column ga-4">
 			<devices-section-panel
 				v-for="section in bootcampSections"
+				:key="section.title"
 				:section="section"
 			/>
 		</section>
-
-		<devices-details-panel v-if="false" />
 	</div>
 </template>
 
@@ -15,6 +16,7 @@
 meta:
   layout: default
   title: Устройства
+  icon: mdi-desktop-tower-monitor
 </route>
 
 <script setup>
@@ -25,7 +27,7 @@ meta:
 			tone: "blue",
 			rows: [
 				{
-					index: "1",
+					id: "1",
 					name: "Компьютер 1",
 					status: { label: "Включен", tone: "primary" },
 					booking: { label: "Есть бронь", tone: "blue" },
@@ -36,7 +38,7 @@ meta:
 					app: "Cascade [v.1.5.2]",
 				},
 				{
-					index: "2",
+					id: "2",
 					name: "Компьютер 2",
 					status: { label: "Включен", tone: "primary" },
 					booking: { label: "Без брони", tone: "blue" },
@@ -47,7 +49,7 @@ meta:
 					app: "Cascade [v.1.5.2]",
 				},
 				{
-					index: "3",
+					id: "3",
 					name: "Компьютер 3",
 					status: { label: "Выключен", tone: "red" },
 					booking: { label: "Без брони", tone: "blue" },
@@ -58,10 +60,21 @@ meta:
 					app: "Cascade [v.1.5.2]",
 				},
 				{
-					index: "4",
+					id: "4",
 					name: "Компьютер 4",
 					status: { label: "Включен", tone: "primary" },
 					booking: { label: "Есть бронь", tone: "primary" },
+					client: "",
+					tariff: "",
+					start: "",
+					end: "",
+					app: "Cascade [v.1.5.2]",
+				},
+				{
+					id: "5",
+					name: "Компьютер 90",
+					status: { label: "Занят", tone: "deep-purple" },
+					booking: { label: "Без брони", tone: "secondary" },
 					client: "",
 					tariff: "",
 					start: "",
@@ -76,7 +89,7 @@ meta:
 			tone: "deep-purple",
 			rows: [
 				{
-					index: "1",
+					id: "1",
 					name: "Компьютер 5",
 					status: { label: "Занят", tone: "deep-purple" },
 					booking: { label: "Без брони", tone: "secondary" },
@@ -87,7 +100,7 @@ meta:
 					app: "Counter Strike 2",
 				},
 				{
-					index: "2",
+					id: "2",
 					name: "Компьютер 6",
 					status: { label: "Занят", tone: "deep-purple" },
 					booking: { label: "Без брони", tone: "secondary" },
@@ -98,7 +111,7 @@ meta:
 					app: "Counter Strike 2",
 				},
 				{
-					index: "3",
+					id: "3",
 					name: "Компьютер 7",
 					status: { label: "Занят", tone: "deep-purple" },
 					booking: { label: "Без брони", tone: "secondary" },
@@ -109,8 +122,19 @@ meta:
 					app: "Dota 2",
 				},
 				{
-					index: "4",
+					id: "4",
 					name: "Компьютер 8",
+					status: { label: "Занят", tone: "deep-purple" },
+					booking: { label: "Без брони", tone: "secondary" },
+					client: "",
+					tariff: "",
+					start: "",
+					end: "",
+					app: "Cascade [v.1.5.2]",
+				},
+				{
+					id: "5",
+					name: "Компьютер 90",
 					status: { label: "Занят", tone: "deep-purple" },
 					booking: { label: "Без брони", tone: "secondary" },
 					client: "",
@@ -127,7 +151,7 @@ meta:
 			tone: "purple",
 			rows: [
 				{
-					index: "1",
+					id: "1",
 					name: "Компьютер 5",
 					status: { label: "Занят", tone: "purple" },
 					booking: { label: "Без брони", tone: "secondary" },
@@ -138,7 +162,7 @@ meta:
 					app: "Counter Strike 2",
 				},
 				{
-					index: "2",
+					id: "2",
 					name: "Компьютер 6",
 					status: { label: "Занят", tone: "purple" },
 					booking: { label: "Без брони", tone: "secondary" },
@@ -149,7 +173,7 @@ meta:
 					app: "Counter Strike 2",
 				},
 				{
-					index: "3",
+					id: "3",
 					name: "Компьютер 7",
 					status: { label: "Занят", tone: "purple" },
 					booking: { label: "Без брони", tone: "secondary" },
@@ -160,7 +184,7 @@ meta:
 					app: "Dota 2",
 				},
 				{
-					index: "4",
+					id: "4",
 					name: "Компьютер 8",
 					status: { label: "Занят", tone: "purple" },
 					booking: { label: "Без брони", tone: "secondary" },

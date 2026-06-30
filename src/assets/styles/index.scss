@@ -3,6 +3,7 @@
 @use "../fonts/_index";
 @use "./variables" as v;
 @use "./_tools";
+@use "./dashboard-panel.scss";
 @use "./control-menu.scss";
 @use "./deposit-modal.scss";
 @use "./notification-modal.scss";

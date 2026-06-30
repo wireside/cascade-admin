@@ -6,6 +6,8 @@
 		<div
 			class="control-menu__backdrop"
 			@click="closeMenu"
+			@wheel.prevent
+			@touchmove.prevent
 		/>
 
 		<div
@@ -21,9 +23,13 @@
 			close-on-back
 			transition="fade-transition"
 			location="bottom start"
-			scroll-strategy="block"
+			scroll-strategy="reposition"
 		>
-			<v-list class="control-menu__content pa-0 pt-2 font-weight-medium bg-surface bg-opacity-80">
+			<v-list
+				class="control-menu__content pa-0 pt-2 font-weight-medium bg-surface bg-opacity-80"
+				@wheel.prevent
+				@touchmove.prevent
+			>
 				<v-list-subheader class="control-menu__label">Клиент</v-list-subheader>
 
 				<v-list-item

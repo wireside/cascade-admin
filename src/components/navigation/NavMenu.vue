@@ -4,7 +4,7 @@
 			<v-img
 				src="../../assets/images/cascade-logo.svg"
 				width="168px"
-				class="mb-7 align-self-center"
+				class="mb-1 align-self-center"
 			/>
 
 			<div class="mb-10 w-100">
@@ -12,25 +12,31 @@
 					v-for="section in navigation"
 					:key="section.title"
 				>
-					<div class="text-white opacity-4 mb-4">{{ section.title }}</div>
+					<div class="section-title py-1 text-white opacity-4 mb-1">{{ section.title }}</div>
 					<div class="d-flex flex-column ga-1 mb-4">
-						<v-btn
+						<template
 							v-for="item in section.items"
 							:key="item.label"
-							:to="item.to ?? null"
-							:prepend-icon="item.icon"
-							:ripple="false"
-							:class="{ 'bg-primary bg-opacity-20 nav-link--active': route.path === item.to }"
-							class="bg-background justify-start opacity-100 pl-6"
-							active-color="white"
-							color="secondary"
-							variant="plain"
-							height="46px"
-							rounded="8px"
-							@click="navOpen = false"
 						>
-							<span>{{ item.label }}</span>
-						</v-btn>
+							<nav-sub-menu
+								v-if="item.items && item.items.length > 0"
+								:label="item.label"
+								:icon="item.icon"
+								:items="item.items"
+							/>
+							<nav-link
+								v-else
+								:to="item.to"
+							>
+								<div class="d-flex align-center ga-2">
+									<v-icon
+										:icon="item.icon"
+										size="20"
+									/>
+									<span>{{ item.label }}</span>
+								</div>
+							</nav-link>
+						</template>
 					</div>
 				</div>
 			</div>
@@ -72,61 +78,43 @@
 		{
 			title: "Основные",
 			items: [
-				{ label: "Дашборд", icon: "mdi-home-outline", to: "/" },
-				{ label: "Устройства", icon: "mdi-monitor", to: "/devices" },
+				{ label: "Дашборд", icon: "mdi-chart-pie-outline", to: "/" },
+				{ label: "Устройства", icon: "mdi-desktop-tower-monitor", to: "/devices" },
 				{ label: "Карта клуба", icon: "mdi-map-outline" },
-				{ label: "Бронирования", icon: "mdi-clock-outline" },
+				{ label: "Бронирования", icon: "mdi-calendar-clock-outline" },
+				{ label: "Магазин", icon: "mdi-basket-outline" },
+				{ label: "Аналитика", icon: "mdi-finance" },
 			],
 		},
 		{
-			title: "Клиенты и финансы",
+			title: "Работа с клиентами",
 			items: [
-				{ label: "Платежи", icon: "mdi-currency-rub" },
-				{ label: "Клиенты", icon: "mdi-account-group-outline" },
-				{ label: "Аналитика", icon: "mdi-finance" },
+				{
+					label: "Клиенты",
+					icon: "mdi-account-group-outline",
+					items: [{ label: "Клиенты", to: "/clients" }, { label: "Группы" }],
+				},
+				{ label: "Тарифы", icon: "mdi-clock-outline" },
+				{ label: "Товары и услуги", icon: "mdi-shopping-outline" },
+				{ label: "Система лояльности", icon: "mdi-percent-outline" },
+				{ label: "Отзывы клиентов", icon: "mdi-timelapse" },
 			],
 		},
 		{
 			title: "Настройки филиала",
 			items: [
-				{ label: "Приложения", icon: "mdi-apps" },
-				{ label: "Тарифы", icon: "mdi-timelapse" },
-				{ label: "Товары", icon: "mdi-store-outline" },
-				{ label: "Услуги", icon: "mdi-store-outline" },
-				{ label: "Наборы", icon: "mdi-archive" },
+				{ label: "Детализация", icon: "mdi-timelapse", items: [{ label: "Логи" }, { label: "Платежи" }] },
+				{ label: "Приложения", icon: "mdi-apps", items: [{ label: "Игры" }, { label: "Программы" }] },
+				{ label: "Сотрудники", icon: "mdi-badge-account-outline" },
+				{ label: "Настройки", icon: "mdi-cog" },
 			],
 		},
 	];
 </script>
 
 <style lang="scss">
-	.nav-link--active {
-		opacity: 1 !important;
-		position: relative;
-		border-radius: 8px;
-		background-clip: padding-box;
-
-		&::before {
-			content: "";
-			position: absolute;
-			inset: 0;
-			// толщина рамки
-			padding: 1px;
-			border-radius: inherit;
-			pointer-events: none;
-			background: linear-gradient(
-				90deg,
-				rgba(171, 244, 62, 1) 0%,
-				rgba(17, 17, 17, 0.08) 25%,
-				rgba(17, 17, 17, 0) 50%,
-				rgba(17, 17, 17, 0.15) 75%,
-				rgba(171, 244, 62, 1) 100%
-			);
-			mask:
-				linear-gradient(#fff 0 0) content-box,
-				linear-gradient(#000 0 0);
-			mask-composite: exclude;
-		}
+	.section-title {
+		line-height: 20px;
 	}
 
 	.premium-support {
