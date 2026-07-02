@@ -87,7 +87,7 @@
 
 <script setup>
 	import { nextTick, onBeforeUnmount, onMounted } from "vue";
-	import { useBookingsTimeline } from "./useBookingsTimeline";
+	import { useBookingsTimeline } from "@/composables/useBookingsTimeline";
 
 	const props = defineProps({
 		rows: {

@@ -166,6 +166,7 @@
 		"useBase64": true,
 		"useBattery": true,
 		"useBluetooth": true,
+		"useBookingsTimeline": true,
 		"useBreakpoints": true,
 		"useBroadcastChannel": true,
 		"useBrowserLocation": true,
