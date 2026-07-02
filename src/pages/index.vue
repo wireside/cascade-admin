@@ -22,7 +22,7 @@
 		<section class="d-flex ga-4 align-stretch flex-wrap flex-xl-nowrap">
 			<div><dashboard-analytics-panel class="h-100" /></div>
 			<div class="flex-grow-1"><dashboard-status-panel class="h-100" /></div>
-			<div class="flex-xl-grow-0 flex-grow-1"><dashboard-bookings-panel class="h-100" /></div>
+			<div class="dashboard-page__bookings flex-xl-grow-0 flex-grow-1"><dashboard-bookings-panel class="h-100" /></div>
 		</section>
 
 		<section class="d-flex ga-4 flex-wrap flex-xl-nowrap">
@@ -31,6 +31,19 @@
 		</section>
 	</div>
 </template>
+
+<style lang="scss">
+	.dashboard-page {
+		&__bookings {
+			min-width: 0;
+
+			@media (max-width: 1919px) {
+				flex-basis: 100%;
+				width: 100%;
+			}
+		}
+	}
+</style>
 
 <route lang="yaml">
 meta:

@@ -128,8 +128,10 @@
 <style lang="scss">
 	.default-layout {
 		height: 100dvh;
-		overflow: hidden;
-		overscroll-behavior: none;
+		overflow-x: auto;
+		overflow-y: hidden;
+		overscroll-behavior-x: auto;
+		overscroll-behavior-y: none;
 
 		&__shell,
 		&__content {
@@ -145,10 +147,19 @@
 		&__page {
 			flex: 1 1 auto;
 			overflow-y: auto;
-			overflow-x: hidden;
-			overscroll-behavior: none;
+			overflow-x: auto;
+			overscroll-behavior-x: auto;
+			overscroll-behavior-y: none;
 			scrollbar-gutter: stable;
 		}
+	}
+
+	html:has(.v-overlay.v-dialog.v-overlay--active),
+	html:has(.v-overlay.v-dialog.v-overlay--active) body,
+	html:has(.v-overlay.v-dialog.v-overlay--active) .default-layout,
+	html:has(.v-overlay.v-dialog.v-overlay--active) .default-layout__page {
+		overflow: hidden !important;
+		overscroll-behavior: none;
 	}
 
 	.current-page {

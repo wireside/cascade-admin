@@ -6,6 +6,7 @@
 		scrim="rgba(9, 9, 9, 0.70)"
 		transition="fade-transition"
 		class="deposit-modal"
+		scroll-strategy="block"
 	>
 		<v-card
 			rounded="xl"
