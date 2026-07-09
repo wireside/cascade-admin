@@ -104,7 +104,14 @@
 			title: "Настройки филиала",
 			items: [
 				{ label: "Детализация", icon: "mdi-timelapse", items: [{ label: "Логи" }, { label: "Платежи" }] },
-				{ label: "Приложения", icon: "mdi-apps", items: [{ label: "Игры" }, { label: "Программы" }] },
+				{
+					label: "Приложения",
+					icon: "mdi-view-grid-plus-outline",
+					items: [
+						{ label: "Игры", to: "/games" },
+						{ label: "Программы", to: "/apps" },
+					],
+				},
 				{ label: "Сотрудники", icon: "mdi-badge-account-outline" },
 				{ label: "Настройки", icon: "mdi-cog" },
 			],

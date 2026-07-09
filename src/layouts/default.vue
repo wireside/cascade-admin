@@ -54,25 +54,14 @@
 					<div class="d-flex align-center ga-3 flex-grow-0">
 						<s-search-bar
 							v-model="searchQuery"
-							height="28"
+							height="40"
+							width="249"
 						/>
-						<v-btn
-							variant="text"
-							width="28"
-							height="28"
-							max-width="28"
-							min-width="28"
-							class="flex-grow-0 pa-0 ma-0"
-						>
-							<v-icon
-								size="20"
-								icon="mdi-cog"
-							/>
-							<s-tooltip>Настройки</s-tooltip>
-						</v-btn>
+						<profile-menu />
+
 						<!--
-						For development
-					-->
+							For development
+						-->
 						<v-switch
 							v-model="model"
 							density="compact"
