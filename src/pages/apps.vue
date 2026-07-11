@@ -58,6 +58,7 @@
 <route lang="yaml">
 meta:
   layout: default
-  title: Приложения
+  title: Программы
   icon: mdi-view-grid-outline
+  parentTitle: Приложения
 </route>
