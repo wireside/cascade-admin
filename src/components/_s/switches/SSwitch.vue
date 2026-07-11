@@ -2,15 +2,15 @@
 	<v-sheet
 		:width
 		:height
-		:class="`bg-${color}`"
+		:class="`bg-${color} bg-opacity-${contrast ? '100' : '20'}`"
 		rounded="xl"
-		class="s-switch bg-opacity-20 position-relative d-flex align-center cursor-pointer"
+		class="s-switch position-relative d-flex align-center cursor-pointer"
 		@click.stop.prevent="onSwitch"
 	>
 		<v-avatar
 			:size="circleSize"
 			:density="null"
-			:color
+			:color="contrast ? 'surface' : color"
 			:style="circleStyle"
 			class="s-switch__circle position-relative"
 		/>
@@ -36,6 +36,10 @@
 		circleSize: {
 			type: [Number, String],
 			default: "14",
+		},
+		contrast: {
+			type: Boolean,
+			default: false,
 		},
 	});
 

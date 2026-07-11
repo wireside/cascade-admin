@@ -111,7 +111,7 @@
 		}
 	);
 
-	const branchName = "Дашборд";
+	const branchName = computed(() => route.meta.parentTitle || "Дашборд");
 </script>
 
 <style lang="scss">

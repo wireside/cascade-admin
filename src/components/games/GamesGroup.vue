@@ -24,13 +24,13 @@
 
 			<div class="d-flex align-center ga-2 flex-shrink-0">
 				<v-btn
+					:class="{ 'pointer-events-none': !selectedInGroup }"
 					icon
 					variant="text"
 					color="red"
 					size="34"
 					rounded="md"
 					class="bg-red bg-opacity-20 text-red"
-					:class="{ 'pointer-events-none': !selectedInGroup }"
 				>
 					<v-icon
 						icon="mdi-trash-can-outline"
@@ -55,14 +55,14 @@
 				</v-btn>
 
 				<v-btn
+					:class="{ 'pointer-events-none': !selectedInGroup }"
+					:to="selectedInGroup ? gameRoute : undefined"
 					icon
 					variant="flat"
 					color="white"
 					size="34"
 					rounded="md"
 					class="bg-white bg-opacity-5 text-white"
-					:class="{ 'pointer-events-none': !selectedInGroup }"
-					:to="selectedInGroup ? gameRoute : undefined"
 				>
 					<v-icon
 						icon="mdi-arrow-expand-all"
@@ -92,15 +92,15 @@
 							<template #default="{ isHovering, props: hoverProps }">
 								<article
 									v-bind="hoverProps"
-									class="games-group__card position-relative overflow-hidden rounded-md d-flex align-end justify-center cursor-pointer"
 									:class="{ 'games-group__card--selected': isSelected(game) }"
 									:style="getCardStyle(game)"
+									class="games-group__card position-relative overflow-hidden rounded-md d-flex align-end justify-center cursor-pointer"
 									@click="selectGame(game)"
 								>
 									<v-btn
 										v-if="isHovering || isSelected(game)"
-										icon
 										:to="gameRoute"
+										icon
 										variant="flat"
 										color="background"
 										size="32"
@@ -147,11 +147,11 @@
 	const emit = defineEmits(["select-game"]);
 
 	const gameRoute = "/games/0";
-	const isExpanded = ref(props.expanded);
+	let isExpanded = $ref(props.expanded);
 
-	const gamesCount = computed(() => props.group.games?.length || 0);
+	const gamesCount = $computed(() => props.group.games?.length || 0);
 
-	const selectedInGroup = computed(() => {
+	const selectedInGroup = $computed(() => {
 		return props.group.games?.some((game) => isSelected(game));
 	});
 
@@ -178,7 +178,7 @@
 	watch(
 		() => props.expanded,
 		(value) => {
-			isExpanded.value = value;
+			isExpanded = value;
 		}
 	);
 </script>
