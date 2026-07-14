@@ -2,11 +2,14 @@
 	"type": "module",
 	"name": "cascade",
 	"version": "0.0.0",
+	"homepage": "https://wireside.github.io/cascade-admin",
 	"scripts": {
 		"serve": "vite --host",
 		"build": "vite build",
 		"build:no-client": "SKIP_CLIENT_GENERATION=true vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"predeploy": "npm run build",
+		"deploy": "gh-pages -d dist -o deploy --nojekyll"
 	},
 	"dependencies": {
 		"@mdi/font": "7.4.47",
@@ -24,6 +27,7 @@
 		"@hey-api/vite-plugin": "0.3.1",
 		"@iconify/vue": "^5.0.1",
 		"@vitejs/plugin-vue": "^6.0.6",
+		"gh-pages": "^6.3.0",
 		"pinia": "^3.0.4",
 		"sass": "1.98.0",
 		"svgo": "^4.0.1",

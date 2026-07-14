@@ -35,6 +35,7 @@ const clientGenerationPlugins = skipClientGeneration
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	base: "/cascade-admin/",
 	plugins: [
 		Pages(),
 		Layouts(),
