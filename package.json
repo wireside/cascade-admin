@@ -5,6 +5,7 @@
 	"scripts": {
 		"serve": "vite --host",
 		"build": "vite build",
+		"build:no-client": "SKIP_CLIENT_GENERATION=true vite build",
 		"preview": "vite preview"
 	},
 	"dependencies": {

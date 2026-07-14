@@ -14,6 +14,25 @@ import { heyApiPlugin } from "@hey-api/vite-plugin";
 import { defineConfig } from "vite";
 import path from "path";
 
+const skipClientGeneration = process.env.SKIP_CLIENT_GENERATION === "true";
+const clientGenerationPlugins = skipClientGeneration
+	? []
+	: [
+			heyApiPlugin({
+				config: {
+					input: "https://vozhak-club-central.shintio.space/swagger/v1/swagger.json",
+					output: "src/client",
+					plugins: [
+						{
+							name: "@hey-api/client-fetch",
+							throwOnError: true,
+						},
+						"@pinia/colada",
+					],
+				},
+			}),
+		];
+
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
@@ -61,19 +80,7 @@ export default defineConfig({
 			vueTemplate: true,
 			dirs: ["src/composables", "src/store", "src/helpers"],
 		}),
-		heyApiPlugin({
-			config: {
-				input: "https://vozhak-club-central.shintio.space/swagger/v1/swagger.json",
-				output: "src/client",
-				plugins: [
-					{
-						name: "@hey-api/client-fetch",
-						throwOnError: true,
-					},
-					"@pinia/colada",
-				],
-			},
-		}),
+		...clientGenerationPlugins,
 	],
 	define: { "process.env": {} },
 	resolve: {
