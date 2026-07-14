@@ -164,15 +164,34 @@
 
 	const user = $computed(() => authStore?.user);
 
-	const accountsList = $computed(() => [
-		{ name: user?.userName, userName: user?.userName, phone: user?.phone },
-		{
-			name: "Алексей Топоров",
-			userName: "alexeykillov",
-			phone: "+7 (999) 999-67-67",
-			role: "Кассир",
-		},
-	]);
+	const accountsList = $computed(() => {
+		if (user) {
+			return [
+				{ name: user?.userName, userName: user?.userName, phone: user?.phone },
+				{
+					name: "Алексей Топоров",
+					userName: "alexeykillov",
+					phone: "+7 (999) 999-67-67",
+					role: "Кассир",
+				},
+			];
+		}
+
+		return [
+			{
+				name: "Киллов Ян",
+				userName: "hatekilla",
+				phone: "+7 (999) 999-67-67",
+				role: "Кассир",
+			},
+			{
+				name: "Алексей Топоров",
+				userName: "alexeytopor",
+				phone: "+7 (888) 999-67-67",
+				role: "Кассир",
+			},
+		];
+	});
 
 	const logout = () => {
 		authStore.logout();
