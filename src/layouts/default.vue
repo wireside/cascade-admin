@@ -95,14 +95,14 @@
 
 	import { useDisplay } from "vuetify";
 
-	const { xlAndUp } = useDisplay();
+	const { lgAndUp } = useDisplay();
 
 	const route = useRoute();
 
 	const navOpen = ref(false);
 	const searchQuery = ref("");
 
-	const isCompact = computed(() => !xlAndUp.value);
+	const isCompact = computed(() => !lgAndUp.value);
 
 	watch(
 		() => route.fullPath,
