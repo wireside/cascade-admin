@@ -1,6 +1,6 @@
 <template>
-	<section class="game-preview rounded-lg bg-white bg-opacity-2 text-white pa-4">
-		<h2 class="game-preview__title text-white font-weight-bold mb-4">Предпросмотр</h2>
+	<section class="game-preview rounded-lg bg-white bg-opacity-2 text-white pa-5">
+		<h2 class="game-preview__title text-white font-weight-bold mb-4 mt-0">Предпросмотр</h2>
 		<div class="game-preview__canvas position-relative overflow-hidden rounded-md">
 			<img
 				src="@/assets/images/games/game-preview.png"
@@ -38,10 +38,7 @@
 
 <style scoped lang="scss">
 	.game-preview {
-		flex: 0 1 432px;
-		width: 100%;
-		max-width: 432px;
-		min-width: 320px;
+		flex: 0 0 auto;
 
 		&__title {
 			font-size: 14px;
@@ -49,6 +46,7 @@
 		}
 
 		&__canvas {
+			width: 360px;
 			aspect-ratio: 3 / 4;
 		}
 
@@ -58,11 +56,11 @@
 		}
 
 		&__card {
-			top: 138px;
+			top: 50%;
 			left: 50%;
-			width: 168px;
-			height: 250px;
-			transform: translateX(-50%);
+			width: 155px;
+			height: 231px;
+			transform: translateX(-50%) translateY(-50%);
 			box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
 		}
 
@@ -81,12 +79,6 @@
 			bottom: 0;
 			font-size: 14px;
 			line-height: 1.2;
-		}
-	}
-
-	@media (max-width: 1199px) {
-		.game-preview {
-			flex-basis: 432px;
 		}
 	}
 </style>

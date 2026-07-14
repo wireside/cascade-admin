@@ -1,6 +1,6 @@
 <template>
-	<section class="game-editor-section rounded-lg bg-white bg-opacity-2 text-white pa-4">
-		<h2 class="game-editor-section__title text-white font-weight-bold mb-4">{{ title }}</h2>
+	<section class="game-editor-section rounded-lg bg-white bg-opacity-2 text-white pa-5">
+		<h2 class="game-editor-section__title text-white font-weight-bold mb-4 mt-0">{{ title }}</h2>
 		<slot />
 	</section>
 </template>
@@ -14,8 +14,10 @@
 	});
 </script>
 
-<style scoped>
-	.game-editor-section__title {
-		line-height: 120%;
+<style scoped lang="scss">
+	.game-editor-section {
+		&__title {
+			line-height: 120%;
+		}
 	}
 </style>

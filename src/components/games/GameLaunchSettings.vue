@@ -102,8 +102,6 @@
 
 <style scoped lang="scss">
 	.game-launch-settings {
-		min-height: 532px;
-
 		&__label {
 			font-size: 12px;
 			line-height: 1.2;
@@ -112,39 +110,39 @@
 		&__notice {
 			font-size: 12px;
 			line-height: 130%;
-		}
 
-		&__notice p {
-			margin: 0;
+			p {
+				margin: 0;
+			}
 		}
 
 		&__administrator {
 			font-size: 13px;
 		}
-	}
 
-	:deep(.v-field) {
-		font-size: 13px;
-	}
+		:deep(.v-field) {
+			font-size: 13px;
+		}
 
-	:deep(.v-field__input) {
-		min-height: 40px;
-		padding-top: 8px;
-		padding-bottom: 8px;
-	}
+		:deep(.v-field__input) {
+			min-height: 40px;
+			padding-top: 8px;
+			padding-bottom: 8px;
+		}
 
-	:deep(.game-editor-control .v-field) {
-		background: transparent !important;
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 8px;
-	}
+		:deep(.game-editor-control .v-field) {
+			background: transparent !important;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 8px;
+		}
 
-	:deep(.game-editor-control .v-field__overlay),
-	:deep(.game-editor-control .v-field__outline) {
-		display: none;
-	}
+		:deep(.game-editor-control .v-field__overlay),
+		:deep(.game-editor-control .v-field__outline) {
+			display: none;
+		}
 
-	:deep(.v-field__prepend-inner > .v-icon) {
-		opacity: 0.4;
+		:deep(.v-field__prepend-inner > .v-icon) {
+			opacity: 0.4;
+		}
 	}
 </style>

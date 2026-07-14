@@ -3,7 +3,7 @@
 		title="Медиа файлы"
 		class="game-media-settings text-white"
 	>
-		<div class="rounded-md bg-white bg-opacity-2 pa-4">
+		<div class="rounded-md bg-white bg-opacity-2 pa-4 pb-7">
 			<div class="game-media-settings__label text-white mb-3">Иконка и обложка</div>
 			<div class="d-flex align-start ga-3">
 				<div class="d-flex flex-column ga-3">
@@ -40,19 +40,16 @@
 	const icon = defineModel("icon", { type: String, default: "" });
 </script>
 
-<style scoped>
-	/* TODO Переделать все стили компонентов games с использованием scss */
+<style scoped lang="scss">
 	.game-media-settings {
-		min-height: 440px;
-	}
+		&__label {
+			font-size: 12px;
+			line-height: 1.2;
+		}
 
-	.game-media-settings__label {
-		font-size: 12px;
-		line-height: 1.2;
-	}
-
-	.game-media-settings__notice {
-		height: 60px;
-		font-size: 12px;
+		&__notice {
+			max-height: 60px;
+			font-size: 12px;
+		}
 	}
 </style>

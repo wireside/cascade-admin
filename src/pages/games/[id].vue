@@ -8,25 +8,18 @@
 				</div>
 			</header>
 
-			<div class="game-editor__body d-flex align-start ga-3 pa-7">
-				<div class="game-editor__form d-flex flex-column ga-3">
-					<game-basic-data
-						v-model:name="game.name"
-						v-model:description="game.description"
-						v-model:group="game.group"
-					/>
-
-					<game-media-settings
-						v-model:cover="game.cover"
-						v-model:icon="game.icon"
-					/>
-
-					<game-launch-settings
-						v-model:paths="game.paths"
-						v-model:arguments="game.arguments"
-						v-model:run-as-administrator="game.runAsAdministrator"
-					/>
-				</div>
+			<div class="game-editor__body d-flex flex-wrap align-start ga-3 pa-7">
+				<game-edit-form
+					v-model:name="game.name"
+					v-model:description="game.description"
+					v-model:group="game.group"
+					v-model:cover="game.cover"
+					v-model:icon="game.icon"
+					v-model:paths="game.paths"
+					v-model:arguments="game.arguments"
+					v-model:run-as-administrator="game.runAsAdministrator"
+					class="game-editor__form"
+				/>
 
 				<game-preview
 					:game-name="game.name"
@@ -56,15 +49,9 @@
 </script>
 
 <style scoped lang="scss">
-	.game-editor-page {
-		min-width: 0;
-		min-height: 2020px;
-	}
-
 	.game-editor {
 		width: 100%;
 		min-width: 0;
-		min-height: 2020px;
 
 		&__hero {
 			height: 278px;
@@ -84,14 +71,12 @@
 		}
 
 		&__form {
-			flex: 1 1 650px;
-			min-width: 0;
+			flex: 1 1 615px;
+			min-width: 615px;
 			max-width: 650px;
 		}
-	}
 
-	@media (max-width: 1199px) {
-		.game-editor {
+		@media (max-width: 1199px) {
 			&__body {
 				flex-direction: column;
 			}

@@ -1,7 +1,7 @@
 <template>
 	<game-editor-section
 		title="Основные данные"
-		class="text-white"
+		class="game-basic-data text-white"
 	>
 		<div class="game-basic-data__block rounded-md bg-white bg-opacity-2 pa-4">
 			<div class="game-basic-data__label text-white mb-2">Название игры</div>
@@ -122,8 +122,9 @@
 			line-height: 130%;
 		}
 
-		&__notice {
-			line-height: 130%;
+		&__description-wrap {
+			height: 194px;
+			border: 1px solid rgba(255, 255, 255, 0.1);
 		}
 
 		&__description-counter {
@@ -134,71 +135,66 @@
 			white-space: nowrap;
 			pointer-events: none;
 		}
-	}
 
-	:deep(.v-field) {
-		font-size: 13px;
-	}
+		:deep(.v-field) {
+			font-size: 13px;
+		}
 
-	:deep(.v-field__input) {
-		min-height: 42px;
-		padding-top: 8px;
-		padding-bottom: 8px;
-	}
+		:deep(.v-field__input) {
+			min-height: 42px;
+			padding-top: 8px;
+			padding-bottom: 8px;
+		}
 
-	:deep(.game-editor-control .v-field) {
-		background: transparent !important;
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 8px;
-	}
+		:deep(.game-editor-control .v-field) {
+			background: transparent !important;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 8px;
+		}
 
-	:deep(.game-editor-control .v-field__overlay),
-	:deep(.game-editor-control .v-field__outline) {
-		display: none;
-	}
+		:deep(.game-editor-control .v-field__overlay),
+		:deep(.game-editor-control .v-field__outline) {
+			display: none;
+		}
 
-	.game-basic-data__description-wrap {
-		height: 194px;
-		border: 1px solid rgba(255, 255, 255, 0.1);
-	}
+		:deep(.game-basic-data__description),
+		:deep(.game-basic-data__description .v-input__control),
+		:deep(.game-basic-data__description .v-field) {
+			height: 100%;
+		}
 
-	:deep(.game-basic-data__description),
-	:deep(.game-basic-data__description .v-input__control),
-	:deep(.game-basic-data__description .v-field) {
-		height: 100%;
-	}
+		:deep(.game-basic-data__description .v-field) {
+			background: transparent !important;
+			border-radius: inherit;
+		}
 
-	:deep(.game-basic-data__description .v-field) {
-		background: transparent !important;
-		border-radius: inherit;
-	}
+		:deep(.game-basic-data__description .v-field__overlay),
+		:deep(.game-basic-data__description .v-field__outline) {
+			display: none;
+		}
 
-	:deep(.game-basic-data__description .v-field__overlay),
-	:deep(.game-basic-data__description .v-field__outline) {
-		display: none;
-	}
+		:deep(.game-basic-data__description .v-field__input) {
+			height: 100%;
+			min-height: 0;
+			padding: 12px 12px 32px;
+			align-items: flex-start;
+			color: rgb(var(--v-theme-white));
+		}
 
-	:deep(.game-basic-data__description .v-field__input) {
-		height: 100%;
-		min-height: 0;
-		padding: 12px 12px 32px;
-		align-items: flex-start;
-		color: rgb(var(--v-theme-white));
-	}
+		:deep(.game-basic-data__description textarea::placeholder) {
+			color: rgba(255, 255, 255, 0.4);
+			opacity: 1;
+		}
 
-	:deep(.game-basic-data__description textarea::placeholder) {
-		color: rgba(255, 255, 255, 0.4);
-		opacity: 1;
-	}
+		:deep(.game-basic-data__group .v-select__selection),
+		:deep(.game-basic-data__group .v-field__append-inner) {
+			color: rgb(var(--v-theme-white));
+			opacity: 0.4;
+		}
 
-	:deep(.game-basic-data__group .v-select__selection),
-	:deep(.game-basic-data__group .v-field__append-inner) {
-		color: rgb(var(--v-theme-white));
-		opacity: 0.4;
-	}
-
-	:deep(.v-field__prepend-inner > .v-icon),
-	:deep(.v-field__append-inner > .v-icon) {
-		opacity: 0.4;
+		:deep(.v-field__prepend-inner > .v-icon),
+		:deep(.v-field__append-inner > .v-icon) {
+			opacity: 0.4;
+		}
 	}
 </style>

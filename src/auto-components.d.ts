@@ -41,6 +41,7 @@ declare module 'vue' {
     ElectricityControl: typeof import('./components/control/ElectricityControl.vue')['default']
     EmailField: typeof import('./components/inputs/EmailField.vue')['default']
     GameBasicData: typeof import('./components/games/GameBasicData.vue')['default']
+    GameEditForm: typeof import('./components/forms/GameEditForm.vue')['default']
     GameEditorSection: typeof import('./components/games/GameEditorSection.vue')['default']
     GameLaunchSettings: typeof import('./components/games/GameLaunchSettings.vue')['default']
     GameMediaSettings: typeof import('./components/games/GameMediaSettings.vue')['default']

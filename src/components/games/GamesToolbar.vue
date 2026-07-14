@@ -78,6 +78,7 @@
 			</v-btn>
 
 			<v-btn
+        to="/games/0"
 				variant="flat"
 				color="primary"
 				height="40"
