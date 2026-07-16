@@ -5,7 +5,7 @@
 	>
 		<div class="game-basic-data__block rounded-md bg-white bg-opacity-2 pa-4 pt-3">
 			<div class="game-basic-data__label text-white mb-3">Название игры</div>
-			<div class="d-flex align-center ga-2 text-white">
+			<div class="d-flex align-center ga-1 text-white">
 				<v-text-field
 					v-model="name"
 					maxlength="50"
@@ -52,7 +52,7 @@
 			</div>
 		</div>
 
-		<div class="game-basic-data__block rounded-md bg-white bg-opacity-2 pa-4 mt-2">
+		<div class="game-basic-data__block rounded-md bg-white bg-opacity-2 pa-4 pt-3 mt-2">
 			<div class="game-basic-data__label text-white mb-3">Описание игры</div>
 			<div class="game-basic-data__description-wrap position-relative rounded-md bg-white bg-opacity-2">
 				<v-textarea
@@ -69,7 +69,7 @@
 			</div>
 		</div>
 
-		<div class="game-basic-data__block rounded-md bg-white bg-opacity-2 pa-4 mt-2">
+		<div class="game-basic-data__block rounded-md bg-white bg-opacity-2 pa-4 pt-3 mt-2">
 			<div class="game-basic-data__label text-white mb-3">Группа игр</div>
 			<v-select
 				v-model="group"
