@@ -55,7 +55,7 @@
 			</div>
 		</div>
 
-		<div class="rounded-md bg-white bg-opacity-2 pa-4 mt-2">
+		<div class="rounded-md bg-white bg-opacity-2 pa-4 pt-3 mt-2">
 			<div class="game-launch-settings__label text-white mb-3">Аргумент командной строки</div>
 			<v-text-field
 				v-model="launchArguments"
