@@ -5,8 +5,8 @@
 	>
 		<div class="rounded-md bg-white bg-opacity-2 pa-4 pb-7">
 			<div class="game-media-settings__label text-white mb-3">Иконка и обложка</div>
-			<div class="d-flex align-start ga-3">
-				<div class="d-flex flex-column ga-3">
+			<div class="d-flex align-start ga-2">
+				<div class="d-flex flex-column ga-2">
 					<game-media-uploader
 						v-model="cover"
 						title="Загрузите обложку"
@@ -44,12 +44,13 @@
 	.game-media-settings {
 		&__label {
 			font-size: 12px;
-			line-height: 1.2;
+			line-height: 125%;
 		}
 
 		&__notice {
-			max-height: 60px;
 			font-size: 12px;
+			line-height: 130%;
+			min-height: 60px;
 		}
 	}
 </style>

@@ -2,7 +2,7 @@
 	<div class="d-flex flex-column ga-4">
 		<devices-toolbar :sections="bootcampSections" />
 
-		<section class="d-flex flex-column ga-4">
+		<section class="d-flex flex-column ga-3">
 			<devices-section-panel
 				v-for="section in bootcampSections"
 				:key="section.title"

@@ -1,6 +1,6 @@
 <template>
 	<section class="game-preview rounded-lg bg-white bg-opacity-2 text-white pa-5">
-		<h2 class="game-preview__title text-white font-weight-bold mb-4 mt-0">Предпросмотр</h2>
+		<h2 class="game-preview__title text-white font-weight-medium mb-4 mt-0">Предпросмотр</h2>
 		<div class="game-preview__canvas position-relative overflow-hidden rounded-md">
 			<img
 				src="@/assets/images/games/game-preview.png"

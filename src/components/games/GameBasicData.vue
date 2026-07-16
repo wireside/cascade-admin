@@ -3,8 +3,8 @@
 		title="Основные данные"
 		class="game-basic-data text-white"
 	>
-		<div class="game-basic-data__block rounded-md bg-white bg-opacity-2 pa-4">
-			<div class="game-basic-data__label text-white mb-2">Название игры</div>
+		<div class="game-basic-data__block rounded-md bg-white bg-opacity-2 pa-4 pt-3">
+			<div class="game-basic-data__label text-white mb-3">Название игры</div>
 			<div class="d-flex align-center ga-2 text-white">
 				<v-text-field
 					v-model="name"
@@ -22,15 +22,15 @@
 
 				<v-btn
 					color="primary"
-					height="40"
+					height="44"
 					rounded="md"
-					class="bg-opacity-20 text-primary px-4"
+					class="bg-opacity-20 text-primary font-weight-regular px-4"
 					@click="importFromSteam"
 				>
 					<v-icon
 						icon="mdi-content-copy"
 						size="16"
-						class="mr-2"
+						class="mr-1"
 					/>
 					Импорт из Steam
 				</v-btn>
@@ -53,7 +53,7 @@
 		</div>
 
 		<div class="game-basic-data__block rounded-md bg-white bg-opacity-2 pa-4 mt-2">
-			<div class="game-basic-data__label text-white mb-2">Описание игры</div>
+			<div class="game-basic-data__label text-white mb-3">Описание игры</div>
 			<div class="game-basic-data__description-wrap position-relative rounded-md bg-white bg-opacity-2">
 				<v-textarea
 					v-model="description"
@@ -70,7 +70,7 @@
 		</div>
 
 		<div class="game-basic-data__block rounded-md bg-white bg-opacity-2 pa-4 mt-2">
-			<div class="game-basic-data__label text-white mb-2">Группа игр</div>
+			<div class="game-basic-data__label text-white mb-3">Группа игр</div>
 			<v-select
 				v-model="group"
 				:items="groups"
@@ -124,7 +124,7 @@
 
 		&__description-wrap {
 			height: 194px;
-			border: 1px solid rgba(255, 255, 255, 0.1);
+			border: 0.5px solid rgba(255, 255, 255, 0.1);
 		}
 
 		&__description-counter {
@@ -141,14 +141,14 @@
 		}
 
 		:deep(.v-field__input) {
-			min-height: 42px;
+			min-height: 44px;
 			padding-top: 8px;
 			padding-bottom: 8px;
 		}
 
 		:deep(.game-editor-control .v-field) {
 			background: transparent !important;
-			border: 1px solid rgba(255, 255, 255, 0.1);
+			border: 0.5px solid rgba(255, 255, 255, 0.1);
 			border-radius: 8px;
 		}
 

@@ -4,11 +4,10 @@
 		:prepend-icon="prependIcon"
 		:ripple="false"
 		:class="{
-			'bg-primary bg-opacity-10 nav-link--active pl-7': route.path === to,
-			'pl-10': route.path !== to,
+			'bg-primary bg-opacity-10 nav-link--active': route.path === to,
 			'pl-13': secondary,
 		}"
-		class="bg-background justify-start opacity-100 font-weight-regular"
+		class="bg-background justify-start opacity-100 font-weight-regular pl-7"
 		color="white"
 		variant="plain"
 		height="38px"
@@ -52,7 +51,6 @@
 
 		&--active {
 			position: relative;
-			transition: padding 0.2s linear;
 
 			&::before {
 				content: "";

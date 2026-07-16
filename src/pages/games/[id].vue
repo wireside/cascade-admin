@@ -73,7 +73,7 @@
 		&__form {
 			flex: 1 1 615px;
 			min-width: 615px;
-			max-width: 650px;
+			max-width: 615px;
 		}
 
 		@media (max-width: 1199px) {

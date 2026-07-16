@@ -3,8 +3,8 @@
 		title="Настройки ярлыка"
 		class="game-launch-settings text-white"
 	>
-		<div class="rounded-md bg-white bg-opacity-2 pa-4">
-			<div class="game-launch-settings__label text-white mb-2">Путь к файлам</div>
+		<div class="rounded-md bg-white bg-opacity-2 pa-4 pt-3">
+			<div class="game-launch-settings__label text-white mb-3">Путь к файлам</div>
 
 			<div class="d-flex flex-column ga-1">
 				<div
@@ -56,7 +56,7 @@
 		</div>
 
 		<div class="rounded-md bg-white bg-opacity-2 pa-4 mt-2">
-			<div class="game-launch-settings__label text-white mb-2">Аргумент командной строки</div>
+			<div class="game-launch-settings__label text-white mb-3">Аргумент командной строки</div>
 			<v-text-field
 				v-model="launchArguments"
 				prepend-inner-icon="mdi-console-line"
@@ -68,11 +68,11 @@
 		</div>
 
 		<div class="d-flex align-center justify-space-between rounded-md bg-white bg-opacity-2 pa-4 mt-2">
-			<div class="d-flex align-center ga-2 text-white">
+			<div class="d-flex align-center ga-1 text-white">
 				<v-icon
-					icon="mdi-code-tags"
+					icon="mdi-xml"
 					color="primary"
-					size="18"
+					size="16"
 				/>
 				<span class="game-launch-settings__administrator">Запускать от имени администратора</span>
 			</div>
@@ -132,7 +132,7 @@
 
 		:deep(.game-editor-control .v-field) {
 			background: transparent !important;
-			border: 1px solid rgba(255, 255, 255, 0.1);
+			border: 0.5px solid rgba(255, 255, 255, 0.1);
 			border-radius: 8px;
 		}
 

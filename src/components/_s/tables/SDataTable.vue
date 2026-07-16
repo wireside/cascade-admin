@@ -48,13 +48,14 @@
 						:key="col.key"
 						:aria-sort="getColumnAriaSort(col)"
 						:class="{
-							'pl-6 text-start': idx === 0 && !selectable,
-							'pr-6 text-end': idx === columns.length - 1,
+							'pl-5 text-start': idx === 0,
+							'pr-5 text-end': idx === columns.length - 1,
+							'pr-1 pr-lg-2 pr-xl-6': idx < columns.length - 1,
 							'text-center': idx > 0 && idx < columns.length - 1,
 							'cursor-pointer': isColumnSortable(col),
 						}"
 						:style="getColumnSizeStyle(idx)"
-						class="text-white bg-transparent pa-0 px-6"
+						class="text-white bg-transparent pa-0"
 						@click="toggleColumnSort(col)"
 					>
 						<span class="d-inline-flex align-center ga-1 opacity-50">
@@ -125,10 +126,11 @@
 										:key="col.key"
 										:style="getColumnSizeStyle(colIdx)"
 										:class="{
-											'font-weight-medium': col.strong,
-											'pl-6 text-start': colIdx === 0 && !selectable,
-											'pr-6 text-end': colIdx === columns.length - 1,
+											'pl-5 text-start': colIdx === 0,
+											'pr-5 text-end': colIdx === columns.length - 1,
+											'pr-1 pr-lg-2 pr-xl-6': colIdx < columns.length - 1,
 											'text-center': colIdx > 0 && colIdx < columns.length - 1,
+											'font-weight-medium': col.strong,
 											's-data-table__cell--bordered': rowBorder,
 										}"
 										class="text-white"
@@ -223,6 +225,7 @@
 
 <script setup>
 	import { mergeProps, useSlots } from "vue";
+	import { useDisplay } from "vuetify";
 
 	const selectedRows = defineModel({
 		type: Array,
@@ -322,6 +325,7 @@
 
 	const emit = defineEmits(["row-select", "row-unselect", "row-contextmenu"]);
 	const slots = useSlots();
+	const { lgAndUp, xlAndUp } = useDisplay();
 
 	const selectedRowIds = ref([]);
 	const tableRef = ref(null);
@@ -395,29 +399,33 @@
 	const resolvedRowHeight = computed(() => toSizeNumber(props.rowHeight) || 50);
 	const resolvedRowHeightStyle = computed(() => `${resolvedRowHeight.value}px`);
 
-	const columnHorizontalPadding = 48;
-	const selectionColumnWidth = 58;
+	const selectionColumnWidth = $computed(() => (xlAndUp.value ? 58 : 42));
+	const columnRightPadding = $computed(() => (xlAndUp.value ? 24 : lgAndUp.value ? 8 : 4));
 
 	const selectionColumnStyle = computed(() => ({
 		width: `${selectionColumnWidth}px`,
 		minWidth: `${selectionColumnWidth}px`,
 		maxWidth: `${selectionColumnWidth}px`,
+		paddingInline: xlAndUp.value ? "20px 12px" : "8px",
 	}));
 
 	const resolveColumnWidth = (index) => {
 		const col = props.columns[index] || {};
+		const leftPadding = index === 0 ? 20 : 0;
+		const rightPadding = index === props.columns.length - 1 ? 20 : columnRightPadding;
+		const horizontalPadding = leftPadding + rightPadding;
 
 		if (col.width !== undefined && col.width !== null) {
 			if (typeof col.width === "number") return `${col.width}px`;
 			if (typeof col.width === "string") return col.width;
 			if (typeof col.width === "object") {
 				const chars = col.width.chars || col.width.maxChars;
-				if (chars) return `calc(${chars}ch + ${columnHorizontalPadding}px)`;
+				if (chars) return `calc(${chars}ch + ${horizontalPadding}px)`;
 				return undefined;
 			}
 		}
 
-		if (col.maxChars) return `calc(${col.maxChars}ch + ${columnHorizontalPadding}px)`;
+		if (col.maxChars) return `calc(${col.maxChars}ch + ${horizontalPadding}px)`;
 
 		return undefined;
 	};
@@ -745,7 +753,6 @@
 		border-radius: 10px !important;
 
 		&__selection-cell {
-			padding-inline: 20px 12px;
 			text-align: center;
 
 			:deep(.v-btn) {
@@ -781,7 +788,7 @@
 	:deep(.s-data-table td) {
 		border-bottom: 0 !important;
 		overflow: hidden;
-		text-overflow: ellipsis;
+		text-overflow: clip !important;
 		white-space: nowrap;
 	}
 

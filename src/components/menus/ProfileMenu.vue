@@ -21,7 +21,7 @@
 								src="../../assets/images/profile-avatar.png"
 							/>
 						</v-avatar>
-						<span>{{ user?.userName }}</span>
+						<span>{{ user?.userName || "Киллов Я." }}</span>
 					</div>
 					<v-icon
 						icon="mdi-chevron-down"
@@ -182,7 +182,6 @@
 				name: "Киллов Ян",
 				userName: "hatekilla",
 				phone: "+7 (999) 999-67-67",
-				role: "Кассир",
 			},
 			{
 				name: "Алексей Топоров",

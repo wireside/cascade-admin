@@ -40,7 +40,7 @@
 			</v-btn>
 		</div>
 
-		<div class="d-flex align-center ga-2 flex-wrap">
+		<div class="d-flex align-center ga-1 flex-wrap">
 			<v-btn
 				variant="flat"
 				color="primary"
@@ -51,7 +51,7 @@
 				<v-icon
 					icon="mdi-arrow-top-right"
 					size="16"
-					class="mr-2"
+					class="mr-1"
 				/>
 				Переместить
 				<v-icon
@@ -68,12 +68,14 @@
 				rounded="md"
 				class="px-4 bg-white bg-opacity-20 text-white"
 			>
-				<v-icon
-					icon="mdi-plus-circle-outline"
-					size="16"
-					class="mr-2"
-				/>
-				<span class="opacity-50">Добавить устройство</span>
+				<div class="opacity-50 d-flex align-center">
+					<v-icon
+						icon="mdi-plus-circle-outline"
+						size="16"
+						class="mr-1"
+					/>
+					<span>Добавить устройство</span>
+				</div>
 			</v-btn>
 
 			<v-btn
@@ -86,7 +88,7 @@
 				<v-icon
 					icon="mdi-plus-circle-outline"
 					size="16"
-					class="mr-2"
+					class="mr-1"
 				/>
 				Создать группу
 			</v-btn>

@@ -6,14 +6,16 @@
 			:selected-app="selectedApp"
 		/>
 
-		<apps-group
-			v-for="group in groups"
-			:key="group.name"
-			:group="group"
-			:expanded="groupsExpanded"
-			:selected-app="selectedApp"
-			@select-app="selectApp"
-		/>
+		<div class="d-flex flex-column ga-2">
+			<apps-group
+				v-for="group in groups"
+				:key="group.name"
+				:group="group"
+				:expanded="groupsExpanded"
+				:selected-app="selectedApp"
+				@select-app="selectApp"
+			/>
+		</div>
 	</div>
 </template>
 
