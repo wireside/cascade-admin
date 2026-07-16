@@ -1,12 +1,6 @@
 <template>
-	<div
-		class="dashboard-panel bg-white bg-opacity-3"
-		:class="{ 'dashboard-panel--expanded': !collapsed }"
-	>
-		<div
-			class="d-flex align-center justify-space-between"
-			:class="{ 'mb-4': !collapsed }"
-		>
+	<div class="dashboard-panel bg-white bg-opacity-3">
+		<div class="d-flex align-center justify-space-between">
 			<div class="d-flex align-center ga-2 flex-wrap">
 				<v-chip
 					:size="null"
@@ -39,7 +33,6 @@
 					height="40"
 					rounded="md"
 					class="devices-section-action devices-section-action--paint text-background px-0"
-					@click="detailsPanelOpen = true"
 				>
 					<v-icon
 						icon="mdi-brush-outline"
@@ -85,54 +78,58 @@
 			</div>
 		</div>
 
-		<s-data-table
-			v-if="!collapsed"
-			v-model="selectedRows"
-			:columns="columns"
-			:rows="tableRows"
-			:loading="loading"
-			:tone="section.tone"
-			selectable
-			row-border
-			hover-class="bg-background"
-			row-hover-popup-delay="500"
-			table-height="288"
-			@row-contextmenu="openRowMenu"
-		>
-			<template #row-hover-popup="{ row }">
-				<div
-					v-if="row?.client"
-					class="upcoming-bookings bg-surface bg-opacity-80 px-4 pt-2 pb-3 text-white font-weight-medium"
+		<s-collapse :expanded="!collapsed">
+			<div class="devices-section-content pt-4">
+				<s-data-table
+					v-model="selectedRows"
+					:columns="columns"
+					:rows="tableRows"
+					:loading="loading"
+					:tone="section.tone"
+					selectable
+					row-border
+					hover-class="bg-background"
+					cell-hover-popup-delay="500"
+					table-height="288"
+					@update:model-value="onSelectionChange"
+					@row-contextmenu="openRowMenu"
 				>
-					<div class="d-flex align-center ga-2 mb-2">
-						<v-icon
-							icon="mdi-clock-star-four-points-outline"
-							size="20"
-							class="text-white"
-						/>
-						<span>Ближ. бронирования</span>
-					</div>
-
-					<div class="d-flex align-center justify-space-between ga-4 text-no-wrap">
-						<span class="opacity-70">{{ "01.03.26" }}</span>
-						<v-row
-							gap="2px"
-							align="center"
+					<template #cell-booking-hover-popup="{ row }">
+						<div
+							v-if="row?.client"
+							class="upcoming-bookings bg-surface bg-opacity-80 px-4 pt-2 pb-3 text-white font-weight-medium"
 						>
-							<v-col>{{ row.start.split(":").slice(0, 2).join(":") }}</v-col>
-							<v-col>
+							<div class="d-flex align-center ga-2 mb-2">
 								<v-icon
-									icon="mdi-arrow-right"
-									size="18"
+									icon="mdi-clock-star-four-points-outline"
+									size="20"
+									class="text-white"
 								/>
-							</v-col>
-							<v-col>{{ row.end.split(":").slice(0, 2).join(":") }}</v-col>
-						</v-row>
-						<span class="opacity-70">{{ row.client }}</span>
-					</div>
-				</div>
-			</template>
-		</s-data-table>
+								<span>Ближ. бронирования</span>
+							</div>
+
+							<div class="d-flex align-center justify-space-between ga-4 text-no-wrap">
+								<span class="opacity-70">{{ "01.03.26" }}</span>
+								<v-row
+									gap="2px"
+									align="center"
+								>
+									<v-col>{{ row.start.split(":").slice(0, 2).join(":") }}</v-col>
+									<v-col>
+										<v-icon
+											icon="mdi-arrow-right"
+											size="18"
+										/>
+									</v-col>
+									<v-col>{{ row.end.split(":").slice(0, 2).join(":") }}</v-col>
+								</v-row>
+								<span class="opacity-70">{{ row.client }}</span>
+							</div>
+						</div>
+					</template>
+				</s-data-table>
+			</div>
+		</s-collapse>
 
 		<device-control
 			v-if="!collapsed"
@@ -141,11 +138,6 @@
 			:y="contextMenu.y"
 			:menu-target="contextMenu.target"
 			:row="contextMenu.row"
-		/>
-
-		<devices-details-panel
-			v-model:modal-open="detailsPanelOpen"
-			:device="detailsDevice"
 		/>
 	</div>
 </template>
@@ -157,12 +149,12 @@
 			required: true,
 		},
 	});
+	const emit = defineEmits(["selection-change"]);
 
 	const testStore = useTestStore();
 
 	const selectedRows = $ref([]);
 	let collapsed = $ref(false);
-	let detailsPanelOpen = $ref(false);
 
 	const contextMenu = $ref({
 		show: false,
@@ -174,8 +166,6 @@
 	});
 
 	const loading = $computed(() => testStore.loading);
-
-	const detailsDevice = $computed(() => selectedRows[0] || tableRows[0] || null);
 
 	const getBookingDate = (start, end) => {
 		const source = typeof start === "string" && start.includes(" ") ? start : end;
@@ -205,6 +195,10 @@
 		{ key: "app", label: "Приложение", width: { maxChars: 14 } },
 	];
 
+	const onSelectionChange = (rows) => {
+		emit("selection-change", rows);
+	};
+
 	const openRowMenu = ({ event, row, rowIdx }) => {
 		event?.preventDefault?.();
 		contextMenu.show = true;
@@ -226,10 +220,10 @@
 		border-radius: 10px;
 		padding-block: 10px;
 		padding-inline: 20px;
+	}
 
-		&--expanded {
-			padding-bottom: 20px !important;
-		}
+	.devices-section-content {
+		padding-bottom: 10px;
 	}
 
 	.bootcamp-badge {

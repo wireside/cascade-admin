@@ -1,13 +1,19 @@
 <template>
 	<v-dialog
 		v-model="modalOpen"
+		:scrim="false"
+		:retain-focus="false"
+		persistent
+		no-click-animation
 		class="devices-details-dialog"
 		content-class="devices-details-dialog__content"
 		width="340"
 		max-width="340"
-		scrim="transparent"
+		height="550"
 		scroll-strategy="none"
 		transition="fade-transition"
+		@click:outside="emit('click-outside', $event)"
+		@keydown.esc="modalOpen = false"
 	>
 		<v-sheet
 			width="340"
@@ -16,82 +22,98 @@
 			elevation="0"
 			class="devices-details-panel bg-surface bg-opacity-80 text-white px-6 pb-6 pt-5 overflow-hidden"
 		>
-			<div class="d-flex align-center justify-space-between mb-5">
-				<div class="devices-details-panel__title font-weight-medium text-truncate">
-					{{ deviceDetails.name }}
-				</div>
-
-				<div class="d-flex align-center ga-1">
-					<s-badge
-						:label="deviceDetails.status.label"
-						:tone="deviceDetails.status.tone"
-						bg-opacity="25"
-					/>
-
-					<v-btn
-						icon
-						:density="null"
-						variant="flat"
-						color="white"
-						width="29"
-						height="29"
-						rounded="sm"
-						class="bg-opacity-10 text-white"
-						@click="modalOpen = false"
-					>
-						<v-icon
-							icon="mdi-close"
-							size="18"
-							class="opacity-70"
-						/>
-					</v-btn>
-				</div>
+			<div
+				v-if="loading"
+				class="d-flex align-center justify-center fill-height"
+			>
+				<v-progress-circular
+					indeterminate
+					color="primary"
+					size="48"
+					width="4"
+				/>
 			</div>
 
-			<div class="devices-details-panel__content d-flex flex-column ga-3">
-				<div
-					v-for="item in specItems"
-					:key="item.label"
-				>
-					<div class="devices-details-panel__label text-white opacity-60 mb-1">{{ item.label }}</div>
-					<div class="devices-details-panel__value font-weight-medium text-white">{{ item.value }}</div>
-				</div>
+			<template v-else>
+				<div class="d-flex align-center justify-space-between mb-5">
+					<div class="devices-details-panel__title font-weight-medium text-truncate">
+						{{ deviceDetails.name }}
+					</div>
 
-				<div>
-					<div class="devices-details-panel__label text-white opacity-60 mb-1">Диски</div>
+					<div class="d-flex align-center ga-1">
+						<s-badge
+							:label="deviceDetails.status.label"
+							:tone="deviceDetails.status.tone"
+							bg-opacity="25"
+						/>
 
-					<div
-						v-for="disk in deviceDetails.disks"
-						:key="disk.name"
-						class="devices-details-panel__disk mb-2"
-					>
-						<div class="d-flex align-center ga-2 mb-1">
-							<div class="devices-details-panel__disk-name font-weight-medium">{{ disk.name }}</div>
-							<div class="devices-details-panel__disk-track flex-1-1 bg-white bg-opacity-5 rounded-sm overflow-hidden">
-								<div
-									class="devices-details-panel__disk-fill rounded-sm"
-									:class="`bg-${disk.tone}`"
-									:style="{ width: `${disk.usedPercent}%` }"
-								/>
-							</div>
-						</div>
-						<div class="devices-details-panel__disk-caption text-white opacity-50">
-							{{ disk.caption }}
-						</div>
+						<v-btn
+							icon
+							:density="null"
+							variant="flat"
+							color="white"
+							width="29"
+							height="29"
+							rounded="sm"
+							class="bg-opacity-10 text-white"
+							@click="modalOpen = false"
+						>
+							<v-icon
+								icon="mdi-close"
+								size="18"
+								class="opacity-70"
+							/>
+						</v-btn>
 					</div>
 				</div>
 
-				<div>
-					<div class="devices-details-panel__label text-white opacity-60 mb-1">Активное приложение</div>
-					<div class="devices-details-panel__value font-weight-medium">{{ deviceDetails.app }}</div>
-				</div>
+				<div class="devices-details-panel__content d-flex flex-column ga-4">
+					<div
+						v-for="item in specItems"
+						:key="item.label"
+					>
+						<div class="devices-details-panel__label text-white opacity-60 mb-2">{{ item.label }}</div>
+						<div class="devices-details-panel__value font-weight-medium text-white">{{ item.value }}</div>
+					</div>
 
-				<div>
-					<div class="devices-details-panel__label text-white opacity-60 mb-1">Сеть</div>
-					<div class="devices-details-panel__value font-weight-medium">{{ deviceDetails.network.ip }}</div>
-					<div class="devices-details-panel__value font-weight-medium">{{ deviceDetails.network.mac }}</div>
+					<div>
+						<div class="devices-details-panel__label text-white opacity-60 mb-1">Диски</div>
+
+						<div
+							v-for="disk in deviceDetails.disks"
+							:key="disk.name"
+							class="devices-details-panel__disk mb-2"
+						>
+							<div class="d-flex align-center ga-2 mb-1">
+								<div class="devices-details-panel__disk-name font-weight-medium">{{ disk.name }}</div>
+								<div
+									class="devices-details-panel__disk-track flex-1-1 bg-white bg-opacity-5 rounded-sm overflow-hidden"
+								>
+									<div
+										class="devices-details-panel__disk-fill rounded-sm"
+										:class="`bg-${disk.tone}`"
+										:style="{ width: `${disk.usedPercent}%` }"
+									/>
+								</div>
+							</div>
+							<div class="devices-details-panel__disk-caption text-white opacity-50">
+								{{ disk.caption }}
+							</div>
+						</div>
+					</div>
+
+					<div>
+						<div class="devices-details-panel__label text-white opacity-60 mb-1">Активное приложение</div>
+						<div class="devices-details-panel__value font-weight-medium">{{ deviceDetails.app }}</div>
+					</div>
+
+					<div>
+						<div class="devices-details-panel__label text-white opacity-60 mb-1">Сеть</div>
+						<div class="devices-details-panel__value font-weight-medium">{{ deviceDetails.network.ip }}</div>
+						<div class="devices-details-panel__value font-weight-medium">{{ deviceDetails.network.mac }}</div>
+					</div>
 				</div>
-			</div>
+			</template>
 		</v-sheet>
 	</v-dialog>
 </template>
@@ -101,11 +123,16 @@
 		type: Boolean,
 		default: false,
 	});
+	const emit = defineEmits(["click-outside"]);
 
 	const props = defineProps({
 		device: {
 			type: Object,
 			default: null,
+		},
+		loading: {
+			type: Boolean,
+			default: false,
 		},
 	});
 
@@ -191,8 +218,7 @@
 		border-radius: 10px !important;
 
 		&__title {
-			font-size: 16px;
-			line-height: 20px;
+			font-size: 18px;
 		}
 
 		&__content {

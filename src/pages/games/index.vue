@@ -3,18 +3,32 @@
 		<games-toolbar
 			v-model:expanded="groupsExpanded"
 			:groups="groups"
-			:selected-game="selectedGame"
+			:selected-games="selectedGames"
 		/>
 
-		<div class="d-flex flex-column ga-2">
-			<games-group
+		<div class="games-page__groups d-flex flex-column ga-2">
+			<div
 				v-for="group in groups"
-				:key="group.name"
-				:group="group"
-				:expanded="groupsExpanded"
-				:selected-game="selectedGame"
-				@select-game="selectGame"
-			/>
+				:key="group.id"
+				:class="{
+					'games-page__group--drop-before': dragOverGroupId === group.id && groupDropPosition === 'before',
+					'games-page__group--drop-after': dragOverGroupId === group.id && groupDropPosition === 'after',
+				}"
+				class="games-page__group position-relative"
+				@dragover.prevent="onGroupDragOver($event, group)"
+				@dragleave="onGroupDragLeave($event, group)"
+				@drop.prevent="dropGroup(group)"
+			>
+				<games-group
+					:group="group"
+					:expanded="groupsExpanded"
+					:selected-games="selectedGames"
+					@select-game="selectGame"
+					@reorder-games="reorderGames"
+					@group-drag-start="startGroupDrag"
+					@group-drag-end="endGroupDrag"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
@@ -23,9 +37,10 @@
 	import callOfDutyImg from "@/assets/images/games/call_of_duty.png";
 	import pubgImg from "@/assets/images/games/pubg.png";
 	import valorantImg from "@/assets/images/games/valorant.png";
+	import { useGroupedOrder } from "@/composables/useGroupedOrder";
 
 	const groupsExpanded = ref(true);
-	const selectedGame = ref(null);
+	const selectedGames = ref([]);
 
 	const callOfDuty = {
 		name: "Call Of Duty: Warzone",
@@ -75,8 +90,9 @@
 			id: `${groupKey}-${index + 1}`,
 		}));
 
-	const groups = [
+	const mockGroups = [
 		{
+			id: "ungrouped",
 			name: "Без группы",
 			games: [
 				createGame(callOfDuty, "ungrouped-1"),
@@ -87,21 +103,66 @@
 			],
 		},
 		{
+			id: "shooters",
 			name: "Шутеры",
 			games: createMockGames(groupMockGames.shooters, 28, "shooters"),
 		},
 		{
+			id: "mmo-rpg",
 			name: "MMO RPG",
 			games: createMockGames(groupMockGames.mmoRpg, 20, "mmo-rpg"),
 		},
 		{
+			id: "extraction",
 			name: "Extraction",
 			games: createMockGames(groupMockGames.extraction, 2, "extraction"),
 		},
 	];
 
-	const selectGame = (game) => {
-		selectedGame.value = game;
+	const getGameId = (game) => {
+		return game?.id || game?.name;
+	};
+
+	const selectGame = (game, event) => {
+		const isMultipleSelect = event?.ctrlKey || event?.metaKey;
+		const gameId = getGameId(game);
+
+		if (!isMultipleSelect) {
+			selectedGames.value = [game];
+			return;
+		}
+
+		const isSelected = selectedGames.value.some((selectedGame) => getGameId(selectedGame) === gameId);
+
+		selectedGames.value = isSelected
+			? selectedGames.value.filter((selectedGame) => getGameId(selectedGame) !== gameId)
+			: [...selectedGames.value, game];
+	};
+
+	const {
+		groups,
+		dragOverGroupId,
+		groupDropPosition,
+		reorderItems,
+		startGroupDrag,
+		onGroupDragOver,
+		onGroupDragLeave,
+		dropGroup,
+		endGroupDrag,
+	} = useGroupedOrder({
+		storageKey: "cascade-games-order",
+		initialGroups: mockGroups,
+		itemsKey: "games",
+		groupHeaderSelector: ".games-group__header",
+	});
+
+	const reorderGames = ({ groupId, gameId, targetGameId, position }) => {
+		reorderItems({
+			groupId,
+			itemId: gameId,
+			targetItemId: targetGameId,
+			position,
+		});
 	};
 </script>
 
@@ -112,3 +173,29 @@ meta:
   icon: mdi-controller
   parentTitle: Приложения
 </route>
+
+<style scoped lang="scss">
+	.games-page__group {
+		&--drop-before,
+		&--drop-after {
+			&::before {
+				position: absolute;
+				z-index: 3;
+				right: 0;
+				left: 0;
+				height: 3px;
+				border-radius: 3px;
+				background: rgb(var(--v-theme-primary));
+				content: "";
+			}
+		}
+
+		&--drop-before::before {
+			top: -5px;
+		}
+
+		&--drop-after::before {
+			bottom: -5px;
+		}
+	}
+</style>

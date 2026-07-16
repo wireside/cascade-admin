@@ -19,7 +19,6 @@
 
 .no-select {
 	@extend .user-select-none;
-	@extend .pointer-events-none;
 }
 
 @for $opacity from 1 to 10 {
