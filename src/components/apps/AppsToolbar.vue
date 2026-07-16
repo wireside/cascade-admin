@@ -57,7 +57,7 @@
 			</v-btn>
 
 			<v-btn
-				v-if="selectedApp"
+				v-if="selectedApps.length"
 				variant="flat"
 				color="primary"
 				height="40"
@@ -103,9 +103,9 @@
 		groups: {
 			type: Array,
 		},
-		selectedApp: {
-			type: Object,
-			default: null,
+		selectedApps: {
+			type: Array,
+			default: () => [],
 		},
 	});
 

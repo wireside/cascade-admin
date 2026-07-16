@@ -211,6 +211,7 @@ declare global {
 	const useFullscreen: typeof import("@vueuse/core").useFullscreen;
 	const useGamepad: typeof import("@vueuse/core").useGamepad;
 	const useGeolocation: typeof import("@vueuse/core").useGeolocation;
+	const useGroupedOrder: typeof import("./composables/useGroupedOrder.js").useGroupedOrder;
 	const useId: typeof import("vue").useId;
 	const useIdle: typeof import("@vueuse/core").useIdle;
 	const useImage: typeof import("@vueuse/core").useImage;
@@ -218,6 +219,7 @@ declare global {
 	const useIntersectionObserver: typeof import("@vueuse/core").useIntersectionObserver;
 	const useInterval: typeof import("@vueuse/core").useInterval;
 	const useIntervalFn: typeof import("@vueuse/core").useIntervalFn;
+	const useItemReorderDrag: typeof import("./composables/useItemReorderDrag.js").useItemReorderDrag;
 	const useKeyModifier: typeof import("@vueuse/core").useKeyModifier;
 	const useLastChanged: typeof import("@vueuse/core").useLastChanged;
 	const useLink: typeof import("vue-router").useLink;
@@ -564,6 +566,7 @@ declare module "vue" {
 		readonly useFullscreen: UnwrapRef<(typeof import("@vueuse/core"))["useFullscreen"]>;
 		readonly useGamepad: UnwrapRef<(typeof import("@vueuse/core"))["useGamepad"]>;
 		readonly useGeolocation: UnwrapRef<(typeof import("@vueuse/core"))["useGeolocation"]>;
+		readonly useGroupedOrder: UnwrapRef<(typeof import("./composables/useGroupedOrder.js"))["useGroupedOrder"]>;
 		readonly useId: UnwrapRef<(typeof import("vue"))["useId"]>;
 		readonly useIdle: UnwrapRef<(typeof import("@vueuse/core"))["useIdle"]>;
 		readonly useImage: UnwrapRef<(typeof import("@vueuse/core"))["useImage"]>;
@@ -571,6 +574,9 @@ declare module "vue" {
 		readonly useIntersectionObserver: UnwrapRef<(typeof import("@vueuse/core"))["useIntersectionObserver"]>;
 		readonly useInterval: UnwrapRef<(typeof import("@vueuse/core"))["useInterval"]>;
 		readonly useIntervalFn: UnwrapRef<(typeof import("@vueuse/core"))["useIntervalFn"]>;
+		readonly useItemReorderDrag: UnwrapRef<
+			(typeof import("./composables/useItemReorderDrag.js"))["useItemReorderDrag"]
+		>;
 		readonly useKeyModifier: UnwrapRef<(typeof import("@vueuse/core"))["useKeyModifier"]>;
 		readonly useLastChanged: UnwrapRef<(typeof import("@vueuse/core"))["useLastChanged"]>;
 		readonly useLink: UnwrapRef<(typeof import("vue-router"))["useLink"]>;

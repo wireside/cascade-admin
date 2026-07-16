@@ -74,105 +74,99 @@
 					v-for="({ row, rowId }, rowIdx) in displayedTableRows"
 					:key="rowId"
 				>
-					<template v-slot="{ isHovering, props }">
-						<v-menu
-							:open-on-hover="hasRowHoverPopup"
-							:open-delay="rowHoverPopupDelay"
-							:close-delay="rowHoverPopupCloseDelay"
-							:close-on-content-click="false"
-							:target="hoverPopupTarget"
-							location="end"
-							:offset="rowHoverPopupOffset"
-							transition="fade-transition"
-							content-class="s-data-table__hover-popup-overlay"
+					<template v-slot="{ isHovering, props: hoverProps }">
+						<tr
+							v-bind="hoverProps"
+							:class="{
+								[hoverClass]: isHovering && !isSelected(rowId),
+								[`bg-${tone} bg-opacity-10`]: isSelected(rowId),
+							}"
+							class="cursor-pointer"
+							@click.left="onRowClick($event, row, rowId)"
+							@contextmenu.prevent="onRowRightClick($event, row, rowIdx)"
 						>
-							<template #activator="{ props: menuProps }">
-								<tr
-									v-bind="mergeProps(props, menuProps)"
-									:class="{
-										[hoverClass]: isHovering && !isSelected(rowId),
-										[`bg-${tone} bg-opacity-10`]: isSelected(rowId),
-									}"
-									class="cursor-pointer"
-									@click.left="toggleRowSelection(row, rowId)"
-									@contextmenu.prevent="onRowRightClick($event, row, rowIdx)"
-									@mouseenter="onRowMouseEnter"
+							<td
+								v-if="selectable"
+								:style="selectionColumnStyle"
+								:class="{ 's-data-table__cell--bordered': rowBorder }"
+								class="s-data-table__selection-cell"
+							>
+								<v-btn
+									icon
+									:variant="isSelected(rowId) ? 'flat' : 'outlined'"
+									:color="isSelected(rowId) ? tone : 'white'"
+									rounded="lg"
+									size="18"
+									:class="isSelected(rowId) ? selectedButtonTextClass : 'text-white opacity-50'"
+									:aria-label="isSelected(rowId) ? 'Снять выделение со строки' : 'Выделить строку'"
+									@click.stop="toggleRowSelection(row, rowId)"
 								>
-									<td
-										v-if="selectable"
-										:style="selectionColumnStyle"
-										:class="{ 's-data-table__cell--bordered': rowBorder }"
-										class="s-data-table__selection-cell"
+									<v-icon
+										v-if="isSelected(rowId)"
+										icon="mdi-check"
+										size="12.6"
+									/>
+								</v-btn>
+							</td>
+							<td
+								v-for="(col, colIdx) in columns"
+								:key="col.key"
+								:style="getColumnSizeStyle(colIdx)"
+								:class="{
+									'pl-5 text-start': colIdx === 0,
+									'pr-5 text-end': colIdx === columns.length - 1,
+									'pr-1 pr-lg-2 pr-xl-6': colIdx < columns.length - 1,
+									'text-center': colIdx > 0 && colIdx < columns.length - 1,
+									'font-weight-medium': col.strong,
+									's-data-table__cell--bordered': rowBorder,
+								}"
+								class="text-white"
+							>
+								<span class="d-inline-flex align-center">
+									<slot
+										:name="`cell-${col.key}`"
+										:row="row"
+										:value="row[col.key]"
 									>
-										<v-btn
-											icon
-											:variant="isSelected(rowId) ? 'flat' : 'outlined'"
-											:color="isSelected(rowId) ? tone : 'white'"
-											rounded="lg"
-											size="18"
-											:class="isSelected(rowId) ? selectedButtonTextClass : 'text-white opacity-50'"
-											:aria-label="isSelected(rowId) ? 'Снять выделение со строки' : 'Выделить строку'"
-											@click.stop="toggleRowSelection(row, rowId)"
-										>
-											<v-icon
-												v-if="isSelected(rowId)"
-												icon="mdi-check"
-												size="12.6"
+										<template v-if="isBadgeValue(row[col.key])">
+											<s-badge
+												:label="row[col.key].label"
+												:tone="row[col.key].tone"
 											/>
-										</v-btn>
-									</td>
-									<td
-										v-for="(col, colIdx) in columns"
-										:key="col.key"
-										:style="getColumnSizeStyle(colIdx)"
-										:class="{
-											'pl-5 text-start': colIdx === 0,
-											'pr-5 text-end': colIdx === columns.length - 1,
-											'pr-1 pr-lg-2 pr-xl-6': colIdx < columns.length - 1,
-											'text-center': colIdx > 0 && colIdx < columns.length - 1,
-											'font-weight-medium': col.strong,
-											's-data-table__cell--bordered': rowBorder,
-										}"
-										class="text-white"
+										</template>
+										<template v-else>
+											{{ row[col.key] || "—" }}
+										</template>
+									</slot>
+
+									<v-menu
+										v-if="hasCellHoverPopup(col)"
+										:open-delay="cellHoverPopupDelay"
+										:close-delay="cellHoverPopupCloseDelay"
+										:close-on-content-click="false"
+										:offset="cellHoverPopupOffset"
+										activator="parent"
+										open-on-hover
+										location="end"
+										transition="fade-transition"
+										content-class="s-data-table__hover-popup-overlay"
 									>
 										<slot
-											:name="`cell-${col.key}`"
+											:name="getCellHoverPopupSlotName(col)"
 											:row="row"
+											:row-idx="rowIdx"
+											:row-id="rowId"
 											:value="row[col.key]"
-										>
-											<template v-if="isBadgeValue(row[col.key])">
-												<s-badge
-													:label="row[col.key].label"
-													:tone="row[col.key].tone"
-												/>
-											</template>
-											<template v-else>
-												{{ row[col.key] || "—" }}
-											</template>
-										</slot>
-									</td>
-								</tr>
-							</template>
-
-							<slot
-								name="row-hover-popup"
-								:row="row"
-								:row-idx="rowIdx"
-								:row-id="rowId"
-								:is-hovering="isHovering"
-								:is-selected="isSelected(rowId)"
-							/>
-						</v-menu>
+											:is-selected="isSelected(rowId)"
+										/>
+									</v-menu>
+								</span>
+							</td>
+						</tr>
 					</template>
 				</v-hover>
 			</tbody>
 		</v-data-table>
-
-		<div
-			v-if="hasRowHoverPopup"
-			ref="hoverPopupTarget"
-			:style="hoverPopupTargetStyle"
-		/>
 
 		<slot
 			v-if="showFooter"
@@ -224,7 +218,7 @@
 </template>
 
 <script setup>
-	import { mergeProps, useSlots } from "vue";
+	import { useSlots } from "vue";
 	import { useDisplay } from "vuetify";
 
 	const selectedRows = defineModel({
@@ -285,15 +279,15 @@
 			type: Boolean,
 			default: false,
 		},
-		rowHoverPopupDelay: {
+		cellHoverPopupDelay: {
 			type: [Number, String],
 			default: 250,
 		},
-		rowHoverPopupCloseDelay: {
+		cellHoverPopupCloseDelay: {
 			type: [Number, String],
 			default: 120,
 		},
-		rowHoverPopupOffset: {
+		cellHoverPopupOffset: {
 			type: [Array, Number],
 			default: () => [12, 0],
 		},
@@ -330,13 +324,6 @@
 	const selectedRowIds = ref([]);
 	const tableRef = ref(null);
 
-	const hoverPopupTarget = ref(null);
-
-	const hoverPopupPosition = ref({
-		x: 0,
-		y: 0,
-	});
-
 	const resolveRowId = (row, rowIdx) => {
 		if (!props.filterKey) {
 			return rowIdx;
@@ -370,20 +357,12 @@
 		}))
 	);
 
-	const hasRowHoverPopup = computed(() => !!slots["row-hover-popup"]);
 	const showFooter = computed(() => props.pagination || !!slots.footer);
 	const resolvedHeaderTone = computed(() => props.headerTone || props.tone);
 	const selectedButtonTextClass = computed(() => `text-on-${props.tone}`);
 
-	const hoverPopupTargetStyle = computed(() => ({
-		position: "fixed",
-		left: `${hoverPopupPosition.value.x}px`,
-		top: `${hoverPopupPosition.value.y}px`,
-		width: "1px",
-		height: "1px",
-		pointerEvents: "none",
-		opacity: 0,
-	}));
+	const getCellHoverPopupSlotName = (col) => `cell-${col.key}-hover-popup`;
+	const hasCellHoverPopup = (col) => !!slots[getCellHoverPopupSlotName(col)];
 
 	const tableHeaderHeight = 38;
 
@@ -595,6 +574,35 @@
 		}
 	};
 
+	const selectOnlyRow = (row, rowId) => {
+		const previouslySelectedRows = sourceTableRows.value
+			.filter(({ rowId: selectedRowId }) => selectedRowIds.value.includes(selectedRowId) && selectedRowId !== rowId)
+			.map(({ row: selectedRow }) => selectedRow);
+		const rowWasSelected = isSelected(rowId);
+
+		selectedRowIds.value = [rowId];
+		syncSelectedRows();
+
+		previouslySelectedRows.forEach((selectedRow) => emit("row-unselect", selectedRow));
+		if (!rowWasSelected) emit("row-select", row);
+	};
+
+	const onRowClick = (event, row, rowId) => {
+		if (!props.selectable) return;
+
+		if (event.ctrlKey || event.metaKey) {
+			toggleRowSelection(row, rowId);
+			return;
+		}
+
+		if (isSelected(rowId) && selectedRowIds.value.length === 1) {
+			toggleRowSelection(row, rowId);
+			return;
+		}
+
+		selectOnlyRow(row, rowId);
+	};
+
 	const toggleAllSelection = () => {
 		if (!props.selectable) return;
 
@@ -700,11 +708,6 @@
 
 	const nextPage = () => {
 		setPage(page.value + 1);
-	};
-
-	const onRowMouseEnter = (event) => {
-		hoverPopupPosition.value.x = event.clientX;
-		hoverPopupPosition.value.y = event.clientY;
 	};
 
 	const onRowRightClick = (event, row, rowIdx) => {

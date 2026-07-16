@@ -42,7 +42,7 @@
 
 		<div class="d-flex align-center ga-1 flex-wrap">
 			<v-btn
-				v-if="selectedGame"
+				v-if="selectedGames.length"
 				variant="flat"
 				color="primary"
 				height="40"
@@ -104,9 +104,9 @@
 		groups: {
 			type: Array,
 		},
-		selectedGame: {
-			type: Object,
-			default: null,
+		selectedGames: {
+			type: Array,
+			default: () => [],
 		},
 	});
 

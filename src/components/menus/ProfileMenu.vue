@@ -125,12 +125,12 @@
 				</v-btn>
 
 				<v-btn
-					class="profile-menu__menu-btn w-100 px-4 rounded-md bg-primary bg-opacity-20 justify-start"
+					class="profile-menu__menu-btn w-100 px-4 rounded-md text-white justify-start text-none"
 					height="48"
 					variant="text"
 					:ripple="false"
 				>
-					<div class="w-100 d-flex align-center ga-2 text-primary">
+					<div class="w-100 d-flex align-center ga-2">
 						<v-icon
 							icon="mdi-cog-outline"
 							size="24"
@@ -231,6 +231,11 @@
 
 		&__menu-btn {
 			letter-spacing: 0;
+
+			&:not(.profile-menu__logout):hover {
+				background-color: rgba(var(--v-theme-primary), 20%) !important;
+				color: rgb(var(--v-theme-primary)) !important;
+			}
 
 			&::v-deep(.v-btn__content) {
 				width: 100%;
