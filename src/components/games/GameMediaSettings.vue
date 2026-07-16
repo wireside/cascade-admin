@@ -3,7 +3,7 @@
 		title="Медиа файлы"
 		class="game-media-settings text-white"
 	>
-		<div class="rounded-md bg-white bg-opacity-2 pa-4 pb-7">
+		<div class="rounded-md bg-white bg-opacity-2 pa-4 pt-0 pb-7">
 			<div class="game-media-settings__label text-white mb-3">Иконка и обложка</div>
 			<div class="d-flex align-start ga-2">
 				<div class="d-flex flex-column ga-2">
@@ -45,6 +45,7 @@
 		&__label {
 			font-size: 12px;
 			line-height: 125%;
+			padding-top: 14px;
 		}
 
 		&__notice {
