@@ -73,7 +73,8 @@
 
 <style scoped lang="scss">
 	.game-media-uploader {
-		width: 382px;
+		width: 351px;
+		height: 200px;
 		aspect-ratio: 16 / 9;
 		border: 1px dashed rgba(255, 255, 255, 0.1);
 		font: inherit;
@@ -82,7 +83,8 @@
 		cursor: pointer;
 
 		&--portrait {
-			width: 198px;
+			width: 181px;
+			height: 270px;
 			aspect-ratio: 2 / 3;
 		}
 

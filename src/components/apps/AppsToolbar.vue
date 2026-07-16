@@ -5,7 +5,7 @@
 				variant="flat"
 				height="40"
 				rounded="md"
-				class="px-4 bg-white bg-opacity-5 text-white mr-2"
+				class="px-4 bg-white bg-opacity-5 text-white"
 			>
 				<v-icon
 					icon="mdi-view-grid-outline"
@@ -40,7 +40,7 @@
 			</v-btn>
 		</div>
 
-		<div class="d-flex align-center ga-2 flex-wrap">
+		<div class="d-flex align-center ga-1 flex-wrap">
 			<v-btn
 				variant="flat"
 				color="blue"
@@ -51,7 +51,7 @@
 				<v-icon
 					icon="mdi-plus-circle-outline"
 					size="16"
-					class="mr-2"
+					class="mr-1"
 				/>
 				Создать группу
 			</v-btn>
@@ -67,7 +67,7 @@
 				<v-icon
 					icon="mdi-plus-circle-outline"
 					size="16"
-					class="mr-2"
+					class="mr-1"
 				/>
 				Добавить в группу
 				<v-icon
@@ -88,7 +88,7 @@
 					icon="mdi-plus-circle-outline"
 					color="primary"
 					size="16"
-					class="mr-2"
+					class="mr-1"
 				/>
 				<span class="text-primary">Добавить приложение</span>
 			</v-btn>

@@ -6,14 +6,16 @@
 			:selected-game="selectedGame"
 		/>
 
-		<games-group
-			v-for="group in groups"
-			:key="group.name"
-			:group="group"
-			:expanded="groupsExpanded"
-			:selected-game="selectedGame"
-			@select-game="selectGame"
-		/>
+		<div class="d-flex flex-column ga-2">
+			<games-group
+				v-for="group in groups"
+				:key="group.name"
+				:group="group"
+				:expanded="groupsExpanded"
+				:selected-game="selectedGame"
+				@select-game="selectGame"
+			/>
+		</div>
 	</div>
 </template>
 
