@@ -14,11 +14,12 @@
 					bg-opacity="20"
 				/>
 
-				<div class="games-group__title text-white font-weight-bold text-truncate">
+				<div class="games-group__title text-white font-weight-medium text-truncate">
 					{{ group.name }}
 				</div>
 
 				<v-icon
+					v-if="!group.isDefault"
 					icon="mdi-pencil-outline"
 					size="18"
 					class="text-white opacity-50 flex-shrink-0"
@@ -74,45 +75,62 @@
 					gap="15px"
 					no-gutters
 				>
-					<v-col
-						v-for="game in group.games"
-						:key="getGameId(game)"
-						cols="auto"
-						@dragover.prevent="onGameDragOver($event, game)"
-						@dragleave="onGameDragLeave($event, game)"
-						@drop.prevent="dropGame($event, game)"
-					>
-						<article
-							:class="{
-								'games-group__card--selected': isSelected(game),
-								'games-group__card--dragging': draggedGameId === getGameId(game),
-								'games-group__card--drop-before': dragOverGameId === getGameId(game) && gameDropPosition === 'before',
-								'games-group__card--drop-after': dragOverGameId === getGameId(game) && gameDropPosition === 'after',
-							}"
-							:style="getCardStyle(game)"
-							class="games-group__card no-select position-relative overflow-hidden rounded-md d-flex align-end justify-center cursor-pointer"
-							@click="selectGame(game, $event)"
-							@dblclick="openGame"
-							@pointerenter="hoveredGameId = getGameId(game)"
-							@pointerleave="clearGameHover(game)"
+					<template v-if="loading">
+						<v-col
+							v-for="index in skeletonCount"
+							:key="index"
+							cols="auto"
 						>
-							<s-drag-handle
-								v-show="hoveredGameId === getGameId(game) || isSelected(game) || draggedGameId === getGameId(game)"
-								color="background"
-								size="32"
-								aria-label="Изменить порядок игры"
-								class="games-group__card-drag-button bg-opacity-80 position-absolute"
-								@click.stop
-								@dblclick.stop
-								@dragstart.stop="beginGameDrag($event, game)"
-								@dragend.stop="endGameDrag"
+							<v-skeleton-loader
+								type="image"
+								width="155"
+								height="231"
+								class="rounded-md overflow-hidden"
 							/>
+						</v-col>
+					</template>
 
-							<div class="games-group__card-title text-white text-center font-weight-bold px-4 pb-4">
-								{{ game.name }}
-							</div>
-						</article>
-					</v-col>
+					<template v-else>
+						<v-col
+							v-for="game in group.games"
+							:key="getGameId(game)"
+							cols="auto"
+							@dragover.prevent="onGameDragOver($event, game)"
+							@dragleave="onGameDragLeave($event, game)"
+							@drop.prevent="dropGame($event, game)"
+						>
+							<article
+								:class="{
+									'games-group__card--selected': isSelected(game),
+									'games-group__card--dragging': draggedGameId === getGameId(game),
+									'games-group__card--drop-before': dragOverGameId === getGameId(game) && gameDropPosition === 'before',
+									'games-group__card--drop-after': dragOverGameId === getGameId(game) && gameDropPosition === 'after',
+								}"
+								:style="getCardStyle(game)"
+								class="games-group__card no-select position-relative overflow-hidden rounded-md d-flex align-end justify-center cursor-pointer"
+								@click="selectGame(game, $event)"
+								@dblclick="openGame"
+								@pointerenter="hoveredGameId = getGameId(game)"
+								@pointerleave="clearGameHover(game)"
+							>
+								<s-drag-handle
+									v-show="hoveredGameId === getGameId(game) || isSelected(game) || draggedGameId === getGameId(game)"
+									color="background"
+									size="32"
+									aria-label="Изменить порядок игры"
+									class="games-group__card-drag-button bg-opacity-80 position-absolute"
+									@click.stop
+									@dblclick.stop
+									@dragstart.stop="beginGameDrag($event, game)"
+									@dragend.stop="endGameDrag"
+								/>
+
+								<div class="games-group__card-title text-white text-center font-weight-bold px-4 pb-4">
+									{{ game.name }}
+								</div>
+							</article>
+						</v-col>
+					</template>
 				</v-row>
 			</div>
 		</s-collapse>
@@ -135,6 +153,10 @@
 			type: Array,
 			default: () => [],
 		},
+		loading: {
+			type: Boolean,
+			default: false,
+		},
 	});
 
 	const emit = defineEmits(["select-game", "reorder-games", "group-drag-start", "group-drag-end"]);
@@ -146,6 +168,7 @@
 	let hoveredGameId = $ref(null);
 
 	const gamesCount = $computed(() => props.group.games?.length || 0);
+	const skeletonCount = $computed(() => Math.min(Math.max(gamesCount, 1), 9));
 
 	const selectedInGroup = $computed(() => {
 		return props.group.games?.some((game) => isSelected(game));
@@ -241,12 +264,12 @@
 		}
 
 		&__header {
-			min-height: 48px;
+			height: 48px;
 			transition: border-radius 300ms cubic-bezier(0.4, 0, 0.2, 1);
 		}
 
 		&__title {
-			font-size: 18px;
+			font-size: 14px;
 			line-height: 120%;
 		}
 

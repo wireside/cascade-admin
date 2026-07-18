@@ -83,6 +83,7 @@
 				height="40"
 				rounded="md"
 				class="px-4 bg-opacity-20 text-primary"
+				@click="emit('create-app')"
 			>
 				<v-icon
 					icon="mdi-plus-circle-outline"
@@ -98,6 +99,7 @@
 
 <script setup>
 	const expanded = defineModel("expanded", { type: Boolean, default: true });
+	const emit = defineEmits(["create-app"]);
 
 	const props = defineProps({
 		groups: {

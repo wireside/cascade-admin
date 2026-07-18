@@ -1,5 +1,5 @@
 import { useStorage } from "@vueuse/core";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 export const useGroupedOrder = ({ storageKey, initialGroups, itemsKey, groupHeaderSelector }) => {
 	const savedOrder = useStorage(storageKey, {
@@ -40,6 +40,9 @@ export const useGroupedOrder = ({ storageKey, initialGroups, itemsKey, groupHead
 			[itemsKey]: applySavedOrder(group[itemsKey], savedOrder.value?.[itemsKey]?.[group.id], (item) => item.id),
 		}))
 	);
+	const displayedGroups = computed(() => {
+		return groups.value.filter((group) => !group.isDefault || group[itemsKey]?.length);
+	});
 
 	const draggedGroupId = ref(null);
 	const dragOverGroupId = ref(null);
@@ -54,6 +57,36 @@ export const useGroupedOrder = ({ storageKey, initialGroups, itemsKey, groupHead
 				[itemsKey]: moveItem(group[itemsKey], itemId, targetItemId, position, (item) => item.id),
 			};
 		});
+	};
+
+	const moveGroupToStart = (groupId) => {
+		const firstGroup = groups.value[0];
+		if (!firstGroup || firstGroup.id === groupId) return;
+
+		groups.value = moveItem(groups.value, groupId, firstGroup.id, "before", (group) => group.id);
+	};
+
+	const addGroup = (group) => {
+		if (!group?.id) return false;
+
+		groups.value = [
+			{
+				...group,
+				[itemsKey]: Array.isArray(group[itemsKey]) ? group[itemsKey] : [],
+			},
+			...groups.value.filter((currentGroup) => currentGroup.id !== group.id),
+		];
+		return true;
+	};
+
+	const addItemToDefaultGroup = (item) => {
+		const defaultGroup = groups.value.find((group) => group.isDefault);
+		if (!defaultGroup) return false;
+
+		const shouldMoveToStart = defaultGroup[itemsKey].length === 0;
+		defaultGroup[itemsKey].push(item);
+		if (shouldMoveToStart) moveGroupToStart(defaultGroup.id);
+		return true;
 	};
 
 	const clearGroupDropTarget = () => {
@@ -116,10 +149,13 @@ export const useGroupedOrder = ({ storageKey, initialGroups, itemsKey, groupHead
 
 	return {
 		groups,
+		displayedGroups,
 		draggedGroupId,
 		dragOverGroupId,
 		groupDropPosition,
 		reorderItems,
+		addGroup,
+		addItemToDefaultGroup,
 		startGroupDrag,
 		onGroupDragOver,
 		onGroupDragLeave,

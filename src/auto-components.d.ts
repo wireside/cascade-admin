@@ -11,6 +11,9 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AppBasicData: typeof import('./components/apps/AppBasicData.vue')['default']
+    AppEditForm: typeof import('./components/forms/AppEditForm.vue')['default']
+    AppMediaSettings: typeof import('./components/apps/AppMediaSettings.vue')['default']
     AppsGroup: typeof import('./components/apps/AppsGroup.vue')['default']
     AppsToolbar: typeof import('./components/apps/AppsToolbar.vue')['default']
     AuthForm: typeof import('./components/forms/AuthForm.vue')['default']
@@ -70,6 +73,10 @@ declare module 'vue' {
     SDataTable: typeof import('./components/_s/tables/SDataTable.vue')['default']
     SDateInput: typeof import('./components/_s/inputs/SDateInput.vue')['default']
     SDragHandle: typeof import('./components/_s/buttons/SDragHandle.vue')['default']
+    SEditorGroupSelect: typeof import('./components/_s/editor/SEditorGroupSelect.vue')['default']
+    SEditorLaunchSettings: typeof import('./components/_s/editor/SEditorLaunchSettings.vue')['default']
+    SEditorLayout: typeof import('./components/_s/editor/SEditorLayout.vue')['default']
+    SEditorSection: typeof import('./components/_s/editor/SEditorSection.vue')['default']
     SFinanceTile: typeof import('./components/_s/tiles/SFinanceTile.vue')['default']
     SIcon: typeof import('./components/_s/icons/SIcon.vue')['default']
     SMaskInput: typeof import('./components/_s/inputs/SMaskInput.vue')['default']
