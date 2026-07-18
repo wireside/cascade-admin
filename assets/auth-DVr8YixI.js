@@ -1,1 +1,0 @@
-import{At as e,It as t,cn as n,nn as r,sn as i,t as a,vn as o}from"./_plugin-vue_export-helper-DiKK76s8.js";import{t as s}from"./VMain-DrvNFLPp.js";var c={};function l(a,c){let l=i(`router-view`);return r(),e(s,null,{default:o(()=>[t(l,null,{default:o(({Component:t})=>[(r(),e(n(t)))]),_:1})]),_:1})}var u=a(c,[[`render`,l]]);export{u as default};
