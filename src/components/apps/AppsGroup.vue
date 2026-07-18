@@ -14,11 +14,12 @@
 					bg-opacity="20"
 				/>
 
-				<div class="apps-group__title text-white font-weight-bold text-truncate">
+				<div class="apps-group__title text-white font-weight-medium text-truncate">
 					{{ group.name }}
 				</div>
 
 				<v-icon
+					v-if="!group.isDefault"
 					icon="mdi-pencil-outline"
 					size="18"
 					class="text-white opacity-50 flex-shrink-0"
@@ -73,41 +74,69 @@
 					class="ma-0 ga-4"
 					no-gutters
 				>
-					<v-col
-						v-for="app in group.apps"
-						:key="getAppId(app)"
-						cols="auto"
-						@dragover.prevent="onAppDragOver($event, app)"
-						@dragleave="onAppDragLeave($event, app)"
-						@drop.prevent="dropApp($event, app)"
-					>
-						<article
-							:class="{
-								'apps-group__card--selected': isSelected(app),
-								'apps-group__card--dragging': draggedAppId === getAppId(app),
-								'apps-group__card--drop-before': dragOverAppId === getAppId(app) && appDropPosition === 'before',
-								'apps-group__card--drop-after': dragOverAppId === getAppId(app) && appDropPosition === 'after',
-							}"
-							draggable="true"
-							class="apps-group__card position-relative rounded-md d-flex flex-column align-center px-5 bg-white bg-opacity-2"
-							@click="selectApp(app, $event)"
-							@dragstart.stop="startAppDrag($event, app)"
-							@dragend.stop="endAppDrag"
+					<template v-if="loading">
+						<v-col
+							v-for="index in skeletonCount"
+							:key="index"
+							cols="auto"
 						>
-							<v-img
-								:src="app.img"
-								:alt="app.name"
-								width="77"
-								height="77"
-								class="apps-group__icon flex-grow-0"
-								contain
+							<v-skeleton-loader
+								type="image"
+								width="155"
+								height="157"
+								class="rounded-md overflow-hidden"
 							/>
+						</v-col>
+					</template>
 
-							<div class="apps-group__card-title text-white text-center font-weight-bold">
-								{{ app.name }}
-							</div>
-						</article>
-					</v-col>
+					<template v-else>
+						<v-col
+							v-for="app in group.apps"
+							:key="getAppId(app)"
+							cols="auto"
+							@dragover.prevent="onAppDragOver($event, app)"
+							@dragleave="onAppDragLeave($event, app)"
+							@drop.prevent="dropApp($event, app)"
+						>
+							<article
+								:class="{
+									'apps-group__card--selected': isSelected(app),
+									'apps-group__card--dragging': draggedAppId === getAppId(app),
+									'apps-group__card--drop-before': dragOverAppId === getAppId(app) && appDropPosition === 'before',
+									'apps-group__card--drop-after': dragOverAppId === getAppId(app) && appDropPosition === 'after',
+								}"
+								draggable="true"
+								class="apps-group__card position-relative rounded-md d-flex flex-column align-center px-5 bg-white bg-opacity-2"
+								@click="selectApp(app, $event)"
+								@dblclick="openApp"
+								@dragstart.stop="startAppDrag($event, app)"
+								@dragend.stop="endAppDrag"
+							>
+								<v-img
+									v-if="app.img"
+									:src="app.img"
+									:alt="app.name"
+									width="77"
+									height="77"
+									class="apps-group__icon flex-grow-0"
+									contain
+								/>
+
+								<v-sheet
+									v-else
+									width="77"
+									height="77"
+									rounded="md"
+									color="white"
+									class="apps-group__icon flex-grow-0 bg-opacity-5"
+								/>
+
+								<div class="apps-group__card-title text-white text-center font-weight-bold">
+									{{ app.name }}
+								</div>
+							</article>
+						</v-col>
+					</template>
 				</v-row>
 			</div>
 		</s-collapse>
@@ -130,14 +159,20 @@
 			type: Array,
 			default: () => [],
 		},
+		loading: {
+			type: Boolean,
+			default: false,
+		},
 	});
 
 	const emit = defineEmits(["select-app", "reorder-apps", "group-drag-start", "group-drag-end"]);
+	const router = useRouter();
 
 	const isExpanded = ref(props.expanded);
 	const groupDragging = ref(false);
 
 	const appsCount = computed(() => props.group.apps?.length || 0);
+	const skeletonCount = computed(() => Math.min(Math.max(appsCount.value, 1), 9));
 
 	const selectedInGroup = computed(() => {
 		return props.group.apps?.some((app) => isSelected(app));
@@ -153,6 +188,10 @@
 
 	const selectApp = (app, event) => {
 		emit("select-app", app, event);
+	};
+
+	const openApp = () => {
+		router.push("/apps/0");
 	};
 
 	const {
@@ -208,7 +247,7 @@
 		}
 
 		&__header {
-			min-height: 48px;
+			height: 48px;
 			transition: border-radius 300ms cubic-bezier(0.4, 0, 0.2, 1);
 		}
 

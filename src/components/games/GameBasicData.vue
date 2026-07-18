@@ -1,5 +1,5 @@
 <template>
-	<game-editor-section
+	<s-editor-section
 		title="Основные данные"
 		class="game-basic-data text-white"
 	>
@@ -71,14 +71,9 @@
 
 		<div class="game-basic-data__block rounded-md bg-white bg-opacity-2 pa-4 pt-3 mt-2">
 			<div class="game-basic-data__label text-white mb-3">Группа игр</div>
-			<v-select
+			<s-editor-group-select
 				v-model="group"
-				:items="groups"
-				variant="outlined"
-				height="40"
-				hide-details
-				menu-icon="mdi-chevron-down"
-				class="game-basic-data__group game-editor-control rounded-md overflow-hidden bg-white bg-opacity-2 text-white"
+				class="game-basic-data__group"
 			/>
 		</div>
 
@@ -89,15 +84,13 @@
 			/>
 			<span>Вы не создали ни одной группы. Создайте группы, чтобы распределять игры.</span>
 		</div>
-	</game-editor-section>
+	</s-editor-section>
 </template>
 
 <script setup>
 	const name = defineModel("name", { type: String, default: "" });
 	const description = defineModel("description", { type: String, default: "" });
 	const group = defineModel("group", { type: String, default: "Без группы" });
-
-	const groups = ["Без группы"];
 
 	const importFromSteam = () => {
 		name.value = "Dota 2";
@@ -184,12 +177,6 @@
 		:deep(.game-basic-data__description textarea::placeholder) {
 			color: rgba(255, 255, 255, 0.4);
 			opacity: 1;
-		}
-
-		:deep(.game-basic-data__group .v-select__selection),
-		:deep(.game-basic-data__group .v-field__append-inner) {
-			color: rgb(var(--v-theme-white));
-			opacity: 0.4;
 		}
 
 		:deep(.v-field__prepend-inner > .v-icon),

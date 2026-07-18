@@ -1,5 +1,5 @@
 <template>
-	<game-editor-section
+	<s-editor-section
 		title="Медиа файлы"
 		class="game-media-settings text-white"
 	>
@@ -32,7 +32,7 @@
 				/>
 			</div>
 		</div>
-	</game-editor-section>
+	</s-editor-section>
 </template>
 
 <script setup>

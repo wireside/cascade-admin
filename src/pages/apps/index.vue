@@ -2,13 +2,14 @@
 	<div class="d-flex flex-column ga-4">
 		<apps-toolbar
 			v-model:expanded="groupsExpanded"
-			:groups="groups"
+			:groups="displayedGroups"
 			:selected-apps="selectedApps"
+			@create-app="addApp"
 		/>
 
 		<div class="apps-page__groups d-flex flex-column ga-2">
 			<div
-				v-for="group in groups"
+				v-for="group in displayedGroups"
 				:key="group.id"
 				:class="{
 					'apps-page__group--drop-before': dragOverGroupId === group.id && groupDropPosition === 'before',
@@ -23,6 +24,7 @@
 					:group="group"
 					:expanded="groupsExpanded"
 					:selected-apps="selectedApps"
+					:loading="testStore.loading"
 					@select-app="selectApp"
 					@reorder-apps="reorderApps"
 					@group-drag-start="startGroupDrag"
@@ -40,6 +42,7 @@
 
 	const groupsExpanded = ref(true);
 	const selectedApps = ref([]);
+	const testStore = useTestStore();
 
 	const ghub = {
 		name: "G HUB",
@@ -58,6 +61,12 @@
 
 	const mockGroups = [
 		{
+			id: "ungrouped",
+			name: "Без Названия",
+			isDefault: true,
+			apps: [],
+		},
+		{
 			id: "devices",
 			name: "Девайсы",
 			apps: [
@@ -69,10 +78,11 @@
 	];
 
 	const {
-		groups,
+		displayedGroups,
 		dragOverGroupId,
 		groupDropPosition,
 		reorderItems,
+		addItemToDefaultGroup,
 		startGroupDrag,
 		onGroupDragOver,
 		onGroupDragLeave,
@@ -84,6 +94,16 @@
 		itemsKey: "apps",
 		groupHeaderSelector: ".apps-group__header",
 	});
+
+	const addApp = () => {
+		const isAdded = addItemToDefaultGroup({
+			id: `new-app-${Date.now()}`,
+			name: "Новое приложение",
+			img: null,
+		});
+		if (!isAdded) return;
+		groupsExpanded.value = true;
+	};
 
 	const getAppId = (app) => {
 		return app?.id || app?.name;

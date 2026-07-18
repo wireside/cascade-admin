@@ -2,13 +2,14 @@
 	<div class="d-flex flex-column ga-4">
 		<games-toolbar
 			v-model:expanded="groupsExpanded"
-			:groups="groups"
+			:groups="displayedGroups"
 			:selected-games="selectedGames"
+			@create-game="addGame"
 		/>
 
 		<div class="games-page__groups d-flex flex-column ga-2">
 			<div
-				v-for="group in groups"
+				v-for="group in displayedGroups"
 				:key="group.id"
 				:class="{
 					'games-page__group--drop-before': dragOverGroupId === group.id && groupDropPosition === 'before',
@@ -23,6 +24,7 @@
 					:group="group"
 					:expanded="groupsExpanded"
 					:selected-games="selectedGames"
+					:loading="testStore.loading"
 					@select-game="selectGame"
 					@reorder-games="reorderGames"
 					@group-drag-start="startGroupDrag"
@@ -41,21 +43,7 @@
 
 	const groupsExpanded = ref(true);
 	const selectedGames = ref([]);
-
-	const callOfDuty = {
-		name: "Call Of Duty: Warzone",
-		img: callOfDutyImg,
-	};
-
-	const valorant = {
-		name: "Valorant",
-		img: valorantImg,
-	};
-
-	const pubg = {
-		name: "PUBG: Battlegrounds",
-		img: pubgImg,
-	};
+	const testStore = useTestStore();
 
 	const groupMockGames = {
 		shooters: [
@@ -79,11 +67,6 @@
 		],
 	};
 
-	const createGame = (game, id) => ({
-		...game,
-		id,
-	});
-
 	const createMockGames = (games, count, groupKey) =>
 		Array.from({ length: count }, (_, index) => ({
 			...games[index % games.length],
@@ -93,14 +76,9 @@
 	const mockGroups = [
 		{
 			id: "ungrouped",
-			name: "Без группы",
-			games: [
-				createGame(callOfDuty, "ungrouped-1"),
-				createGame(valorant, "ungrouped-2"),
-				createGame(pubg, "ungrouped-3"),
-				...Array.from({ length: 6 }, (_, index) => createGame(callOfDuty, `ungrouped-cod-${index + 1}`)),
-				...Array.from({ length: 9 }, (_, index) => createGame(pubg, `ungrouped-pubg-${index + 1}`)),
-			],
+			name: "Без Названия",
+			isDefault: true,
+			games: [],
 		},
 		{
 			id: "shooters",
@@ -140,10 +118,11 @@
 	};
 
 	const {
-		groups,
+		displayedGroups,
 		dragOverGroupId,
 		groupDropPosition,
 		reorderItems,
+		addItemToDefaultGroup,
 		startGroupDrag,
 		onGroupDragOver,
 		onGroupDragLeave,
@@ -155,6 +134,16 @@
 		itemsKey: "games",
 		groupHeaderSelector: ".games-group__header",
 	});
+
+	const addGame = () => {
+		const isAdded = addItemToDefaultGroup({
+			id: `new-game-${Date.now()}`,
+			name: "Новая игра",
+			img: null,
+		});
+		if (!isAdded) return;
+		groupsExpanded.value = true;
+	};
 
 	const reorderGames = ({ groupId, gameId, targetGameId, position }) => {
 		reorderItems({

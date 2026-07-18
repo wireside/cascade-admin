@@ -45,7 +45,19 @@
 									color="white"
 								/>
 							</div>
-							<div class="opacity-40 py-1 px-2">{{ branchName }}</div>
+							<router-link
+								v-if="parentRoute"
+								:to="parentRoute"
+								class="text-decoration-none text-white opacity-40 py-1 px-2"
+							>
+								{{ branchName }}
+							</router-link>
+							<div
+								v-else
+								class="opacity-40 py-1 px-2"
+							>
+								{{ branchName }}
+							</div>
 							<div class="opacity-20">/</div>
 							<div class="py-1 px-2">{{ route.meta.title }}</div>
 						</div>
@@ -99,19 +111,20 @@
 
 	const route = useRoute();
 
-	const navOpen = ref(false);
-	const searchQuery = ref("");
+	let navOpen = $ref(false);
+	const searchQuery = $ref("");
 
-	const isCompact = computed(() => !lgAndUp.value);
+	const isCompact = $computed(() => !lgAndUp.value);
+
+	const branchName = $computed(() => route.meta.parentTitle || "Дашборд");
+	const parentRoute = $computed(() => route.meta.parentRoute);
 
 	watch(
 		() => route.fullPath,
 		() => {
-			navOpen.value = false;
+			navOpen = false;
 		}
 	);
-
-	const branchName = computed(() => route.meta.parentTitle || "Дашборд");
 </script>
 
 <style lang="scss">
