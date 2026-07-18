@@ -112,6 +112,7 @@
 		}
 
 		&__upload {
+			border-style: dashed !important;
 			font-size: 12px;
 			line-height: 1.2;
 		}
