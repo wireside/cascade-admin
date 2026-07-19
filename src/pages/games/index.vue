@@ -76,7 +76,7 @@
 	const mockGroups = [
 		{
 			id: "ungrouped",
-			name: "Без Названия",
+			name: "Без группы",
 			isDefault: true,
 			games: [],
 		},
