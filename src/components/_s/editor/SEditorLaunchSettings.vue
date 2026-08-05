@@ -125,14 +125,6 @@
 			}
 		}
 
-		&__administrator {
-			font-size: 13px;
-		}
-
-		:deep(.v-field) {
-			font-size: 13px;
-		}
-
 		:deep(.v-field__input) {
 			min-height: 40px;
 			padding-top: 8px;

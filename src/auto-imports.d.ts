@@ -15,7 +15,9 @@ declare global {
   const $shallowRef: typeof import('vue/macros').$shallowRef
   const $toRef: typeof import('vue/macros').$toRef
   const $utils: typeof import('./helpers/utils.js').$utils
+  const DAY_TYPE_SCHEDULE_KIND: typeof import('./store/dayTypes.js').DAY_TYPE_SCHEDULE_KIND
   const EffectScope: typeof import('vue').EffectScope
+  const ISO_WEEKDAY: typeof import('./store/dayTypes.js').ISO_WEEKDAY
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const asyncComputed: typeof import('@vueuse/core').asyncComputed
   const autoResetRef: typeof import('@vueuse/core').autoResetRef
@@ -181,6 +183,7 @@ declare global {
   const useCycleList: typeof import('@vueuse/core').useCycleList
   const useDark: typeof import('@vueuse/core').useDark
   const useDateFormat: typeof import('@vueuse/core').useDateFormat
+  const useDayTypesStore: typeof import('./store/dayTypes.js').useDayTypesStore
   const useDebounce: typeof import('@vueuse/core').useDebounce
   const useDebounceFn: typeof import('@vueuse/core').useDebounceFn
   const useDebouncedRefHistory: typeof import('@vueuse/core').useDebouncedRefHistory
@@ -355,7 +358,9 @@ declare module 'vue' {
     readonly $shallowRef: UnwrapRef<typeof import('vue/macros')['$shallowRef']>
     readonly $toRef: UnwrapRef<typeof import('vue/macros')['$toRef']>
     readonly $utils: UnwrapRef<typeof import('./helpers/utils.js')['$utils']>
+    readonly DAY_TYPE_SCHEDULE_KIND: UnwrapRef<typeof import('./store/dayTypes.js')['DAY_TYPE_SCHEDULE_KIND']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly ISO_WEEKDAY: UnwrapRef<typeof import('./store/dayTypes.js')['ISO_WEEKDAY']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
@@ -516,6 +521,7 @@ declare module 'vue' {
     readonly useCycleList: UnwrapRef<typeof import('@vueuse/core')['useCycleList']>
     readonly useDark: UnwrapRef<typeof import('@vueuse/core')['useDark']>
     readonly useDateFormat: UnwrapRef<typeof import('@vueuse/core')['useDateFormat']>
+    readonly useDayTypesStore: UnwrapRef<typeof import('./store/dayTypes.js')['useDayTypesStore']>
     readonly useDebounce: UnwrapRef<typeof import('@vueuse/core')['useDebounce']>
     readonly useDebounceFn: UnwrapRef<typeof import('@vueuse/core')['useDebounceFn']>
     readonly useDebouncedRefHistory: UnwrapRef<typeof import('@vueuse/core')['useDebouncedRefHistory']>
