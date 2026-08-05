@@ -3,7 +3,7 @@
 		title="Медиа файлы"
 		class="app-media-settings text-white"
 	>
-		<div class="rounded-md bg-white bg-opacity-2 pa-4 pt-0 pb-7">
+		<div class="rounded-md bg-white bg-opacity-2 pa-4 pt-0 pb-4 mb-2">
 			<div class="app-media-settings__label text-white mb-3">Иконка приложения</div>
 
 			<div class="d-flex align-start ga-2">
@@ -65,13 +65,27 @@
 				@change="selectFile"
 			/>
 		</div>
+
+		<div class="rounded-md bg-white bg-opacity-2 pa-4 pt-0 pb-5">
+			<div class="app-media-settings__label text-white mb-3">Или укажите путь к файлу иконки</div>
+
+			<v-text-field
+				v-model="iconPath"
+				prepend-inner-icon="mdi-folder-outline"
+				placeholder="Укажите путь до файла"
+				variant="outlined"
+				hide-details
+				class="s-editor-control rounded-md overflow-hidden bg-white bg-opacity-2 text-white"
+			/>
+		</div>
 	</s-editor-section>
 </template>
 
 <script setup>
 	import appPreviewImage from "@/assets/images/apps/app-preview.png";
 
-	const icon = defineModel({ type: String, default: "" });
+	const icon = defineModel("icon", { type: String, default: "" });
+	const iconPath = defineModel("iconPath", { type: String, default: "" });
 
 	const props = defineProps({
 		appName: {
@@ -140,6 +154,27 @@
 			left: 22px;
 			font-size: 12px;
 			line-height: 120%;
+		}
+
+		:deep(.v-field__input) {
+			min-height: 40px;
+			padding-top: 8px;
+			padding-bottom: 8px;
+		}
+
+		:deep(.s-editor-control .v-field) {
+			background: transparent !important;
+			border: 0.5px solid rgba(255, 255, 255, 0.1);
+			border-radius: 8px;
+		}
+
+		:deep(.s-editor-control .v-field__overlay),
+		:deep(.s-editor-control .v-field__outline) {
+			display: none;
+		}
+
+		:deep(.v-field__prepend-inner > .v-icon) {
+			opacity: 0.4;
 		}
 	}
 </style>

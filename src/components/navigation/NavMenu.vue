@@ -94,7 +94,7 @@
 					icon: "mdi-account-group-outline",
 					items: [{ label: "Клиенты", to: "/clients" }, { label: "Группы" }],
 				},
-				{ label: "Тарифы", icon: "mdi-clock-outline" },
+				{ label: "Тарифы", icon: "mdi-clock-outline", to: "/rates/" },
 				{ label: "Товары и услуги", icon: "mdi-shopping-outline" },
 				{ label: "Система лояльности", icon: "mdi-percent-outline" },
 				{ label: "Отзывы клиентов", icon: "mdi-timelapse" },

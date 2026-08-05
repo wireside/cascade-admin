@@ -11,7 +11,8 @@
 		/>
 
 		<app-media-settings
-			v-model="icon"
+			v-model:icon="icon"
+			v-model:icon-path="iconPath"
 			:app-name="name"
 			:fallback-image="fallbackImage"
 		/>
@@ -38,6 +39,7 @@
 	const description = defineModel("description", { type: String, default: "" });
 	const group = defineModel("group", { type: String, default: "Без группы" });
 	const icon = defineModel("icon", { type: String, default: "" });
+	const iconPath = defineModel("iconPath", { type: String, default: "" });
 	const paths = defineModel("paths", { type: Array, required: true });
 	const launchArguments = defineModel("arguments", { type: String, default: "" });
 	const runAsAdministrator = defineModel("runAsAdministrator", { type: Boolean, default: false });

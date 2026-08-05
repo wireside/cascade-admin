@@ -9,6 +9,7 @@
 				v-model:description="app.description"
 				v-model:group="app.group"
 				v-model:icon="app.icon"
+				v-model:icon-path="app.iconPath"
 				v-model:paths="app.paths"
 				v-model:arguments="app.arguments"
 				v-model:run-as-administrator="app.runAsAdministrator"
@@ -28,6 +29,7 @@
 		description: "",
 		group: "Без группы",
 		icon: "",
+		iconPath: "D:/Logitech/logitech.ico",
 		paths: ["C:/Program Files/WLMouse/WLMouse.exe"],
 		arguments: "",
 		runAsAdministrator: true,
