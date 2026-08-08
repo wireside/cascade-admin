@@ -4,6 +4,7 @@ import { defineStore } from "pinia";
 export const DAY_TYPE_SCHEDULE_KIND = Object.freeze({
 	WEEKDAYS: "weekdays",
 	DATES: "dates",
+	MIXED: "mixed",
 });
 
 export const ISO_WEEKDAY = Object.freeze({
@@ -23,8 +24,8 @@ const MOCK_DAY_TYPES = [
 		color: "#EE23FF",
 		discount: 10,
 		schedule: {
-			kind: DAY_TYPE_SCHEDULE_KIND.WEEKDAYS,
 			weekdays: [ISO_WEEKDAY.SATURDAY, ISO_WEEKDAY.SUNDAY],
+			dates: [],
 		},
 	},
 	{
@@ -33,7 +34,7 @@ const MOCK_DAY_TYPES = [
 		color: "#23DCFF",
 		discount: 15,
 		schedule: {
-			kind: DAY_TYPE_SCHEDULE_KIND.DATES,
+			weekdays: [],
 			dates: [
 				{ month: 12, day: 31 },
 				{ month: 1, day: 1 },
@@ -52,7 +53,7 @@ const MOCK_DAY_TYPES = [
 		color: "#F68F3D",
 		discount: 5,
 		schedule: {
-			kind: DAY_TYPE_SCHEDULE_KIND.DATES,
+			weekdays: [],
 			dates: [
 				{ month: 2, day: 23 },
 				{ month: 3, day: 8 },
@@ -77,8 +78,8 @@ function createDayTypeId() {
 }
 
 function normalizeWeekdays(weekdays) {
-	if (!Array.isArray(weekdays) || weekdays.length === 0) {
-		throw new TypeError("Тип дня должен содержать хотя бы один день недели");
+	if (!Array.isArray(weekdays)) {
+		throw new TypeError("Дни недели должны быть массивом");
 	}
 
 	const normalizedWeekdays = [...new Set(weekdays.map(Number))].sort((a, b) => a - b);
@@ -99,8 +100,8 @@ function isCalendarDateValid(month, day, year = 2024) {
 }
 
 function normalizeCalendarDates(dates) {
-	if (!Array.isArray(dates) || dates.length === 0) {
-		throw new TypeError("Тип дня должен содержать хотя бы одну календарную дату");
+	if (!Array.isArray(dates)) {
+		throw new TypeError("Календарные даты должны быть массивом");
 	}
 
 	const uniqueDates = new Map();
@@ -120,21 +121,16 @@ function normalizeCalendarDates(dates) {
 }
 
 function normalizeSchedule(schedule) {
-	if (schedule?.kind === DAY_TYPE_SCHEDULE_KIND.WEEKDAYS) {
-		return {
-			kind: DAY_TYPE_SCHEDULE_KIND.WEEKDAYS,
-			weekdays: normalizeWeekdays(schedule.weekdays),
-		};
-	}
+	const dates = normalizeCalendarDates(schedule?.dates ?? []);
+	const assignedDateKeys = new Set(dates.map(({ month, day }) => `${month}-${day}`));
 
-	if (schedule?.kind === DAY_TYPE_SCHEDULE_KIND.DATES) {
-		return {
-			kind: DAY_TYPE_SCHEDULE_KIND.DATES,
-			dates: normalizeCalendarDates(schedule.dates),
-		};
-	}
-
-	throw new TypeError('schedule.kind должен быть равен "weekdays" или "dates"');
+	return {
+		weekdays: normalizeWeekdays(schedule?.weekdays ?? []),
+		dates,
+		excludedDates: normalizeCalendarDates(schedule?.excludedDates ?? []).filter(
+			({ month, day }) => !assignedDateKeys.has(`${month}-${day}`)
+		),
+	};
 }
 
 function normalizeDayType(dayType) {
@@ -196,11 +192,10 @@ export const useDayTypesStore = defineStore("day_types", () => {
 	let initializationPromise = null;
 
 	const dayTypesCount = computed(() => dayTypes.value.length);
-	const weekdayDayTypes = computed(() =>
-		dayTypes.value.filter(({ schedule }) => schedule.kind === DAY_TYPE_SCHEDULE_KIND.WEEKDAYS)
-	);
-	const calendarDateDayTypes = computed(() =>
-		dayTypes.value.filter(({ schedule }) => schedule.kind === DAY_TYPE_SCHEDULE_KIND.DATES)
+	const weekdayDayTypes = computed(() => dayTypes.value.filter(({ schedule }) => schedule.weekdays.length > 0));
+	const calendarDateDayTypes = computed(() => dayTypes.value.filter(({ schedule }) => schedule.dates.length > 0));
+	const mixedDayTypes = computed(() =>
+		dayTypes.value.filter(({ schedule }) => schedule.weekdays.length > 0 && schedule.dates.length > 0)
 	);
 
 	function getDayTypeById(id) {
@@ -280,6 +275,26 @@ export const useDayTypesStore = defineStore("day_types", () => {
 		return true;
 	}
 
+	function toggleDayTypeWeekday(dayTypeOrId, weekday) {
+		const dayType = typeof dayTypeOrId === "object" ? dayTypeOrId : getDayTypeById(dayTypeOrId);
+
+		if (!dayType) {
+			throw new Error(`Тип дня с id "${dayTypeOrId}" не найден`);
+		}
+
+		const [normalizedWeekday] = normalizeWeekdays([weekday]);
+		const weekdays = dayType.schedule.weekdays.includes(normalizedWeekday)
+			? dayType.schedule.weekdays.filter((value) => value !== normalizedWeekday)
+			: [...dayType.schedule.weekdays, normalizedWeekday];
+
+		dayType.schedule = {
+			...dayType.schedule,
+			weekdays: normalizeWeekdays(weekdays),
+		};
+
+		return dayType;
+	}
+
 	function isDayTypeAppliedToDate(dayTypeOrId, value) {
 		const dayType = typeof dayTypeOrId === "object" ? dayTypeOrId : getDayTypeById(dayTypeOrId);
 
@@ -288,17 +303,118 @@ export const useDayTypesStore = defineStore("day_types", () => {
 		}
 
 		const date = normalizeDate(value);
+		const isoWeekday = date.getDay() || ISO_WEEKDAY.SUNDAY;
+		const isWeekdayMatch = dayType.schedule.weekdays.includes(isoWeekday);
+		const isDateMatch = dayType.schedule.dates.some(
+			({ month, day }) => month === date.getMonth() + 1 && day === date.getDate()
+		);
+		const isExcluded = dayType.schedule.excludedDates.some(
+			({ month, day }) => month === date.getMonth() + 1 && day === date.getDate()
+		);
 
-		if (dayType.schedule.kind === DAY_TYPE_SCHEDULE_KIND.WEEKDAYS) {
-			const isoWeekday = date.getDay() || ISO_WEEKDAY.SUNDAY;
-			return dayType.schedule.weekdays.includes(isoWeekday);
-		}
-
-		return dayType.schedule.dates.some(({ month, day }) => month === date.getMonth() + 1 && day === date.getDate());
+		return !isExcluded && (isWeekdayMatch || isDateMatch);
 	}
 
 	function getDayTypesForDate(value) {
-		return dayTypes.value.filter((dayType) => isDayTypeAppliedToDate(dayType, value));
+		const date = normalizeDate(value);
+		const dateMatches = dayTypes.value.filter(({ schedule }) =>
+			schedule.dates.some(({ month, day }) => month === date.getMonth() + 1 && day === date.getDate())
+		);
+
+		if (dateMatches.length) {
+			return dateMatches;
+		}
+
+		const isoWeekday = date.getDay() || ISO_WEEKDAY.SUNDAY;
+		return dayTypes.value.filter(
+			({ schedule }) =>
+				schedule.weekdays.includes(isoWeekday) &&
+				!schedule.excludedDates.some(({ month, day }) => month === date.getMonth() + 1 && day === date.getDate())
+		);
+	}
+
+	function assignDayTypeToDate(dayTypeOrId, value) {
+		const dayTypeId = String(typeof dayTypeOrId === "object" ? dayTypeOrId?.id : dayTypeOrId);
+		const assignedDayType = getDayTypeById(dayTypeId);
+
+		if (!assignedDayType) {
+			throw new Error(`Тип дня с id "${dayTypeId}" не найден`);
+		}
+
+		const date = normalizeDate(value);
+		const assignedDate = { month: date.getMonth() + 1, day: date.getDate() };
+
+		for (const dayType of dayTypes.value) {
+			const dates = dayType.schedule.dates.filter(
+				({ month, day }) => month !== assignedDate.month || day !== assignedDate.day
+			);
+
+			if (dayType.id === dayTypeId) {
+				dates.push(assignedDate);
+			}
+
+			dayType.schedule = {
+				...dayType.schedule,
+				dates: normalizeCalendarDates(dates),
+				excludedDates:
+					dayType.id === dayTypeId
+						? dayType.schedule.excludedDates.filter(
+								({ month, day }) => month !== assignedDate.month || day !== assignedDate.day
+							)
+						: dayType.schedule.excludedDates,
+			};
+		}
+
+		return assignedDayType;
+	}
+
+	function removeDayTypeFromDate(dayTypeOrId, value) {
+		const dayType = typeof dayTypeOrId === "object" ? dayTypeOrId : getDayTypeById(dayTypeOrId);
+
+		if (!dayType) {
+			return false;
+		}
+
+		const date = normalizeDate(value);
+		const month = date.getMonth() + 1;
+		const day = date.getDate();
+		const isApplied = getDayTypesForDate(date).some(({ id }) => id === dayType.id);
+
+		if (!isApplied) {
+			return false;
+		}
+
+		const dates = dayType.schedule.dates.filter(
+			(assignedDate) => assignedDate.month !== month || assignedDate.day !== day
+		);
+		const isoWeekday = date.getDay() || ISO_WEEKDAY.SUNDAY;
+		const excludedDates = dayType.schedule.excludedDates.filter(
+			(excludedDate) => excludedDate.month !== month || excludedDate.day !== day
+		);
+
+		if (dayType.schedule.weekdays.includes(isoWeekday)) {
+			excludedDates.push({ month, day });
+		}
+
+		dayType.schedule = {
+			...dayType.schedule,
+			dates,
+			excludedDates: normalizeCalendarDates(excludedDates),
+		};
+
+		return true;
+	}
+
+	function toggleDayTypeForDate(dayTypeOrId, value) {
+		const dayType = typeof dayTypeOrId === "object" ? dayTypeOrId : getDayTypeById(dayTypeOrId);
+
+		if (!dayType) {
+			throw new Error(`Тип дня с id "${dayTypeOrId}" не найден`);
+		}
+
+		const isApplied = getDayTypesForDate(value).some(({ id }) => id === dayType.id);
+
+		return isApplied ? removeDayTypeFromDate(dayType, value) : assignDayTypeToDate(dayType, value);
 	}
 
 	function getDaysCountForYear(dayTypeOrId, year = new Date().getFullYear()) {
@@ -313,15 +429,11 @@ export const useDayTypesStore = defineStore("day_types", () => {
 			throw new TypeError("Год должен быть целым числом");
 		}
 
-		if (dayType.schedule.kind === DAY_TYPE_SCHEDULE_KIND.DATES) {
-			return dayType.schedule.dates.filter(({ month, day }) => isCalendarDateValid(month, day, normalizedYear)).length;
-		}
-
 		let count = 0;
 		const date = new Date(normalizedYear, 0, 1, 12);
 
 		while (date.getFullYear() === normalizedYear) {
-			if (isDayTypeAppliedToDate(dayType, date)) {
+			if (getDayTypesForDate(date).some(({ id }) => id === dayType.id)) {
 				count += 1;
 			}
 
@@ -347,13 +459,18 @@ export const useDayTypesStore = defineStore("day_types", () => {
 		dayTypesCount,
 		weekdayDayTypes,
 		calendarDateDayTypes,
+		mixedDayTypes,
 		getDayTypeById,
 		initializeDayTypes,
 		addDayType,
 		updateDayType,
 		removeDayType,
+		toggleDayTypeWeekday,
 		isDayTypeAppliedToDate,
 		getDayTypesForDate,
+		assignDayTypeToDate,
+		removeDayTypeFromDate,
+		toggleDayTypeForDate,
 		getDaysCountForYear,
 		resetDayTypes,
 	};

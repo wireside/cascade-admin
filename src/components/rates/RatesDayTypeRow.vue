@@ -21,21 +21,41 @@
 				/>
 			</v-btn>
 
-			<span class="rates-day-type-row__name ml-3 text-white font-weight-medium text-truncate">
+			<v-text-field
+				v-if="isEditingName"
+				ref="nameInput"
+				v-model="editedName"
+				bg-color="transparent"
+				density="compact"
+				hide-details
+				single-line
+				variant="plain"
+				class="rates-day-type-row__name-input ml-3 text-white font-weight-medium"
+				aria-label="Название типа дня"
+				@blur="saveName"
+				@keydown.enter.prevent="saveName"
+				@keydown.esc.prevent="cancelNameEditing"
+			/>
+
+			<span
+				v-else
+				class="rates-day-type-row__name ml-3 text-white font-weight-medium text-truncate"
+			>
 				{{ dayType.name }}
 			</span>
 
 			<v-btn
 				:density="null"
+				:aria-label="isEditingName ? 'Сохранить название типа дня' : 'Редактировать название типа дня'"
 				icon
 				variant="plain"
 				size="16"
 				class="rates-day-type-row__edit ml-2 pa-0 text-white opacity-50 flex-shrink-0"
-				aria-label="Редактировать тип дня"
-				@click.stop="emit('edit', dayType)"
+				@mousedown="isEditingName && $event.preventDefault()"
+				@click.stop="isEditingName ? saveName() : startNameEditing()"
 			>
 				<v-icon
-					icon="mdi-pencil-outline"
+					:icon="isEditingName ? 'mdi-check' : 'mdi-pencil-outline'"
 					size="16"
 				/>
 			</v-btn>
@@ -51,16 +71,24 @@
 		<div
 			class="rates-day-type-row__weekdays d-flex align-center justify-center order-3 order-md-0 flex-1-1-100 flex-md-0-0 ga-1"
 		>
-			<template v-if="isWeekdayType">
-				<s-badge
-					v-for="weekday in weekdays"
-					:key="weekday.value"
-					:label="weekday.label"
-					:tone="isActiveWeekday(weekday.value) ? dayType.color : 'white'"
-					:bg-opacity="isActiveWeekday(weekday.value) ? 20 : 2"
-					class="rates-day-type-row__weekday text-center"
-				/>
-			</template>
+			<v-btn
+				v-for="weekday in weekdays"
+				:key="weekday.value"
+				:aria-label="getWeekdayAriaLabel(weekday)"
+				:aria-pressed="isActiveWeekday(weekday.value)"
+				:class="isActiveWeekday(weekday.value) ? '' : 'bg-white bg-opacity-7 text-white'"
+				:color="isActiveWeekday(weekday.value) ? dayType.color : 'white'"
+				:style="isActiveWeekday(weekday.value) ? { '--v-activated-opacity': 0.2 } : undefined"
+				:variant="isActiveWeekday(weekday.value) ? 'tonal' : 'flat'"
+				width="36"
+				height="28"
+				min-width="36"
+				rounded="md"
+				class="rates-day-type-row__weekday px-0 text-caption font-weight-regular"
+				@click.stop="emit('toggle-weekday', dayType, weekday.value)"
+			>
+				{{ weekday.label }}
+			</v-btn>
 		</div>
 
 		<div class="rates-day-type-row__actions d-flex align-center justify-end flex-0-0 flex-md-1-1-0 ga-1">
@@ -105,7 +133,7 @@
 </template>
 
 <script setup>
-	import { DAY_TYPE_SCHEDULE_KIND, ISO_WEEKDAY } from "@/store/dayTypes";
+	import { ISO_WEEKDAY } from "@/store/dayTypes";
 
 	const props = defineProps({
 		dayType: {
@@ -122,7 +150,11 @@
 		},
 	});
 
-	const emit = defineEmits(["toggle-selection", "edit", "open-menu", "delete"]);
+	const emit = defineEmits(["toggle-selection", "toggle-weekday", "rename", "open-menu", "delete"]);
+	const nameInput = ref(null);
+
+	let isEditingName = $ref(false);
+	let editedName = $ref("");
 
 	const weekdays = [
 		{ value: ISO_WEEKDAY.MONDAY, label: "Пн" },
@@ -134,9 +166,39 @@
 		{ value: ISO_WEEKDAY.SUNDAY, label: "Вс" },
 	];
 
-	const isWeekdayType = $computed(() => props.dayType.schedule.kind === DAY_TYPE_SCHEDULE_KIND.WEEKDAYS);
-
 	const isActiveWeekday = (weekday) => props.dayType.schedule.weekdays.includes(weekday);
+	const getWeekdayAriaLabel = ({ value, label }) => {
+		return `${isActiveWeekday(value) ? "Убрать" : "Добавить"} ${label} для типа «${props.dayType.name}»`;
+	};
+
+	const startNameEditing = async () => {
+		editedName = props.dayType.name;
+		isEditingName = true;
+
+		await nextTick();
+
+		const input = nameInput.value?.$el?.querySelector("input");
+		input?.focus();
+		input?.select();
+	};
+
+	const saveName = () => {
+		if (!isEditingName) {
+			return;
+		}
+
+		const normalizedName = editedName.trim() || "Без названия";
+		isEditingName = false;
+
+		if (normalizedName !== props.dayType.name) {
+			emit("rename", props.dayType, normalizedName);
+		}
+	};
+
+	const cancelNameEditing = () => {
+		editedName = props.dayType.name;
+		isEditingName = false;
+	};
 </script>
 
 <style scoped lang="scss">
@@ -145,7 +207,20 @@
 		padding-inline: 20px;
 
 		&__name {
+			min-width: 0;
 			line-height: 125%;
+		}
+
+		&__name-input {
+			min-width: 100px;
+			max-width: 180px;
+
+			:deep(.v-field__input) {
+				min-height: 28px;
+				padding-block: 0;
+				font-size: 14px;
+				line-height: 125%;
+			}
 		}
 
 		&__edit {
