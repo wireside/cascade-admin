@@ -103,7 +103,11 @@
 		{
 			title: "Настройки филиала",
 			items: [
-				{ label: "Детализация", icon: "mdi-timelapse", items: [{ label: "Логи" }, { label: "Платежи" }] },
+				{
+					label: "Детализация",
+					icon: "mdi-timelapse",
+					items: [{ label: "Логи" }, { label: "Платежи", to: "/payments" }],
+				},
 				{
 					label: "Приложения",
 					icon: "mdi-view-grid-plus-outline",
