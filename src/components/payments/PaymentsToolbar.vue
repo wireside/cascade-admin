@@ -111,7 +111,12 @@
 				background-color 180ms ease,
 				border-color 180ms ease;
 
+			:deep(.s-data-table-pagination) {
+				height: 36px;
+			}
+
 			&--floating {
+				height: 56px;
 				border-color: rgba(255, 255, 255, 0.1);
 				background-color: #151515;
 			}
