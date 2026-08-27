@@ -30,6 +30,7 @@
 		>
 			<nav-link
 				v-for="i in items"
+				:key="i.label"
 				:to="i.to"
 				:label="i.label"
 				secondary
@@ -58,5 +59,18 @@
 		},
 	});
 
-	const open = $ref(false);
+	const route = useRoute();
+	const hasActiveChild = (path) =>
+		props.items?.some((item) => item.to && (path === item.to || path.startsWith(`${item.to}/`)));
+
+	let open = $ref(hasActiveChild(route.path));
+
+	watch(
+		() => route.path,
+		(path) => {
+			if (hasActiveChild(path)) {
+				open = true;
+			}
+		}
+	);
 </script>

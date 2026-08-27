@@ -1,5 +1,23 @@
 <template>
 	<div>
+		<slot
+			v-if="showToolbar"
+			name="toolbar"
+			v-bind="paginationSlotProps"
+		>
+			<div
+				v-if="pagination"
+				class="d-flex align-center justify-end mb-4"
+			>
+				<s-data-table-pagination
+					:page="page"
+					:total-pages="totalPages"
+					:tone="tone"
+					@update:page="setPage"
+				/>
+			</div>
+		</slot>
+
 		<div v-if="loading">
 			<v-skeleton-loader
 				type="table"
@@ -23,11 +41,12 @@
 			<thead class="bg-background">
 				<tr :class="`bg-${resolvedHeaderTone} bg-opacity-${headerOpacity}`">
 					<th
-						v-if="selectable"
+						v-if="selectable && showSelectionColumn"
 						:style="selectionColumnStyle"
 						class="s-data-table__selection-cell text-center bg-transparent pa-0"
 					>
 						<v-btn
+							v-if="selectionMode === 'multiple'"
 							icon
 							variant="outlined"
 							color="white"
@@ -47,13 +66,15 @@
 						v-for="(col, idx) in columns"
 						:key="col.key"
 						:aria-sort="getColumnAriaSort(col)"
-						:class="{
-							'pl-5 text-start': idx === 0,
-							'pr-5 text-end': idx === columns.length - 1,
-							'pr-1 pr-lg-2 pr-xl-6': idx < columns.length - 1,
-							'text-center': idx > 0 && idx < columns.length - 1,
-							'cursor-pointer': isColumnSortable(col),
-						}"
+						:class="[
+							getColumnAlignmentClass(col, idx),
+							{
+								'pl-5': idx === 0,
+								'pr-5': idx === columns.length - 1,
+								'pr-1 pr-lg-2 pr-xl-6': idx < columns.length - 1,
+								'cursor-pointer': isColumnSortable(col),
+							},
+						]"
 						:style="getColumnSizeStyle(idx)"
 						class="text-white bg-transparent pa-0"
 						@click="toggleColumnSort(col)"
@@ -77,16 +98,20 @@
 					<template v-slot="{ isHovering, props: hoverProps }">
 						<tr
 							v-bind="hoverProps"
+							:tabindex="selectable ? 0 : undefined"
+							:aria-selected="selectable ? isSelected(rowId) : undefined"
 							:class="{
 								[hoverClass]: isHovering && !isSelected(rowId),
 								[`bg-${tone} bg-opacity-10`]: isSelected(rowId),
 							}"
 							class="cursor-pointer"
 							@click.left="onRowClick($event, row, rowId)"
+							@keydown.enter.self.prevent="toggleRowSelection(row, rowId)"
+							@keydown.space.self.prevent="toggleRowSelection(row, rowId)"
 							@contextmenu.prevent="onRowRightClick($event, row, rowIdx)"
 						>
 							<td
-								v-if="selectable"
+								v-if="selectable && showSelectionColumn"
 								:style="selectionColumnStyle"
 								:class="{ 's-data-table__cell--bordered': rowBorder }"
 								class="s-data-table__selection-cell"
@@ -112,14 +137,16 @@
 								v-for="(col, colIdx) in columns"
 								:key="col.key"
 								:style="getColumnSizeStyle(colIdx)"
-								:class="{
-									'pl-5 text-start': colIdx === 0,
-									'pr-5 text-end': colIdx === columns.length - 1,
-									'pr-1 pr-lg-2 pr-xl-6': colIdx < columns.length - 1,
-									'text-center': colIdx > 0 && colIdx < columns.length - 1,
-									'font-weight-medium': col.strong,
-									's-data-table__cell--bordered': rowBorder,
-								}"
+								:class="[
+									getColumnAlignmentClass(col, colIdx),
+									{
+										'pl-5': colIdx === 0,
+										'pr-5': colIdx === columns.length - 1,
+										'pr-1 pr-lg-2 pr-xl-6': colIdx < columns.length - 1,
+										'font-weight-medium': col.strong,
+										's-data-table__cell--bordered': rowBorder,
+									},
+								]"
 								class="text-white"
 							>
 								<span class="d-inline-flex align-center">
@@ -171,46 +198,17 @@
 		<slot
 			v-if="showFooter"
 			name="footer"
-			:page="page"
-			:items-per-page="itemsPerPage"
-			:total-items="totalItems"
-			:total-pages="totalPages"
-			:first-item-index="firstItemIndex"
-			:last-item-index="lastItemIndex"
-			:visible-rows="displayedRows"
-			:set-page="setPage"
-			:previous-page="previousPage"
-			:next-page="nextPage"
+			v-bind="paginationSlotProps"
 		>
 			<div
 				v-if="pagination"
-				class="d-flex align-center justify-end ga-1 mt-4"
+				class="d-flex align-center justify-end mt-4"
 			>
-				<v-btn
-					icon="mdi-chevron-left"
-					variant="text"
-					color="white"
-					size="32"
-					:disabled="page <= 1"
-					@click="previousPage"
-				/>
-				<v-btn
-					v-for="pageNumber in paginationPages"
-					:key="pageNumber"
-					:variant="pageNumber === page ? 'flat' : 'text'"
-					:color="pageNumber === page ? tone : 'white'"
-					size="32"
-					@click="setPage(pageNumber)"
-				>
-					{{ pageNumber }}
-				</v-btn>
-				<v-btn
-					icon="mdi-chevron-right"
-					variant="text"
-					color="white"
-					size="32"
-					:disabled="page >= totalPages"
-					@click="nextPage"
+				<s-data-table-pagination
+					:page="page"
+					:total-pages="totalPages"
+					:tone="tone"
+					@update:page="setPage"
 				/>
 			</div>
 		</slot>
@@ -220,6 +218,7 @@
 <script setup>
 	import { useSlots } from "vue";
 	import { useDisplay } from "vuetify";
+	import SDataTablePagination from "./SDataTablePagination.vue";
 
 	const selectedRows = defineModel({
 		type: Array,
@@ -279,6 +278,15 @@
 			type: Boolean,
 			default: false,
 		},
+		showSelectionColumn: {
+			type: Boolean,
+			default: true,
+		},
+		selectionMode: {
+			type: String,
+			default: "multiple",
+			validator: (value) => ["multiple", "single"].includes(value),
+		},
 		cellHoverPopupDelay: {
 			type: [Number, String],
 			default: 250,
@@ -310,6 +318,11 @@
 		pagination: {
 			type: Boolean,
 			default: false,
+		},
+		paginationLocation: {
+			type: String,
+			default: "footer",
+			validator: (value) => ["footer", "toolbar"].includes(value),
 		},
 		itemsPerPage: {
 			type: Number,
@@ -357,7 +370,8 @@
 		}))
 	);
 
-	const showFooter = computed(() => props.pagination || !!slots.footer);
+	const showToolbar = computed(() => !!slots.toolbar || (props.pagination && props.paginationLocation === "toolbar"));
+	const showFooter = computed(() => !!slots.footer || (props.pagination && props.paginationLocation === "footer"));
 	const resolvedHeaderTone = computed(() => props.headerTone || props.tone);
 	const selectedButtonTextClass = computed(() => `text-on-${props.tone}`);
 
@@ -413,6 +427,16 @@
 		const resolved = resolveColumnWidth(index);
 		if (!resolved) return {};
 		return { width: resolved, maxWidth: resolved };
+	};
+
+	const getColumnAlignmentClass = (col, index) => {
+		if (["start", "center", "end"].includes(col.align)) {
+			return `text-${col.align}`;
+		}
+
+		if (index === 0) return "text-start";
+		if (index === props.columns.length - 1) return "text-end";
+		return "text-center";
 	};
 
 	const isBadgeValue = (value) => {
@@ -513,6 +537,10 @@
 	const displayedRows = computed(() => displayedTableRows.value.map(({ row }) => row));
 
 	const tableBodyScrollable = computed(() => {
+		if (typeof props.tableHeight === "string" && props.tableHeight.trim().toLowerCase() === "auto") {
+			return false;
+		}
+
 		const resolvedTableHeight = toSizeNumber(props.tableHeight);
 
 		if (!resolvedTableHeight) {
@@ -521,10 +549,6 @@
 
 		const availableBodyHeight = resolvedTableHeight - tableHeaderHeight;
 		return resolvedRowHeight.value * displayedTableRows.value.length > availableBodyHeight;
-	});
-
-	const paginationPages = computed(() => {
-		return Array.from({ length: totalPages.value }, (_, idx) => idx + 1);
 	});
 
 	const selectableRowIds = computed(() => displayedTableRows.value.map(({ rowId }) => rowId));
@@ -550,9 +574,15 @@
 	};
 
 	const syncSelectedRowIds = () => {
-		selectedRowIds.value = selectedRows.value
+		const nextSelectedRowIds = selectedRows.value
 			.map((row) => resolveSelectedRowId(row))
 			.filter((rowId) => sourceTableRows.value.some((tableRow) => tableRow.rowId === rowId));
+
+		selectedRowIds.value = props.selectionMode === "single" ? nextSelectedRowIds.slice(0, 1) : nextSelectedRowIds;
+
+		if (props.selectionMode === "single" && selectedRows.value.length !== selectedRowIds.value.length) {
+			syncSelectedRows();
+		}
 	};
 
 	const isSelected = (rowId) => {
@@ -567,6 +597,8 @@
 			selectedRowIds.value = selectedRowIds.value.filter((selectedRowId) => selectedRowId !== rowId);
 			syncSelectedRows();
 			emit("row-unselect", row);
+		} else if (props.selectionMode === "single") {
+			selectOnlyRow(row, rowId);
 		} else {
 			selectedRowIds.value = [...selectedRowIds.value, rowId];
 			syncSelectedRows();
@@ -590,7 +622,7 @@
 	const onRowClick = (event, row, rowId) => {
 		if (!props.selectable) return;
 
-		if (event.ctrlKey || event.metaKey) {
+		if (props.selectionMode === "multiple" && (event.ctrlKey || event.metaKey)) {
 			toggleRowSelection(row, rowId);
 			return;
 		}
@@ -604,7 +636,7 @@
 	};
 
 	const toggleAllSelection = () => {
-		if (!props.selectable) return;
+		if (!props.selectable || props.selectionMode === "single") return;
 
 		if (selectedRowCount.value > 0) {
 			selectedRowIds.value = selectedRowIds.value.filter((rowId) => !selectableRowIds.value.includes(rowId));
@@ -710,12 +742,25 @@
 		setPage(page.value + 1);
 	};
 
+	const paginationSlotProps = computed(() => ({
+		page: page.value,
+		itemsPerPage: props.itemsPerPage,
+		totalItems: totalItems.value,
+		totalPages: totalPages.value,
+		firstItemIndex: firstItemIndex.value,
+		lastItemIndex: lastItemIndex.value,
+		visibleRows: displayedRows.value,
+		setPage,
+		previousPage,
+		nextPage,
+	}));
+
 	const onRowRightClick = (event, row, rowIdx) => {
 		emit("row-contextmenu", { event, row, rowIdx });
 	};
 
 	watch(
-		() => [props.rows, props.filterKey],
+		() => [props.rows, props.filterKey, props.selectionMode],
 		() => {
 			syncSelectedRowIds();
 			syncSelectedRows();
@@ -785,6 +830,11 @@
 	:deep(.s-data-table table) {
 		table-layout: fixed;
 		width: 100%;
+	}
+
+	:deep(.s-data-table tbody tr:focus-visible) {
+		outline: 2px solid rgb(var(--v-theme-primary));
+		outline-offset: -2px;
 	}
 
 	:deep(.s-data-table th),
