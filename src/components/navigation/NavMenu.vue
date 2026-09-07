@@ -80,7 +80,7 @@
 			items: [
 				{ label: "Дашборд", icon: "mdi-chart-pie-outline", to: "/" },
 				{ label: "Устройства", icon: "mdi-desktop-tower-monitor", to: "/devices" },
-				{ label: "Карта клуба", icon: "mdi-map-outline" },
+				{ label: "Карта клуба", icon: "mdi-map-outline", to: "/club-map" },
 				{ label: "Бронирования", icon: "mdi-calendar-clock-outline" },
 				{ label: "Магазин", icon: "mdi-basket-outline" },
 				{ label: "Аналитика", icon: "mdi-finance" },
