@@ -8,7 +8,7 @@
 		"build": "vite build",
 		"build:no-client": "SKIP_CLIENT_GENERATION=true vite build",
 		"preview": "vite preview",
-		"predeploy": "npm run build",
+		"predeploy": "npm run build:no-client",
 		"deploy": "gh-pages -d dist -o deploy --nojekyll"
 	},
 	"dependencies": {
