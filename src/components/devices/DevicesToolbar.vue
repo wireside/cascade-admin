@@ -97,17 +97,8 @@
 </template>
 
 <script setup>
-	const props = defineProps({
-		sections: {
-			type: Array,
-			default: () => [],
-		},
-	});
-
-	const totalDevices = computed(() => {
-		const total = props.sections.reduce((sum, section) => sum + (section.rows?.length || 0), 0);
-		return Math.max(total, 15);
-	});
+	const devicesStore = useDevicesStore();
+	const totalDevices = $computed(() => Math.max(devicesStore.devices.length, 15));
 
 	const metrics = [
 		{ label: "Включены", value: 15, tone: "green", icon: "mdi-power" },

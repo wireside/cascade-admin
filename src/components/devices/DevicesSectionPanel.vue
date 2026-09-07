@@ -1,5 +1,9 @@
 <template>
-	<div class="dashboard-panel bg-white bg-opacity-3">
+	<div
+		v-for="section in sections"
+		:key="section.id"
+		class="dashboard-panel bg-white bg-opacity-3"
+	>
 		<div class="d-flex align-center justify-space-between">
 			<div class="d-flex align-center ga-2 flex-wrap">
 				<v-chip
@@ -9,7 +13,7 @@
 					class="bootcamp-badge bg-opacity-20 font-weight-medium rounded-md px-3 py-1"
 					:class="`text-${section.tone}`"
 				>
-					{{ section.badge }}
+					{{ section.id }}
 				</v-chip>
 				<span class="text-white text-subtitle-1 font-weight-semibold">{{ section.title }}</span>
 				<v-btn
@@ -68,22 +72,22 @@
 					height="40"
 					rounded="md"
 					class="devices-section-action bg-white bg-opacity-5 text-white"
-					@click="collapsed = !collapsed"
+					@click="toggleCollapsed(section.id)"
 				>
 					<v-icon
-						:icon="collapsed ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+						:icon="isCollapsed(section.id) ? 'mdi-chevron-up' : 'mdi-chevron-down'"
 						size="20"
 					/>
 				</v-btn>
 			</div>
 		</div>
 
-		<s-collapse :expanded="!collapsed">
+		<s-collapse :expanded="!isCollapsed(section.id)">
 			<div class="devices-section-content pt-4">
 				<s-data-table
-					v-model="selectedRows"
+					v-model="selectedRowsByBootcamp[section.id]"
 					:columns="columns"
-					:rows="tableRows"
+					:rows="section.rows"
 					:loading="loading"
 					:tone="section.tone"
 					selectable
@@ -91,8 +95,8 @@
 					hover-class="bg-background"
 					cell-hover-popup-delay="500"
 					table-height="288"
-					@update:model-value="onSelectionChange"
-					@row-contextmenu="openRowMenu"
+					@update:model-value="onSelectionChange(section.id, $event)"
+					@row-contextmenu="openRowMenu(section.id, $event)"
 				>
 					<template #cell-booking-hover-popup="{ row }">
 						<div
@@ -132,7 +136,7 @@
 		</s-collapse>
 
 		<device-control
-			v-if="!collapsed"
+			v-if="!isCollapsed(section.id) && contextMenu.bootcampId === section.id"
 			v-model:visible="contextMenu.show"
 			:x="contextMenu.x"
 			:y="contextMenu.y"
@@ -143,21 +147,17 @@
 </template>
 
 <script setup>
-	const props = defineProps({
-		section: {
-			type: Object,
-			required: true,
-		},
-	});
 	const emit = defineEmits(["selection-change"]);
 
+	const devicesStore = useDevicesStore();
 	const testStore = useTestStore();
 
-	const selectedRows = $ref([]);
-	let collapsed = $ref(false);
+	const selectedRowsByBootcamp = $ref({});
+	const collapsedByBootcamp = $ref({});
 
 	const contextMenu = $ref({
 		show: false,
+		bootcampId: null,
 		x: 0,
 		y: 0,
 		target: null,
@@ -165,23 +165,23 @@
 		rowIdx: null,
 	});
 
-	const loading = $computed(() => testStore.loading);
-
-	const getBookingDate = (start, end) => {
-		const source = typeof start === "string" && start.includes(" ") ? start : end;
-		if (!source || typeof source !== "string") return start || end || "—";
-
-		const [datePart] = source.split(" ");
-		return datePart || source;
-	};
-
-	const tableRows = $computed(() => {
-		return props.section.rows.map((row) => ({
-			...row,
-			status: toBadge(row.status),
-			booking: toBadge(row.booking),
-		}));
+	const toBadge = (value) => ({
+		label: value?.label || value || "—",
+		tone: value?.tone || "primary",
 	});
+
+	const loading = $computed(() => testStore.loading);
+	const sections = $computed(() =>
+		devicesStore.bootcamps.map((bootcamp) => ({
+			...bootcamp,
+			title: `Буткемп №${bootcamp.id}`,
+			rows: bootcamp.devices.map((device) => ({
+				...device,
+				status: toBadge(device.status),
+				booking: toBadge(device.booking),
+			})),
+		}))
+	);
 
 	const columns = [
 		{ key: "id", label: "№", width: { maxChars: 4 }, align: "left", strong: true },
@@ -195,24 +195,27 @@
 		{ key: "app", label: "Приложение", width: { maxChars: 14 } },
 	];
 
-	const onSelectionChange = (rows) => {
+	const onSelectionChange = (bootcampId, rows) => {
+		selectedRowsByBootcamp[bootcampId] = rows;
 		emit("selection-change", rows);
 	};
 
-	const openRowMenu = ({ event, row, rowIdx }) => {
+	const isCollapsed = (bootcampId) => Boolean(collapsedByBootcamp[bootcampId]);
+
+	const toggleCollapsed = (bootcampId) => {
+		collapsedByBootcamp[bootcampId] = !isCollapsed(bootcampId);
+	};
+
+	const openRowMenu = (bootcampId, { event, row, rowIdx }) => {
 		event?.preventDefault?.();
 		contextMenu.show = true;
+		contextMenu.bootcampId = bootcampId;
 		contextMenu.x = event?.clientX || 0;
 		contextMenu.y = event?.clientY || 0;
 		contextMenu.target = event?.target || event?.currentTarget || null;
 		contextMenu.row = row;
 		contextMenu.rowIdx = rowIdx;
 	};
-
-	const toBadge = (value) => ({
-		label: value.label,
-		tone: value.tone || "primary",
-	});
 </script>
 
 <style scoped lang="scss">
