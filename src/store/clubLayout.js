@@ -116,7 +116,6 @@ function normalizeRotation(value, allowedRotations, fieldName = "rotation") {
 	return rotation;
 }
 
-// Grid coordinates are zero-based: the top-left cell is { x: 0, y: 0 }.
 function normalizeElement(payload, { id = payload?.id || createElementId() } = {}) {
 	const type = normalizeRequiredString(payload?.type, "type");
 
@@ -233,7 +232,7 @@ function sanitizeState(value) {
 				elementIds.add(element.id);
 			}
 		} catch {
-			// Ignore invalid records so one stale element cannot break the whole saved layout.
+			continue;
 		}
 	}
 
@@ -259,7 +258,7 @@ function writeStoredState(gridSize, elements) {
 			})
 		);
 	} catch {
-		// The in-memory layout remains usable when storage is unavailable or full.
+		return undefined;
 	}
 }
 

@@ -3,11 +3,15 @@
 		class="club-layout d-flex flex-column ga-3 text-white"
 		@keydown.delete.prevent="editing && deleteSelectedElements()"
 	>
-		<div
-			:class="{ 'club-layout__header--editing': editing }"
-			class="club-layout__header align-center ga-3"
+		<v-row
+			align="center"
+			no-gutters
 		>
-			<div class="d-flex align-center ga-2 text-no-wrap">
+			<v-col
+				:cols="editing ? 6 : true"
+				:md="editing ? 3 : true"
+				class="d-flex align-center ga-2 text-no-wrap"
+			>
 				<v-icon
 					:icon="editing ? 'mdi-pencil-outline' : 'mdi-information-outline'"
 					:color="editing ? 'blue' : 'white'"
@@ -15,28 +19,41 @@
 					class="opacity-70"
 				/>
 				<div>
-					<div class="club-layout__status text-caption opacity-50">
+					<div class="text-caption opacity-50">
 						{{ editing ? "Выбран инструмент" : "План помещения" }}
 					</div>
 					<div class="text-body-2 font-weight-medium">{{ toolLabel }}</div>
 				</div>
-			</div>
+			</v-col>
 
-			<club-layout-toolbar
+			<v-col
 				v-if="editing"
-				:active-tool="activeTool"
-				:selected-element="selectedElement"
-				:selected-count="selectedElementIds.length"
-				:devices="deviceOptions"
-				:placed-device-ids="placedDeviceIds"
-				class="club-layout__toolbar justify-self-center"
-				@select-tool="selectTool"
-				@rotate-selected="rotateSelectedElement"
-				@set-text-alignment="setSelectedTextAlignment"
-				@delete-selected="deleteSelectedElements"
-			/>
+				cols="12"
+				md="6"
+				order="3"
+				order-md="2"
+				class="d-flex justify-center overflow-hidden px-1"
+			>
+				<club-layout-toolbar
+					:active-tool="activeTool"
+					:selected-element="selectedElement"
+					:selected-count="selectedElementIds.length"
+					:devices="deviceOptions"
+					:placed-device-ids="placedDeviceIds"
+					@select-tool="selectTool"
+					@rotate-selected="rotateSelectedElement"
+					@set-text-alignment="setSelectedTextAlignment"
+					@delete-selected="deleteSelectedElements"
+				/>
+			</v-col>
 
-			<div class="d-flex align-center justify-end ga-2">
+			<v-col
+				:cols="editing ? 6 : 'auto'"
+				:md="editing ? 3 : 'auto'"
+				:order="editing ? 2 : undefined"
+				:order-md="editing ? 3 : undefined"
+				class="d-flex align-center justify-end ga-2"
+			>
 				<template v-if="editing">
 					<v-btn
 						variant="text"
@@ -78,13 +95,13 @@
 					/>
 					Редактировать
 				</v-btn>
-			</div>
-		</div>
+			</v-col>
+		</v-row>
 
 		<div
 			v-if="editing"
 			:class="previewElement && !previewValid ? 'text-red' : 'text-white'"
-			class="club-layout__hint d-flex align-center ga-2 text-caption opacity-60"
+			class="d-flex align-center ga-2 text-caption opacity-60"
 		>
 			<v-icon
 				:icon="previewElement && !previewValid ? 'mdi-alert-circle-outline' : 'mdi-lightbulb-outline'"
@@ -107,6 +124,9 @@
 			@cell-hover="hoveredCell = $event"
 			@cell-click="onCellClick"
 			@element-click="onElementClick"
+			@element-drag-start="onElementDragStart"
+			@element-drop="onElementDrop"
+			@element-drag-cancel="finishElementDrag"
 			@device-click="emit('device-click', $event)"
 		/>
 	</div>
@@ -168,9 +188,10 @@
 			};
 		}
 
-		if (activeTool.mode === "move" && movingElement) {
+		if (movingElement) {
 			return {
 				...movingElement,
+				id: "movement-preview",
 				x: cell.x,
 				y: cell.y,
 			};
@@ -180,17 +201,18 @@
 	};
 	const previewElement = $computed(() => buildInteractiveElement(hoveredCell));
 	const previewCells = $computed(() => (previewElement ? getElementCells(previewElement) : []));
-	const previewValid = $computed(() => (previewElement ? canPlaceDraftElement(previewElement) : false));
-	const interactionActive = $computed(
-		() => editing.value && (activeTool.mode === "place" || (activeTool.mode === "move" && Boolean(movingElement)))
-	);
+	const previewValid = $computed(() => {
+		if (!previewElement) return false;
+		return movingElement ? canMoveDraftElement(previewElement) : canPlaceDraftElement(previewElement);
+	});
+	const interactionActive = $computed(() => editing.value && (activeTool.mode === "place" || Boolean(movingElement)));
 
 	const toolLabel = $computed(() => {
 		if (!editing.value) return `${layoutStore.gridSize.width} × ${layoutStore.gridSize.height}`;
+		if (movingElement) return "Перемещение";
 		if (activeTool.mode === "select") {
 			return selectedElementIds.length ? `Выбрано: ${selectedElementIds.length}` : "Выбор";
 		}
-		if (activeTool.mode === "move") return movingElement ? "Перемещение" : "Выберите элемент";
 
 		return (
 			{
@@ -205,19 +227,15 @@
 	});
 	const interactionHint = $computed(() => {
 		if (activeTool.mode === "select") {
+			if (movingElement) return "Отпустите элемент над нужной ячейкой. Занятые элементы поменяются местами.";
+
 			if (selectedElementIds.length > 1) {
 				return `Выбрано элементов: ${selectedElementIds.length}. Их можно удалить вместе; Shift + клик изменяет выбор.`;
 			}
 
 			return selectedElement
-				? "Элемент выбран. Shift + клик добавляет к выбору; один элемент можно повернуть или перенести."
-				: "Нажмите на элемент, чтобы выбрать его. Shift + клик выбирает несколько.";
-		}
-
-		if (activeTool.mode === "move") {
-			return movingElement
-				? "Наведите на новую ячейку и нажмите, чтобы переместить элемент."
-				: "Нажмите на элемент, который хотите переместить.";
+				? "Элемент выбран. Перетащите его мышью; Shift + клик добавляет к выбору."
+				: "Нажмите для выбора или зажмите элемент и перетащите его. Shift + клик выбирает несколько.";
 		}
 
 		if (previewElement && !previewValid) return "Это место занято или элемент выходит за границы сетки.";
@@ -236,12 +254,8 @@
 
 		if (!isInsideGrid) return false;
 
-		const ignoredId = activeTool.mode === "move" ? movingElementId : null;
 		const occupiedCells = new Set(
-			draftElements
-				.filter(({ id }) => id !== ignoredId)
-				.flatMap((placedElement) => getElementCells(placedElement))
-				.map(({ x, y }) => `${x}:${y}`)
+			draftElements.flatMap((placedElement) => getElementCells(placedElement)).map(({ x, y }) => `${x}:${y}`)
 		);
 
 		if (cells.some(({ x, y }) => occupiedCells.has(`${x}:${y}`))) return false;
@@ -249,11 +263,17 @@
 		return !(
 			isDeviceElement(element) &&
 			draftElements.some(
-				(placedElement) =>
-					placedElement.id !== ignoredId &&
-					isDeviceElement(placedElement) &&
-					placedElement.deviceId === element.deviceId
+				(placedElement) => isDeviceElement(placedElement) && placedElement.deviceId === element.deviceId
 			)
+		);
+	}
+
+	function canMoveDraftElement(element) {
+		return (
+			element.x >= 0 &&
+			element.x < layoutStore.gridSize.width &&
+			element.y >= 0 &&
+			element.y < layoutStore.gridSize.height
 		);
 	}
 
@@ -291,11 +311,6 @@
 			selectedElementIds = [];
 		}
 
-		if (tool.mode === "move" && selectedElement) {
-			movingElementId = selectedElement.id;
-			return;
-		}
-
 		movingElementId = null;
 	}
 
@@ -308,10 +323,37 @@
 		}
 
 		selectedElementIds = [element.id];
+	}
 
-		if (activeTool.mode === "move") {
-			movingElementId = element.id;
+	function onElementDragStart(element) {
+		activeTool = { mode: "select" };
+		selectedElementIds = [element.id];
+		movingElementId = element.id;
+	}
+
+	function onElementDrop({ cell }) {
+		if (!movingElement || !cell || !canMoveDraftElement({ ...movingElement, ...cell })) {
+			finishElementDrag();
+			return;
 		}
+
+		const source = { x: movingElement.x, y: movingElement.y };
+		const targetElement = draftElements.find(({ id, x, y }) => id !== movingElement.id && x === cell.x && y === cell.y);
+
+		movingElement.x = cell.x;
+		movingElement.y = cell.y;
+
+		if (targetElement) {
+			targetElement.x = source.x;
+			targetElement.y = source.y;
+		}
+
+		finishElementDrag();
+	}
+
+	function finishElementDrag() {
+		movingElementId = null;
+		hoveredCell = null;
 	}
 
 	function onCellClick(cell) {
@@ -337,14 +379,6 @@
 			if (isDeviceElement(element)) {
 				activeTool = { mode: "select" };
 			}
-		} else if (activeTool.mode === "move" && movingElementId) {
-			const index = draftElements.findIndex(({ id }) => id === movingElementId);
-			draftElements[index] = {
-				...draftElements[index],
-				x: cell.x,
-				y: cell.y,
-			};
-			movingElementId = null;
 		}
 
 		hoveredCell = null;
@@ -386,42 +420,3 @@
 		{ immediate: true }
 	);
 </script>
-
-<style scoped lang="scss">
-	.club-layout {
-		&__header {
-			display: grid;
-			grid-template-columns: minmax(160px, 1fr) auto;
-
-			&--editing {
-				grid-template-columns: minmax(160px, 1fr) minmax(0, auto) minmax(210px, 1fr);
-			}
-		}
-
-		&__status {
-			line-height: 1.1;
-		}
-
-		&__toolbar {
-			min-width: 0;
-		}
-
-		&__hint {
-			min-height: 20px;
-		}
-
-		@media (max-width: 1199px) {
-			&__header,
-			&__header--editing {
-				display: flex;
-				flex-wrap: wrap;
-				justify-content: space-between;
-			}
-
-			&__toolbar {
-				order: 3;
-				width: 100%;
-			}
-		}
-	}
-</style>

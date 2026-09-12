@@ -1,99 +1,53 @@
 <template>
-	<div class="club-layout-toolbar d-flex align-center ga-1 pa-1 rounded-lg bg-surface border overflow-x-auto">
+	<v-sheet
+		max-width="100%"
+		min-height="42"
+		color="surface"
+		rounded="lg"
+		border
+		class="club-layout-toolbar d-inline-flex flex-nowrap flex-shrink-1 align-center ga-1 pa-1 overflow-x-auto"
+	>
 		<v-btn
 			icon
 			:variant="isModeActive('select') ? 'flat' : 'text'"
 			:color="isModeActive('select') ? 'blue' : 'white'"
-			size="38"
+			size="34"
 			title="Выбор элемента"
 			@click="selectMode('select')"
 		>
 			<v-icon
 				icon="mdi-cursor-default-outline"
-				size="19"
-			/>
-		</v-btn>
-
-		<v-btn
-			icon
-			:variant="isModeActive('move') ? 'flat' : 'text'"
-			:color="isModeActive('move') ? 'blue' : 'white'"
-			size="38"
-			title="Перемещение элемента"
-			@click="selectMode('move')"
-		>
-			<v-icon
-				icon="mdi-cursor-move"
-				size="19"
+				size="17"
 			/>
 		</v-btn>
 
 		<v-divider
 			vertical
-			class="mx-1 opacity-20"
+			class="mx-1 opacity-20 flex-shrink-0"
 		/>
 
-		<v-menu
-			v-model="wallMenuOpen"
-			:close-on-content-click="false"
-			location="bottom"
-			offset="8"
+		<v-btn
+			v-for="variant in wallVariants"
+			:key="`${variant.kind}-${variant.rotation}`"
+			icon
+			:variant="isWallVariantActive(variant) ? 'flat' : 'text'"
+			:color="isWallVariantActive(variant) ? 'blue' : 'white'"
+			size="34"
+			:title="`${wallLabels[variant.kind]}, ${variant.rotation}°`"
+			@click="selectWall(variant)"
 		>
-			<template #activator="{ props: activatorProps }">
-				<v-btn
-					v-bind="activatorProps"
-					icon
-					:variant="isElementTypeActive(GRID_ELEMENT_TYPE.WALL) ? 'flat' : 'text'"
-					:color="isElementTypeActive(GRID_ELEMENT_TYPE.WALL) ? 'blue' : 'white'"
-					size="38"
-					title="Добавить стену"
-				>
-					<v-icon
-						icon="mdi-wall"
-						size="19"
-					/>
-				</v-btn>
-			</template>
-
 			<v-sheet
-				width="350"
-				rounded="lg"
-				class="pa-4 bg-surface border text-white"
+				width="18"
+				height="18"
+				color="transparent"
+				class="flex-shrink-0"
 			>
-				<div class="font-weight-medium mb-1">Выберите форму стены</div>
-				<div class="text-caption opacity-50 mb-3">Повороты без визуальных отличий скрыты</div>
-
-				<div class="d-flex flex-column ga-3">
-					<div
-						v-for="group in wallVariantGroups"
-						:key="group.kind"
-					>
-						<div class="text-caption opacity-60 mb-1">{{ group.label }}</div>
-						<div class="d-flex ga-1">
-							<v-btn
-								v-for="variant in group.variants"
-								:key="`${variant.kind}-${variant.rotation}`"
-								:color="isWallVariantActive(variant) ? 'blue' : 'white'"
-								:variant="isWallVariantActive(variant) ? 'flat' : 'outlined'"
-								width="48"
-								height="48"
-								class="pa-2 bg-opacity-10"
-								:title="`${group.label}, ${variant.rotation}°`"
-								@click="selectWall(variant)"
-							>
-								<div class="club-layout-toolbar__wall-preview">
-									<club-layout-wall
-										:kind="variant.kind"
-										:rotation="variant.rotation"
-										preview
-									/>
-								</div>
-							</v-btn>
-						</div>
-					</div>
-				</div>
+				<club-layout-wall
+					:kind="variant.kind"
+					:rotation="variant.rotation"
+				/>
 			</v-sheet>
-		</v-menu>
+		</v-btn>
 
 		<v-menu
 			v-model="textMenuOpen"
@@ -107,12 +61,12 @@
 					icon
 					:variant="isElementTypeActive(GRID_ELEMENT_TYPE.TEXT) ? 'flat' : 'text'"
 					:color="isElementTypeActive(GRID_ELEMENT_TYPE.TEXT) ? 'blue' : 'white'"
-					size="38"
+					size="34"
 					title="Добавить текст"
 				>
 					<v-icon
 						icon="mdi-format-text"
-						size="20"
+						size="18"
 					/>
 				</v-btn>
 			</template>
@@ -132,16 +86,21 @@
 
 				<div class="text-caption opacity-60 mb-2">Цвет</div>
 				<div class="d-flex ga-2 mb-4">
-					<button
+					<v-btn
 						v-for="color in textColors"
 						:key="color"
-						type="button"
-						:class="{ 'club-layout-toolbar__color--active': textDraft.color === color }"
-						:style="{ backgroundColor: `rgb(var(--v-theme-${color}))` }"
 						:aria-label="`Цвет ${color}`"
-						class="club-layout-toolbar__color rounded-circle"
+						:color="color"
+						icon
+						size="28"
 						@click="textDraft.color = color"
-					/>
+					>
+						<v-icon
+							v-if="textDraft.color === color"
+							icon="mdi-check"
+							size="14"
+						/>
+					</v-btn>
 				</div>
 
 				<v-select
@@ -157,14 +116,14 @@
 					mandatory
 					divided
 					color="blue"
-					class="mb-4 border rounded-lg"
+					class="mb-4 border rounded-lg flex-shrink-0"
 				>
 					<v-btn
 						v-for="direction in textDirections"
 						:key="direction.value"
 						:value="direction.value"
 						:icon="direction.icon"
-						size="38"
+						size="34"
 						:title="direction.label"
 					/>
 				</v-btn-toggle>
@@ -191,12 +150,12 @@
 					icon
 					:variant="isDeviceToolActive ? 'flat' : 'text'"
 					:color="isDeviceToolActive ? 'blue' : 'white'"
-					size="38"
+					size="34"
 					title="Разместить устройство"
 				>
 					<v-icon
 						icon="mdi-monitor"
-						size="19"
+						size="17"
 					/>
 				</v-btn>
 			</template>
@@ -236,20 +195,20 @@
 			icon
 			:variant="isElementTypeActive(tool.type) ? 'flat' : 'text'"
 			:color="isElementTypeActive(tool.type) ? 'blue' : 'white'"
-			size="38"
+			size="34"
 			:title="tool.label"
 			@click="selectSimpleElement(tool.type)"
 		>
 			<v-icon
 				:icon="tool.icon"
-				size="19"
+				size="17"
 			/>
 		</v-btn>
 
 		<template v-if="selectedCount">
 			<v-divider
 				vertical
-				class="mx-1 opacity-20"
+				class="mx-1 opacity-20 flex-shrink-0"
 			/>
 
 			<v-btn
@@ -260,13 +219,13 @@
 				icon
 				variant="text"
 				color="primary"
-				size="38"
+				size="34"
 				title="Повернуть выбранный элемент"
 				@click="emit('rotate-selected')"
 			>
 				<v-icon
 					icon="mdi-rotate-right"
-					size="19"
+					size="17"
 				/>
 			</v-btn>
 
@@ -276,7 +235,7 @@
 				mandatory
 				divided
 				color="blue"
-				class="border rounded-lg"
+				class="border rounded-lg flex-shrink-0"
 				@update:model-value="emit('set-text-alignment', $event)"
 			>
 				<v-btn
@@ -284,7 +243,7 @@
 					:key="alignment.value"
 					:value="alignment.value"
 					:icon="textAlignmentIcon(alignment.value)"
-					size="38"
+					size="34"
 					:title="alignment.label"
 				/>
 			</v-btn-toggle>
@@ -293,17 +252,17 @@
 				icon
 				variant="text"
 				color="red"
-				size="38"
+				size="34"
 				:title="selectedCount > 1 ? `Удалить выбранные элементы (${selectedCount})` : 'Удалить выбранный элемент'"
 				@click="emit('delete-selected')"
 			>
 				<v-icon
 					icon="mdi-delete-outline"
-					size="19"
+					size="17"
 				/>
 			</v-btn>
 		</template>
-	</div>
+	</v-sheet>
 </template>
 
 <script setup>
@@ -335,7 +294,6 @@
 
 	const emit = defineEmits(["select-tool", "rotate-selected", "set-text-alignment", "delete-selected"]);
 
-	let wallMenuOpen = $ref(false);
 	let textMenuOpen = $ref(false);
 	let deviceMenuOpen = $ref(false);
 	const textDraft = $ref({
@@ -370,12 +328,8 @@
 		{ type: GRID_ELEMENT_TYPE.COAT_RACK, icon: "mdi-hanger", label: "Добавить вешалку" },
 	];
 
-	const wallVariantGroups = $computed(() =>
-		Object.entries(WALL_ROTATIONS).map(([kind, rotations]) => ({
-			kind,
-			label: wallLabels[kind],
-			variants: rotations.map((rotation) => ({ kind, rotation })),
-		}))
+	const wallVariants = $computed(() =>
+		Object.entries(WALL_ROTATIONS).flatMap(([kind, rotations]) => rotations.map((rotation) => ({ kind, rotation })))
 	);
 	const availableDevices = $computed(() =>
 		props.devices.filter(({ id }) => !props.placedDeviceIds.includes(String(id)))
@@ -431,7 +385,6 @@
 				rotation,
 			},
 		});
-		wallMenuOpen = false;
 	};
 
 	const selectText = () => {
@@ -468,37 +421,10 @@
 
 <style scoped lang="scss">
 	.club-layout-toolbar {
-		max-width: 100%;
-		min-height: 48px;
 		scrollbar-width: none;
 
 		&::-webkit-scrollbar {
 			display: none;
-		}
-
-		&__color {
-			width: 28px;
-			height: 28px;
-			border: 2px solid transparent;
-			outline: 1px solid rgba(var(--v-theme-white), 0.12);
-			transition:
-				border-color 120ms ease,
-				transform 120ms ease;
-
-			&:hover {
-				transform: scale(1.08);
-			}
-
-			&--active {
-				border-color: rgb(var(--v-theme-background));
-				outline-color: rgb(var(--v-theme-blue));
-			}
-		}
-
-		&__wall-preview {
-			width: 28px;
-			height: 28px;
-			flex: 0 0 28px;
 		}
 	}
 </style>
