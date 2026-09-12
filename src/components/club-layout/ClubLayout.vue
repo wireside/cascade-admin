@@ -9,7 +9,7 @@
 		>
 			<v-col
 				:cols="editing ? 6 : true"
-				:md="editing ? 3 : true"
+				:lg="editing ? 2 : true"
 				class="d-flex align-center ga-2 text-no-wrap"
 			>
 				<v-icon
@@ -29,9 +29,9 @@
 			<v-col
 				v-if="editing"
 				cols="12"
-				md="6"
+				lg="8"
 				order="3"
-				order-md="2"
+				order-lg="2"
 				class="d-flex justify-center overflow-hidden px-1"
 			>
 				<club-layout-toolbar
@@ -49,9 +49,9 @@
 
 			<v-col
 				:cols="editing ? 6 : 'auto'"
-				:md="editing ? 3 : 'auto'"
+				:lg="editing ? 2 : 'auto'"
 				:order="editing ? 2 : undefined"
-				:order-md="editing ? 3 : undefined"
+				:order-lg="editing ? 3 : undefined"
 				class="d-flex align-center justify-end ga-2"
 			>
 				<template v-if="editing">
