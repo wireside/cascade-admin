@@ -1,23 +1,12 @@
 <template>
 	<span
-		:class="[
-			`club-layout-wall--${kind}`,
-			{
-				'club-layout-wall--joined': joined,
-			},
-		]"
+		:class="[`club-layout-wall--${kind}`, { 'club-layout-wall--compact': compact }]"
 		:style="{ transform: `rotate(${rotation}deg)` }"
 		class="club-layout-wall d-block position-relative w-100 h-100"
 		aria-hidden="true"
 	>
-		<span
-			:class="wallPartClasses('horizontal')"
-			class="club-layout-wall__horizontal position-absolute bg-wall"
-		/>
-		<span
-			:class="wallPartClasses('vertical')"
-			class="club-layout-wall__vertical position-absolute bg-wall"
-		/>
+		<span class="club-layout-wall__horizontal position-absolute" />
+		<span class="club-layout-wall__vertical position-absolute" />
 	</span>
 </template>
 
@@ -31,35 +20,38 @@
 			type: Number,
 			default: 0,
 		},
-		joined: {
+		compact: {
 			type: Boolean,
 			default: false,
 		},
 	});
 
-	const wallPartClasses = (part) => {
-		if (props.joined) return "rounded-0";
-		if (props.kind === "corner" && part === "horizontal") return "rounded-s-0 rounded-e-sm";
-		if (["corner", "t-junction"].includes(props.kind) && part === "vertical") return "rounded-t-0 rounded-b-sm";
-		return "rounded-sm";
-	};
+	const wallCollor = computed(() => (props.compact ? "#A1A1A1" : "#2b2b2b"));
 </script>
 
 <style scoped lang="scss">
 	.club-layout-wall {
+		--club-layout-wall-thickness: 14px;
+		--club-layout-wall-half-thickness: 7px;
+
 		transform-origin: center;
 
+		&__horizontal,
+		&__vertical {
+			background-color: v-bind(wallCollor);
+		}
+
 		&__horizontal {
-			top: calc(50% - 3px);
+			top: calc(50% - var(--club-layout-wall-half-thickness));
 			left: 0;
 			width: 100%;
-			height: 6px;
+			height: var(--club-layout-wall-thickness);
 		}
 
 		&__vertical {
 			top: 0;
-			left: calc(50% - 3px);
-			width: 6px;
+			left: calc(50% - var(--club-layout-wall-half-thickness));
+			width: var(--club-layout-wall-thickness);
 			height: 100%;
 		}
 
@@ -68,25 +60,23 @@
 		}
 
 		&--corner &__horizontal {
-			left: calc(50% - 3px);
-			width: calc(50% + 3px);
+			left: calc(50% - var(--club-layout-wall-half-thickness));
+			width: calc(50% + var(--club-layout-wall-half-thickness));
 		}
 
 		&--corner &__vertical {
-			top: calc(50% - 3px);
-			height: calc(50% + 3px);
+			top: calc(50% - var(--club-layout-wall-half-thickness));
+			height: calc(50% + var(--club-layout-wall-half-thickness));
 		}
 
 		&--t-junction &__vertical {
-			top: calc(50% - 3px);
-			height: calc(50% + 3px);
+			top: calc(50% - var(--club-layout-wall-half-thickness));
+			height: calc(50% + var(--club-layout-wall-half-thickness));
 		}
 
-		&--joined {
-			top: calc((var(--club-layout-grid-half-gap, 2px) + 1px) * -1);
-			left: calc((var(--club-layout-grid-half-gap, 2px) + 1px) * -1);
-			width: calc(100% + var(--club-layout-grid-gap, 4px) + 2px);
-			height: calc(100% + var(--club-layout-grid-gap, 4px) + 2px);
+		&--compact {
+			--club-layout-wall-thickness: 2px;
+			--club-layout-wall-half-thickness: 1px;
 		}
 	}
 </style>

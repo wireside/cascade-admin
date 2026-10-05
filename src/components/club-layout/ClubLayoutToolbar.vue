@@ -1,209 +1,267 @@
 <template>
 	<v-sheet
-		max-width="100%"
-		min-height="42"
+		max-width="697px"
+		height="40"
 		color="surface"
-		rounded="lg"
-		border
-		class="club-layout-toolbar d-inline-flex flex-nowrap flex-shrink-1 align-center ga-1 pa-1 overflow-x-auto"
+		rounded="pill"
+		class="club-layout-toolbar d-inline-flex flex-nowrap flex-shrink-1 align-center pa-1 overflow-x-auto"
 	>
-		<v-btn
-			icon
-			:variant="isModeActive('select') ? 'flat' : 'text'"
-			:color="isModeActive('select') ? 'blue' : 'white'"
-			size="34"
-			title="Выбор элемента"
-			@click="selectMode('select')"
-		>
-			<v-icon
-				icon="mdi-cursor-default-outline"
-				size="17"
-			/>
-		</v-btn>
+		<div class="club-layout-toolbar__section d-flex align-center flex-shrink-0">
+			<v-btn
+				icon
+				:variant="isModeActive('select') ? 'tonal' : 'text'"
+				:color="isModeActive('select') ? 'primary' : 'secondary'"
+				size="32"
+				title="Выбор элемента"
+				@click="selectMode('select')"
+			>
+				<v-icon
+					icon="mdi-cursor-default-outline"
+					size="18"
+				/>
+			</v-btn>
+
+			<v-menu
+				v-model="textMenuOpen"
+				:close-on-content-click="false"
+				location="bottom"
+				offset="8"
+			>
+				<template #activator="{ props: activatorProps }">
+					<v-btn
+						v-bind="activatorProps"
+						icon
+						:variant="isElementTypeActive(GRID_ELEMENT_TYPE.TEXT) ? 'tonal' : 'text'"
+						:color="isElementTypeActive(GRID_ELEMENT_TYPE.TEXT) ? 'primary' : 'secondary'"
+						size="32"
+						title="Добавить текст"
+					>
+						<v-icon
+							icon="mdi-format-text"
+							size="18"
+						/>
+					</v-btn>
+				</template>
+
+				<v-sheet
+					width="360"
+					rounded="lg"
+					class="pa-4 bg-surface border text-white"
+				>
+					<div class="font-weight-medium mb-3">Новый текст</div>
+					<v-text-field
+						v-model="textDraft.text"
+						label="Текст"
+						placeholder="Например, RECEPTION"
+						class="mb-3"
+					/>
+
+					<div class="text-caption opacity-60 mb-2">Цвет</div>
+					<div class="d-flex ga-2 mb-4">
+						<v-btn
+							v-for="color in textColors"
+							:key="color.value"
+							:aria-label="color.label"
+							:color="color.preview"
+							icon
+							size="28"
+							@click="textDraft.color = color.value"
+						>
+							<v-icon
+								v-if="textDraft.color === color.value"
+								icon="mdi-check"
+								size="14"
+							/>
+						</v-btn>
+					</div>
+
+					<v-select
+						v-model="textDraft.fontSize"
+						:items="textSizes"
+						variant="solo"
+						class="mb-3 text-white"
+					>
+						<template v-slot:label><span class="text-white">Размер</span></template>
+					</v-select>
+
+					<div class="text-caption opacity-60 mb-2">Направление</div>
+					<v-btn-toggle
+						v-model="textDraft.direction"
+						mandatory
+						divided
+						color="primary"
+						class="mb-4 border rounded-lg flex-shrink-0"
+					>
+						<v-btn
+							v-for="direction in textDirections"
+							:key="direction.value"
+							:value="direction.value"
+							:icon="direction.icon"
+							size="46"
+							:title="direction.label"
+						/>
+					</v-btn-toggle>
+
+					<v-btn
+						:disabled="!textDraft.text.trim()"
+						color="primary"
+						block
+						@click="selectText"
+					>
+						Выбрать инструмент
+					</v-btn>
+				</v-sheet>
+			</v-menu>
+		</div>
 
 		<v-divider
 			vertical
 			class="mx-1 opacity-20 flex-shrink-0"
 		/>
 
-		<v-btn
-			v-for="variant in wallVariants"
-			:key="`${variant.kind}-${variant.rotation}`"
-			icon
-			:variant="isWallVariantActive(variant) ? 'flat' : 'text'"
-			:color="isWallVariantActive(variant) ? 'blue' : 'white'"
-			size="34"
-			:title="`${wallLabels[variant.kind]}, ${variant.rotation}°`"
-			@click="selectWall(variant)"
-		>
-			<v-sheet
-				width="18"
-				height="18"
-				color="transparent"
-				class="flex-shrink-0"
+		<div class="club-layout-toolbar__section d-flex align-center flex-shrink-0">
+			<v-btn
+				v-for="wall in wallTools"
+				:key="wall.kind"
+				icon
+				:variant="isWallKindActive(wall.kind) ? 'tonal' : 'text'"
+				:color="isWallKindActive(wall.kind) ? 'primary' : 'secondary'"
+				size="32"
+				:title="wall.label"
+				@click="selectWall(wall.kind)"
 			>
-				<club-layout-wall
-					:kind="variant.kind"
-					:rotation="variant.rotation"
-				/>
-			</v-sheet>
-		</v-btn>
-
-		<v-menu
-			v-model="textMenuOpen"
-			:close-on-content-click="false"
-			location="bottom"
-			offset="8"
-		>
-			<template #activator="{ props: activatorProps }">
-				<v-btn
-					v-bind="activatorProps"
-					icon
-					:variant="isElementTypeActive(GRID_ELEMENT_TYPE.TEXT) ? 'flat' : 'text'"
-					:color="isElementTypeActive(GRID_ELEMENT_TYPE.TEXT) ? 'blue' : 'white'"
-					size="34"
-					title="Добавить текст"
+				<v-sheet
+					width="18"
+					height="18"
+					color="transparent"
+					class="flex-shrink-0"
 				>
-					<v-icon
-						icon="mdi-format-text"
-						size="18"
+					<club-layout-wall
+						:kind="wall.kind"
+						:rotation="0"
+						compact
 					/>
-				</v-btn>
-			</template>
+				</v-sheet>
+			</v-btn>
 
-			<v-sheet
-				width="360"
-				rounded="lg"
-				class="pa-4 bg-surface border text-white"
+			<v-btn
+				icon
+				variant="text"
+				color="secondary"
+				size="32"
+				title="Повернуть стену"
+				@click="rotateWall"
 			>
-				<div class="font-weight-medium mb-3">Новый текст</div>
-				<v-text-field
-					v-model="textDraft.text"
-					label="Текст"
-					placeholder="Например, RECEPTION"
-					class="mb-3"
+				<v-icon
+					icon="mdi-arrow-right"
+					size="18"
 				/>
+			</v-btn>
+		</div>
 
-				<div class="text-caption opacity-60 mb-2">Цвет</div>
-				<div class="d-flex ga-2 mb-4">
+		<v-divider
+			vertical
+			class="mx-1 opacity-20 flex-shrink-0"
+		/>
+
+		<div class="club-layout-toolbar__section d-flex align-center flex-shrink-0">
+			<v-menu
+				v-for="deviceTool in deviceTools"
+				:key="deviceTool.deviceType"
+				location="bottom"
+				offset="8"
+			>
+				<template #activator="{ props: activatorProps }">
 					<v-btn
-						v-for="color in textColors"
-						:key="color"
-						:aria-label="`Цвет ${color}`"
-						:color="color"
+						v-bind="activatorProps"
 						icon
-						size="28"
-						@click="textDraft.color = color"
+						:variant="isElementTypeActive(deviceTool.elementType) ? 'tonal' : 'text'"
+						:color="isElementTypeActive(deviceTool.elementType) ? 'primary' : 'secondary'"
+						size="32"
+						:title="deviceTool.label"
 					>
 						<v-icon
-							v-if="textDraft.color === color"
-							icon="mdi-check"
-							size="14"
+							:icon="deviceTool.icon"
+							size="18"
 						/>
 					</v-btn>
-				</div>
+				</template>
 
-				<v-select
-					v-model="textDraft.fontSize"
-					:items="textSizes"
-					label="Размер"
-					class="mb-3"
-				/>
-
-				<div class="text-caption opacity-60 mb-2">Направление</div>
-				<v-btn-toggle
-					v-model="textDraft.direction"
-					mandatory
-					divided
-					color="blue"
-					class="mb-4 border rounded-lg flex-shrink-0"
+				<v-list
+					width="290"
+					max-height="360"
+					class="bg-surface border rounded-lg pa-2"
 				>
-					<v-btn
-						v-for="direction in textDirections"
-						:key="direction.value"
-						:value="direction.value"
-						:icon="direction.icon"
-						size="34"
-						:title="direction.label"
+					<v-list-subheader>{{ deviceTool.listTitle }}</v-list-subheader>
+					<v-list-item
+						v-for="device in availableDevicesFor(deviceTool.deviceType)"
+						:key="device.id"
+						:title="device.name"
+						:subtitle="`ID ${device.id}`"
+						rounded="lg"
+						@click="selectDevice(device)"
+					>
+						<template #prepend>
+							<v-icon
+								:color="device.tone"
+								:icon="deviceTool.icon"
+							/>
+						</template>
+					</v-list-item>
+					<v-list-item
+						v-if="!availableDevicesFor(deviceTool.deviceType).length"
+						title="Все устройства уже размещены"
+						disabled
 					/>
-				</v-btn-toggle>
+				</v-list>
+			</v-menu>
 
-				<v-btn
-					:disabled="!textDraft.text.trim()"
-					color="blue"
-					block
-					@click="selectText"
-				>
-					Выбрать инструмент
-				</v-btn>
-			</v-sheet>
-		</v-menu>
-
-		<v-menu
-			v-model="deviceMenuOpen"
-			location="bottom"
-			offset="8"
-		>
-			<template #activator="{ props: activatorProps }">
-				<v-btn
-					v-bind="activatorProps"
-					icon
-					:variant="isDeviceToolActive ? 'flat' : 'text'"
-					:color="isDeviceToolActive ? 'blue' : 'white'"
-					size="34"
-					title="Разместить устройство"
-				>
-					<v-icon
-						icon="mdi-monitor"
-						size="17"
-					/>
-				</v-btn>
-			</template>
-
-			<v-list
-				width="290"
-				max-height="360"
-				class="bg-surface border rounded-lg pa-2"
+			<v-btn
+				v-for="tool in gamingTools"
+				:key="tool.type"
+				icon
+				:variant="isElementTypeActive(tool.type) ? 'tonal' : 'text'"
+				:color="isElementTypeActive(tool.type) ? 'primary' : 'secondary'"
+				size="32"
+				:title="tool.label"
+				@click="selectSimpleElement(tool.type)"
 			>
-				<v-list-subheader>Свободные устройства</v-list-subheader>
-				<v-list-item
-					v-for="device in availableDevices"
-					:key="device.id"
-					:title="device.name"
-					:subtitle="`ID ${device.id}`"
-					rounded="lg"
-					@click="selectDevice(device)"
-				>
-					<template #prepend>
-						<v-icon
-							:color="device.tone"
-							:icon="deviceIcon(device)"
-						/>
-					</template>
-				</v-list-item>
-				<v-list-item
-					v-if="!availableDevices.length"
-					title="Все устройства уже размещены"
-					disabled
+				<v-icon
+					:icon="tool.icon"
+					size="18"
 				/>
-			</v-list>
-		</v-menu>
+			</v-btn>
+		</div>
 
-		<v-btn
-			v-for="tool in simpleElementTools"
-			:key="tool.type"
-			icon
-			:variant="isElementTypeActive(tool.type) ? 'flat' : 'text'"
-			:color="isElementTypeActive(tool.type) ? 'blue' : 'white'"
-			size="34"
-			:title="tool.label"
-			@click="selectSimpleElement(tool.type)"
-		>
-			<v-icon
-				:icon="tool.icon"
-				size="17"
-			/>
-		</v-btn>
+		<v-divider
+			vertical
+			class="mx-1 opacity-20 flex-shrink-0"
+		/>
+
+		<div class="club-layout-toolbar__section d-flex align-center flex-shrink-0">
+			<v-btn
+				v-for="tool in amenityTools"
+				:key="tool.type"
+				icon
+				:variant="isElementTypeActive(tool.type) ? 'tonal' : 'text'"
+				:color="isElementTypeActive(tool.type) ? 'primary' : 'secondary'"
+				size="32"
+				:title="tool.label"
+				@click="selectSimpleElement(tool.type)"
+			>
+				<span
+					v-if="tool.text"
+					class="text-caption font-weight-medium"
+				>
+					{{ tool.text }}
+				</span>
+				<v-icon
+					v-else
+					:icon="tool.icon"
+					size="18"
+				/>
+			</v-btn>
+		</div>
 
 		<template v-if="selectedCount">
 			<v-divider
@@ -211,56 +269,57 @@
 				class="mx-1 opacity-20 flex-shrink-0"
 			/>
 
-			<v-btn
-				v-if="
-					selectedElement &&
-					(selectedElement.type === GRID_ELEMENT_TYPE.WALL || selectedElement.type === GRID_ELEMENT_TYPE.TEXT)
-				"
-				icon
-				variant="text"
-				color="primary"
-				size="34"
-				title="Повернуть выбранный элемент"
-				@click="emit('rotate-selected')"
-			>
-				<v-icon
-					icon="mdi-rotate-right"
-					size="17"
-				/>
-			</v-btn>
-
-			<v-btn-toggle
-				v-if="selectedElement?.type === GRID_ELEMENT_TYPE.TEXT"
-				:model-value="selectedElement.alignment || TEXT_ALIGNMENT.CENTER"
-				mandatory
-				divided
-				color="blue"
-				class="border rounded-lg flex-shrink-0"
-				@update:model-value="emit('set-text-alignment', $event)"
-			>
+			<div class="club-layout-toolbar__section d-flex align-center flex-shrink-0">
 				<v-btn
-					v-for="alignment in textAlignments"
-					:key="alignment.value"
-					:value="alignment.value"
-					:icon="textAlignmentIcon(alignment.value)"
-					size="34"
-					:title="alignment.label"
-				/>
-			</v-btn-toggle>
+					v-if="selectedElement?.type === GRID_ELEMENT_TYPE.TEXT"
+					icon
+					variant="text"
+					color="primary"
+					size="32"
+					title="Повернуть выбранный текст"
+					@click="emit('rotate-selected')"
+				>
+					<v-icon
+						icon="mdi-rotate-right"
+						size="19"
+					/>
+				</v-btn>
 
-			<v-btn
-				icon
-				variant="text"
-				color="red"
-				size="34"
-				:title="selectedCount > 1 ? `Удалить выбранные элементы (${selectedCount})` : 'Удалить выбранный элемент'"
-				@click="emit('delete-selected')"
-			>
-				<v-icon
-					icon="mdi-delete-outline"
-					size="17"
-				/>
-			</v-btn>
+				<v-btn-toggle
+					v-if="selectedElement?.type === GRID_ELEMENT_TYPE.TEXT"
+					:model-value="selectedElement.alignment || TEXT_ALIGNMENT.CENTER"
+					mandatory
+					divided
+					density="compact"
+					height="32"
+					color="primary"
+					class="border rounded-lg flex-shrink-0"
+					@update:model-value="emit('set-text-alignment', $event)"
+				>
+					<v-btn
+						v-for="alignment in textAlignments"
+						:key="alignment.value"
+						:value="alignment.value"
+						:icon="textAlignmentIcon(alignment.value)"
+						size="32"
+						:title="alignment.label"
+					/>
+				</v-btn-toggle>
+
+				<v-btn
+					icon
+					variant="text"
+					color="red"
+					size="32"
+					:title="selectedCount > 1 ? `Удалить выбранные элементы (${selectedCount})` : 'Удалить выбранный элемент'"
+					@click="emit('delete-selected')"
+				>
+					<v-icon
+						icon="mdi-delete-outline"
+						size="19"
+					/>
+				</v-btn>
+			</div>
 		</template>
 	</v-sheet>
 </template>
@@ -270,32 +329,16 @@
 	import { DEVICE_TYPE } from "@/store/devices.js";
 
 	const props = defineProps({
-		activeTool: {
-			type: Object,
-			required: true,
-		},
-		selectedElement: {
-			type: Object,
-			default: null,
-		},
-		selectedCount: {
-			type: Number,
-			default: 0,
-		},
-		devices: {
-			type: Array,
-			default: () => [],
-		},
-		placedDeviceIds: {
-			type: Array,
-			default: () => [],
-		},
+		activeTool: { type: Object, required: true },
+		selectedElement: { type: Object, default: null },
+		selectedCount: { type: Number, default: 0 },
+		devices: { type: Array, default: () => [] },
+		placedDeviceIds: { type: Array, default: () => [] },
 	});
 
 	const emit = defineEmits(["select-tool", "rotate-selected", "set-text-alignment", "delete-selected"]);
 
 	let textMenuOpen = $ref(false);
-	let deviceMenuOpen = $ref(false);
 	const textDraft = $ref({
 		text: "",
 		color: "white",
@@ -304,13 +347,50 @@
 		alignment: TEXT_ALIGNMENT.CENTER,
 	});
 
-	const wallLabels = {
-		[WALL_KIND.STRAIGHT]: "Прямая",
-		[WALL_KIND.CORNER]: "Угол",
-		[WALL_KIND.T_JUNCTION]: "Т-образная",
-		[WALL_KIND.CROSS]: "Перекрёсток",
-	};
-	const textColors = ["white", "red", "blue", "primary", "purple"];
+	const wallTools = [
+		{ kind: WALL_KIND.STRAIGHT, label: "Прямая стена" },
+		{ kind: WALL_KIND.CORNER, label: "Угловая стена" },
+		{ kind: WALL_KIND.T_JUNCTION, label: "Т-образная стена" },
+		{ kind: WALL_KIND.CROSS, label: "Перекрёсток стен" },
+	];
+	const deviceTools = [
+		{
+			deviceType: DEVICE_TYPE.COMPUTER,
+			elementType: GRID_ELEMENT_TYPE.DEVICE,
+			icon: "mdi-monitor",
+			label: "Разместить компьютер",
+			listTitle: "Свободные компьютеры",
+		},
+		{
+			deviceType: DEVICE_TYPE.CONSOLE,
+			elementType: GRID_ELEMENT_TYPE.CONSOLE,
+			icon: "mdi-gamepad-variant-outline",
+			label: "Разместить консоль",
+			listTitle: "Свободные консоли",
+		},
+	];
+	const gamingTools = [
+		{ type: GRID_ELEMENT_TYPE.VR, icon: "mdi-virtual-reality", label: "Добавить VR-зону" },
+		{ type: GRID_ELEMENT_TYPE.STEERING_WHEEL, icon: "mdi-steering", label: "Добавить гоночный симулятор" },
+		{ type: GRID_ELEMENT_TYPE.TARGET, icon: "mdi-bullseye", label: "Добавить игровую зону" },
+		{ type: GRID_ELEMENT_TYPE.BOARD_GAME, icon: "mdi-dice-multiple-outline", label: "Добавить настольные игры" },
+	];
+	const amenityTools = [
+		{ type: GRID_ELEMENT_TYPE.ROOM_SERVICE, icon: "mdi-room-service-outline", label: "Добавить зону обслуживания" },
+		{ type: GRID_ELEMENT_TYPE.COAT_RACK, icon: "mdi-hanger", label: "Добавить вешалку" },
+		{ type: GRID_ELEMENT_TYPE.TOILET, text: "WC", label: "Добавить туалет" },
+		{ type: GRID_ELEMENT_TYPE.SOFA, icon: "mdi-sofa-outline", label: "Добавить диван" },
+		{ type: GRID_ELEMENT_TYPE.COFFEE, icon: "mdi-coffee-outline", label: "Добавить кофейную зону" },
+		{ type: GRID_ELEMENT_TYPE.FOOD, icon: "mdi-silverware-fork-knife", label: "Добавить кухонную зону" },
+	];
+	const textColors = [
+		{ value: "white", preview: "white", label: "Белый" },
+		{ value: "wall", preview: "rgba(255, 255, 255, 0.4)", label: "Серый" },
+		{ value: "red", preview: "red", label: "Красный" },
+		{ value: "blue", preview: "blue", label: "Синий" },
+		{ value: "primary", preview: "primary", label: "Основной" },
+		{ value: "purple", preview: "purple", label: "Фиолетовый" },
+	];
 	const textSizes = [12, 14, 16, 18, 20, 24];
 	const textDirections = [
 		{ value: TEXT_DIRECTION.RIGHT, icon: "mdi-arrow-right", label: "Слева направо" },
@@ -323,27 +403,13 @@
 		{ value: TEXT_ALIGNMENT.CENTER, label: "Расположить по центру ячейки" },
 		{ value: TEXT_ALIGNMENT.END, label: "Привязать к концу направления" },
 	];
-	const simpleElementTools = [
-		{ type: GRID_ELEMENT_TYPE.TOILET, icon: "mdi-toilet", label: "Добавить туалет" },
-		{ type: GRID_ELEMENT_TYPE.COAT_RACK, icon: "mdi-hanger", label: "Добавить вешалку" },
-	];
-
-	const wallVariants = $computed(() =>
-		Object.entries(WALL_ROTATIONS).flatMap(([kind, rotations]) => rotations.map((rotation) => ({ kind, rotation })))
-	);
-	const availableDevices = $computed(() =>
-		props.devices.filter(({ id }) => !props.placedDeviceIds.includes(String(id)))
-	);
 
 	const isModeActive = (mode) => props.activeTool.mode === mode;
 	const isElementTypeActive = (type) => props.activeTool.mode === "place" && props.activeTool.element?.type === type;
-	const isDeviceToolActive = $computed(
-		() => isElementTypeActive(GRID_ELEMENT_TYPE.DEVICE) || isElementTypeActive(GRID_ELEMENT_TYPE.CONSOLE)
-	);
-	const isWallVariantActive = ({ kind, rotation }) =>
-		isElementTypeActive(GRID_ELEMENT_TYPE.WALL) &&
-		props.activeTool.element.kind === kind &&
-		props.activeTool.element.rotation === rotation;
+	const isWallKindActive = (kind) =>
+		isElementTypeActive(GRID_ELEMENT_TYPE.WALL) && props.activeTool.element.kind === kind;
+	const availableDevicesFor = (type) =>
+		props.devices.filter((device) => device.type === type && !props.placedDeviceIds.includes(String(device.id)));
 	const textAlignmentIcon = (alignment) => {
 		const direction = props.selectedElement?.direction ?? TEXT_DIRECTION.RIGHT;
 		const icons = {
@@ -372,21 +438,37 @@
 		return icons[direction][alignment];
 	};
 
-	const selectMode = (mode) => {
-		emit("select-tool", { mode });
-	};
-
-	const selectWall = ({ kind, rotation }) => {
+	const selectMode = (mode) => emit("select-tool", { mode });
+	const selectWall = (kind) => {
 		emit("select-tool", {
 			mode: "place",
 			element: {
 				type: GRID_ELEMENT_TYPE.WALL,
 				kind,
-				rotation,
+				rotation: WALL_ROTATIONS[kind][0],
 			},
 		});
 	};
+	const rotateWall = () => {
+		if (props.selectedElement?.type === GRID_ELEMENT_TYPE.WALL) {
+			emit("rotate-selected");
+			return;
+		}
 
+		if (!isElementTypeActive(GRID_ELEMENT_TYPE.WALL)) return;
+
+		const wall = props.activeTool.element;
+		const rotations = WALL_ROTATIONS[wall.kind];
+		const currentIndex = rotations.indexOf(wall.rotation);
+
+		emit("select-tool", {
+			mode: "place",
+			element: {
+				...wall,
+				rotation: rotations[(currentIndex + 1) % rotations.length],
+			},
+		});
+	};
 	const selectText = () => {
 		emit("select-tool", {
 			mode: "place",
@@ -397,9 +479,6 @@
 		});
 		textMenuOpen = false;
 	};
-
-	const deviceIcon = (device) => (device.type === DEVICE_TYPE.CONSOLE ? "mdi-gamepad-variant-outline" : "mdi-monitor");
-
 	const selectDevice = (device) => {
 		emit("select-tool", {
 			mode: "place",
@@ -408,9 +487,7 @@
 				deviceId: String(device.id),
 			},
 		});
-		deviceMenuOpen = false;
 	};
-
 	const selectSimpleElement = (type) => {
 		emit("select-tool", {
 			mode: "place",
@@ -422,6 +499,10 @@
 <style scoped lang="scss">
 	.club-layout-toolbar {
 		scrollbar-width: none;
+
+		&__section {
+			gap: 2px;
+		}
 
 		&::-webkit-scrollbar {
 			display: none;
