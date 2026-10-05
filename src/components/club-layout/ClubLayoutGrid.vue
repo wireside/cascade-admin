@@ -1,121 +1,130 @@
 <template>
 	<div class="club-layout-grid-scroll overflow-auto pb-2">
 		<div
-			ref="gridElement"
-			:style="gridStyle"
-			:class="{ 'club-layout-grid--editing': editing }"
-			class="club-layout-grid position-relative"
-			@mouseleave="emit('cell-hover', null)"
+			:style="gridStageStyle"
+			class="club-layout-grid-stage position-relative"
 		>
-			<button
-				v-for="cell in cells"
-				:key="cell.key"
-				type="button"
-				:disabled="!editing"
-				:aria-label="`Ячейка ${cell.x + 1}, ${cell.y + 1}`"
-				:style="cellStyle(cell)"
-				:class="cellClasses(cell)"
-				:data-club-layout-cell="cell.key"
-				:data-cell-x="cell.x"
-				:data-cell-y="cell.y"
-				class="club-layout-grid__cell pa-0 rounded bg-transparent"
-				@mouseenter="emit('cell-hover', cell)"
-				@focus="emit('cell-hover', cell)"
-				@click="emit('cell-click', cell)"
-			/>
-
-			<button
-				v-for="element in renderedElements"
-				:key="element.id"
-				type="button"
-				:style="elementStyle(element)"
-				:disabled="isPreviewElement(element) || (!editing && !isDeviceElement(element))"
-				:class="elementClasses(element)"
-				:title="elementTitle(element)"
-				:aria-pressed="editing ? selectedElementIds.includes(element.id) : undefined"
-				:aria-grabbed="editing ? element.id === movingElementId : undefined"
-				:data-club-layout-cell="`${element.x}:${element.y}`"
-				:data-cell-x="element.x"
-				:data-cell-y="element.y"
-				class="club-layout-grid__element pa-0 overflow-hidden border-0 rounded bg-transparent text-white"
-				@pointerdown="onElementPointerDown(element, $event)"
-				@click.stop="onElementClick(element, $event)"
+			<div
+				ref="gridElement"
+				:style="gridStyle"
+				:class="{ 'club-layout-grid--editing': editing }"
+				class="club-layout-grid position-absolute top-0 left-0"
+				@mouseleave="emit('cell-hover', null)"
 			>
-				<club-layout-wall
-					v-if="element.type === GRID_ELEMENT_TYPE.WALL"
-					:kind="element.kind"
-					:rotation="element.rotation"
-					:joined="!editing && !isPreviewElement(element)"
+				<button
+					v-for="cell in cells"
+					:key="cell.key"
+					type="button"
+					:tabindex="editing ? 0 : -1"
+					:aria-disabled="!editing"
+					:aria-label="`Ячейка ${cell.x + 1}, ${cell.y + 1}`"
+					:style="cellStyle(cell)"
+					:class="cellClasses(cell)"
+					:data-club-layout-cell="cell.key"
+					:data-cell-x="cell.x"
+					:data-cell-y="cell.y"
+					class="club-layout-grid__cell pa-0 bg-transparent"
+					@mouseenter="emit('cell-hover', cell)"
+					@focus="emit('cell-hover', cell)"
+					@click="emit('cell-click', cell)"
 				/>
 
-				<div
-					v-else-if="isDeviceElement(element)"
-					:class="`bg-${devicePresentation(element).tone} bg-opacity-15`"
-					class="fill-height d-flex flex-column align-center justify-center position-relative rounded"
+				<button
+					v-for="element in renderedElements"
+					:key="element.id"
+					type="button"
+					:style="elementStyle(element)"
+					:disabled="isPreviewElement(element) || (!editing && !isDeviceElement(element))"
+					:class="elementClasses(element)"
+					:title="elementTitle(element)"
+					:aria-pressed="editing ? selectedElementIds.includes(element.id) : undefined"
+					:aria-grabbed="editing ? element.id === movingElementId : undefined"
+					:data-club-layout-cell="`${element.x}:${element.y}`"
+					:data-cell-x="element.x"
+					:data-cell-y="element.y"
+					class="club-layout-grid__element pa-0 overflow-hidden border-0 bg-transparent text-white"
+					@pointerdown="onElementPointerDown(element, $event)"
+					@click.stop="onElementClick(element, $event)"
 				>
-					<span
-						:class="`text-${devicePresentation(element).tone}`"
-						class="club-layout-grid__device-id position-absolute top-0 left-0 ma-1 font-weight-medium"
-					>
-						{{ element.deviceId }}
-					</span>
-					<v-icon
-						v-if="editing"
-						:color="devicePresentation(element).tone"
-						:icon="element.type === GRID_ELEMENT_TYPE.CONSOLE ? 'mdi-gamepad-variant-outline' : 'mdi-monitor'"
-						size="16"
+					<club-layout-wall
+						v-if="element.type === GRID_ELEMENT_TYPE.WALL"
+						:kind="element.kind"
+						:rotation="element.rotation"
 					/>
-					<div
-						v-if="!editing && deviceBookingTime(element)"
-						:class="`text-${devicePresentation(element).tone}`"
-						class="club-layout-grid__device-booking position-absolute bottom-0 left-0 ma-1 d-flex align-center ga-1 font-weight-medium"
-					>
-						<v-icon
-							icon="mdi-clock-outline"
-							size="11"
-						/>
-						<span>{{ deviceBookingTime(element) }}</span>
-					</div>
-				</div>
 
-				<div
-					v-else-if="element.type === GRID_ELEMENT_TYPE.TEXT"
-					class="club-layout-grid__text fill-height position-relative font-weight-medium"
-				>
-					<span
-						:style="textAnchorStyle(element)"
-						class="club-layout-grid__text-anchor position-absolute w-0 h-0"
+					<div
+						v-else-if="isDeviceElement(element)"
+						:style="deviceContainerStyle(element)"
+						:class="`bg-${devicePresentation(element).tone} bg-opacity-15`"
+						class="club-layout-grid__device fill-height d-flex flex-column align-center justify-center position-relative"
 					>
 						<span
-							:style="textStyle(element)"
-							class="club-layout-grid__text-value position-absolute d-block text-no-wrap"
+							:class="`text-${devicePresentation(element).tone}`"
+							class="club-layout-grid__device-id position-absolute top-0 left-0 font-weight-medium"
 						>
-							{{ element.text }}
+							{{ element.deviceId }}
 						</span>
+						<v-icon
+							v-if="editing"
+							:color="devicePresentation(element).tone"
+							:icon="element.type === GRID_ELEMENT_TYPE.CONSOLE ? 'mdi-gamepad-variant-outline' : 'mdi-monitor'"
+							size="21"
+						/>
+						<div
+							v-if="!editing && deviceHasBooking(element) && !deviceBookingTime(element)"
+							:class="`text-${devicePresentation(element).tone} bg-${devicePresentation(element).tone} bg-opacity-15`"
+							class="club-layout-grid__device-booking-icon position-absolute top-0 right-0 d-flex rounded-circle pa-1"
+						>
+							<v-icon
+								icon="mdi-calendar-check-outline"
+								size="13"
+							/>
+						</div>
+						<div
+							v-if="!editing && deviceBookingTime(element)"
+							:class="`text-${devicePresentation(element).tone}`"
+							class="club-layout-grid__device-booking position-absolute bottom-0 left-0 d-flex align-center ga-1 font-weight-medium"
+						>
+							<v-icon
+								icon="mdi-clock-outline"
+								size="14"
+							/>
+							<span>{{ deviceBookingTime(element) }}</span>
+						</div>
+					</div>
+
+					<div
+						v-else-if="element.type === GRID_ELEMENT_TYPE.TEXT"
+						class="club-layout-grid__text fill-height position-relative font-weight-medium"
+					>
+						<span
+							:style="textAnchorStyle(element)"
+							class="club-layout-grid__text-anchor position-absolute w-0 h-0"
+						>
+							<span
+								:style="textStyle(element)"
+								class="club-layout-grid__text-value position-absolute d-block text-no-wrap"
+							>
+								{{ element.text }}
+							</span>
+						</span>
+					</div>
+
+					<span
+						v-else-if="element.type === GRID_ELEMENT_TYPE.TOILET"
+						class="club-layout-grid__toilet text-red font-weight-medium"
+					>
+						WC
 					</span>
-				</div>
 
-				<span
-					v-else-if="element.type === GRID_ELEMENT_TYPE.TOILET"
-					class="club-layout-grid__toilet text-red font-weight-medium"
-				>
-					WC
-				</span>
-
-				<v-icon
-					v-else-if="element.type === GRID_ELEMENT_TYPE.COAT_RACK"
-					icon="mdi-hanger"
-					size="18"
-					class="opacity-50"
-				/>
-
-				<v-icon
-					v-else
-					:icon="elementIcon(element.type)"
-					size="23"
-					class="opacity-60"
-				/>
-			</button>
+					<v-icon
+						v-else
+						:icon="elementIcon(element.type)"
+						size="20"
+						class="opacity-60"
+					/>
+				</button>
+			</div>
 		</div>
 	</div>
 </template>
@@ -164,6 +173,10 @@
 			type: String,
 			default: null,
 		},
+		zoom: {
+			type: Number,
+			default: 100,
+		},
 	});
 
 	const emit = defineEmits([
@@ -176,6 +189,8 @@
 		"device-click",
 	]);
 	const DRAG_THRESHOLD = 5;
+	const CELL_SIZE = 72;
+	const GRID_GAP = 10;
 
 	let gridElement = $ref(null);
 	let pointerDrag = null;
@@ -193,14 +208,26 @@
 	const renderedElements = $computed(() =>
 		props.previewElement ? [...props.elements, props.previewElement] : props.elements
 	);
+	const zoomScale = $computed(() => Math.min(1.5, Math.max(0.5, props.zoom / 100) * 0.7));
+	const naturalGridWidth = $computed(
+		() => props.gridSize.width * CELL_SIZE + Math.max(0, props.gridSize.width - 1) * GRID_GAP
+	);
+	const naturalGridHeight = $computed(
+		() => props.gridSize.height * CELL_SIZE + Math.max(0, props.gridSize.height - 1) * GRID_GAP
+	);
+	const gridStageStyle = $computed(() => ({
+		width: `${naturalGridWidth * zoomScale}px`,
+		height: `${naturalGridHeight * zoomScale}px`,
+	}));
 	const gridStyle = $computed(() => ({
-		gridTemplateColumns: `repeat(${props.gridSize.width}, var(--club-layout-cell-size))`,
-		gridTemplateRows: `repeat(${props.gridSize.height}, var(--club-layout-cell-size))`,
+		gridTemplateColumns: `repeat(${props.gridSize.width}, ${CELL_SIZE}px)`,
+		gridTemplateRows: `repeat(${props.gridSize.height}, ${CELL_SIZE}px)`,
+		transform: `scale(${zoomScale})`,
 	}));
 
 	const cellClasses = (cell) => ({
-		border: props.editing,
-		"border-0": !props.editing,
+		"club-layout-grid__cell--editing": props.editing,
+		"pointer-events-none": !props.editing,
 		"club-layout-grid__cell--interactive": props.interactionActive,
 		"club-layout-grid__cell--preview-valid": previewCellKeys.has(cell.key) && props.previewValid,
 		"club-layout-grid__cell--preview-invalid": previewCellKeys.has(cell.key) && !props.previewValid,
@@ -219,7 +246,6 @@
 		const isDevice = isDeviceElement(element);
 		const isWall = element.type === GRID_ELEMENT_TYPE.WALL;
 		const isText = element.type === GRID_ELEMENT_TYPE.TEXT;
-		const isDecoration = element.type === GRID_ELEMENT_TYPE.TOILET || element.type === GRID_ELEMENT_TYPE.COAT_RACK;
 		const isMoving = element.id === props.movingElementId;
 		const isPreview = isPreviewElement(element);
 		const isInteractive = props.editing || isDevice;
@@ -247,6 +273,11 @@
 			tone: "blue",
 		};
 	const deviceBookingTime = (element) => devicePresentation(element).nextBookingTime || "";
+	const deviceHasBooking = (element) => devicePresentation(element).booking?.label === "Есть бронь";
+	const deviceContainerStyle = (element) =>
+		!props.editing && deviceBookingTime(element)
+			? { boxShadow: `inset 0 0 0 1.5px rgb(var(--v-theme-${devicePresentation(element).tone}))` }
+			: undefined;
 
 	const elementTitle = (element) => {
 		if (props.editing) return "Нажмите для выбора, зажмите для перемещения, Shift + клик — добавить к выбору";
@@ -254,7 +285,18 @@
 		return "";
 	};
 
-	const elementIcon = () => "mdi-shape-outline";
+	const elementIcons = {
+		[GRID_ELEMENT_TYPE.VR]: "mdi-virtual-reality",
+		[GRID_ELEMENT_TYPE.STEERING_WHEEL]: "mdi-steering",
+		[GRID_ELEMENT_TYPE.TARGET]: "mdi-bullseye",
+		[GRID_ELEMENT_TYPE.BOARD_GAME]: "mdi-dice-multiple-outline",
+		[GRID_ELEMENT_TYPE.ROOM_SERVICE]: "mdi-room-service-outline",
+		[GRID_ELEMENT_TYPE.COAT_RACK]: "mdi-hanger",
+		[GRID_ELEMENT_TYPE.SOFA]: "mdi-sofa-outline",
+		[GRID_ELEMENT_TYPE.COFFEE]: "mdi-coffee-outline",
+		[GRID_ELEMENT_TYPE.FOOD]: "mdi-silverware-fork-knife",
+	};
+	const elementIcon = (type) => elementIcons[type] || "mdi-shape-outline";
 
 	const textAnchorPositions = {
 		[TEXT_DIRECTION.RIGHT]: {
@@ -294,9 +336,12 @@
 		};
 	};
 	const textStyle = (element) => ({
-		color: ["white", "red", "blue", "primary", "purple"].includes(element.color)
-			? `rgb(var(--v-theme-${element.color}))`
-			: element.color,
+		color:
+			element.color === "wall"
+				? "rgba(255, 255, 255, 0.40)"
+				: ["white", "red", "blue", "primary", "purple"].includes(element.color)
+					? `rgb(var(--v-theme-${element.color}))`
+					: element.color,
 		fontSize: `${element.fontSize}px`,
 		transform: textTranslations[element.alignment || TEXT_ALIGNMENT.CENTER],
 	});
@@ -398,22 +443,24 @@
 	}
 
 	.club-layout-grid {
-		--club-layout-cell-size: 56px;
-		--club-layout-grid-gap: 4px;
-		--club-layout-grid-half-gap: 2px;
-
 		display: grid;
-		gap: var(--club-layout-grid-gap);
+		gap: 10px;
 		width: max-content;
-		min-width: 100%;
+		transform-origin: top left;
 
 		&__cell {
 			z-index: 1;
+			appearance: none;
+			border: 1px solid transparent;
+			border-radius: 10px;
 			outline: none;
 			transition:
-				border-color 120ms ease,
 				background-color 120ms ease,
 				box-shadow 120ms ease;
+		}
+
+		&__cell--editing {
+			border-color: rgba(255, 255, 255, 0.1);
 		}
 
 		&__cell--interactive {
@@ -436,11 +483,17 @@
 
 		&__element {
 			z-index: 2;
+			border-radius: 10px;
 			outline: none;
 			transition:
 				border-color 140ms ease,
 				box-shadow 140ms ease,
 				opacity 140ms ease;
+		}
+
+		&__device {
+			padding: 8px 6px;
+			border-radius: 10px;
 		}
 
 		&--editing &__element--interactive {
@@ -474,17 +527,27 @@
 		}
 
 		&__device-id {
-			font-size: 10px;
+			top: 8px !important;
+			left: 6px !important;
+			font-size: 12px;
 			line-height: 1;
 		}
 
 		&__device-booking {
-			font-size: 9px;
+			bottom: 8px !important;
+			left: 6px !important;
+			font-size: 12px;
+			font-weight: 500;
 			line-height: 1;
 		}
 
+		&__device-booking-icon {
+			top: 8px !important;
+			right: 6px !important;
+		}
+
 		&__toilet {
-			font-size: 11px;
+			font-size: 12px;
 			line-height: 1;
 		}
 	}

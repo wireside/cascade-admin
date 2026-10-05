@@ -4,32 +4,23 @@
 		@keydown.delete.prevent="editing && deleteSelectedElements()"
 	>
 		<v-row
+			v-if="editing"
 			align="center"
 			no-gutters
+			class="justify-space-between"
 		>
 			<v-col
-				:cols="editing ? 6 : true"
-				:lg="editing ? 2 : true"
-				class="d-flex align-center ga-2 text-no-wrap"
+				cols="6"
+				lg="1"
+				class="text-caption text-no-wrap opacity-60 d-inline-flex flex-wrap"
 			>
-				<v-icon
-					:icon="editing ? 'mdi-pencil-outline' : 'mdi-information-outline'"
-					:color="editing ? 'blue' : 'white'"
-					size="18"
-					class="opacity-70"
-				/>
-				<div>
-					<div class="text-caption opacity-50">
-						{{ editing ? "Выбран инструмент" : "План помещения" }}
-					</div>
-					<div class="text-body-2 font-weight-medium">{{ toolLabel }}</div>
-				</div>
+				<span>Выбран инструмент:</span>
+				<span class="text-white">{{ toolLabel }}</span>
 			</v-col>
 
 			<v-col
-				v-if="editing"
 				cols="12"
-				lg="8"
+				lg="auto"
 				order="3"
 				order-lg="2"
 				class="d-flex justify-center overflow-hidden px-1"
@@ -48,86 +39,99 @@
 			</v-col>
 
 			<v-col
-				:cols="editing ? 6 : 'auto'"
-				:lg="editing ? 2 : 'auto'"
-				:order="editing ? 2 : undefined"
-				:order-lg="editing ? 3 : undefined"
+				cols="6"
+				lg="auto"
+				order="2"
+				order-lg="3"
 				class="d-flex align-center justify-end ga-2"
 			>
-				<template v-if="editing">
-					<v-btn
-						variant="text"
-						color="white"
-						height="40"
-						class="px-4 opacity-70"
-						@click="cancelEditing"
-					>
-						Отменить
-					</v-btn>
-					<v-btn
-						color="blue"
-						height="40"
-						rounded="md"
-						class="px-5"
-						@click="saveChanges"
-					>
-						<v-icon
-							icon="mdi-content-save-outline"
-							size="17"
-							class="mr-2"
-						/>
-						Сохранить
-					</v-btn>
-				</template>
-
 				<v-btn
-					v-else
-					color="blue"
-					height="40"
+					prepend-icon="mdi-restore"
+					variant="flat"
+					color="surface"
+					height="44"
 					rounded="md"
-					class="px-5 bg-opacity-20 text-blue"
-					@click="enterEditMode"
+					class="px-5 text-secondary"
+					@click="cancelEditing"
 				>
-					<v-icon
-						icon="mdi-pencil-outline"
-						size="17"
-						class="mr-2"
-					/>
-					Редактировать
+					Отмена
+				</v-btn>
+				<v-btn
+					prepend-icon="mdi-content-save-outline"
+					variant="tonal"
+					color="primary"
+					height="44"
+					rounded="md"
+					class="px-5"
+					@click="saveChanges"
+				>
+					Сохранить
 				</v-btn>
 			</v-col>
 		</v-row>
 
 		<div
-			v-if="editing"
-			:class="previewElement && !previewValid ? 'text-red' : 'text-white'"
-			class="d-flex align-center ga-2 text-caption opacity-60"
+			v-else
+			class="d-flex align-center justify-space-between"
 		>
-			<v-icon
-				:icon="previewElement && !previewValid ? 'mdi-alert-circle-outline' : 'mdi-lightbulb-outline'"
-				size="15"
-			/>
-			<span>{{ interactionHint }}</span>
+			<v-btn
+				rounded="md"
+				variant="flat"
+				size="40"
+				title="Информация о плане помещения"
+				class="bg-white bg-opacity-5 text-white"
+			>
+				<v-icon
+					icon="mdi-information-outline"
+					size="18"
+					class="opacity-60"
+				/>
+			</v-btn>
+			<v-btn
+				rounded="md"
+				variant="flat"
+				size="40"
+				title="Редактировать карту клуба"
+				class="bg-white bg-opacity-5 text-white"
+				@click="enterEditMode"
+			>
+				<v-icon
+					icon="mdi-pencil-outline"
+					size="18"
+					class="opacity-60"
+				/>
+			</v-btn>
 		</div>
 
-		<club-layout-grid
-			:grid-size="layoutStore.gridSize"
-			:elements="visibleElements"
-			:device-presentations="devicePresentations"
-			:editing="editing"
-			:interaction-active="interactionActive"
-			:preview-element="previewElement"
-			:preview-cells="previewCells"
-			:preview-valid="previewValid"
-			:selected-element-ids="selectedElementIds"
-			:moving-element-id="movingElementId"
-			@cell-hover="hoveredCell = $event"
-			@cell-click="onCellClick"
-			@element-click="onElementClick"
-			@element-drag-start="onElementDragStart"
-			@element-drop="onElementDrop"
-			@element-drag-cancel="finishElementDrag"
-			@device-click="emit('device-click', $event)"
+		<div
+			:class="{ 'px-8 pt-5': !editing }"
+			class="position-relative"
+		>
+			<club-layout-grid
+				:grid-size="layoutStore.gridSize"
+				:elements="visibleElements"
+				:device-presentations="devicePresentations"
+				:editing="editing"
+				:interaction-active="interactionActive"
+				:preview-element="previewElement"
+				:preview-cells="previewCells"
+				:preview-valid="previewValid"
+				:selected-element-ids="selectedElementIds"
+				:moving-element-id="movingElementId"
+				:zoom="zoom"
+				@cell-hover="hoveredCell = $event"
+				@cell-click="onCellClick"
+				@element-click="onElementClick"
+				@element-drag-start="onElementDragStart"
+				@element-drop="onElementDrop"
+				@element-drag-cancel="finishElementDrag"
+				@device-click="emit('device-click', $event)"
+			/>
+		</div>
+
+		<club-layout-zoom
+			v-model="zoom"
+			class="position-fixed right-0 bottom-0 ma-6"
 		/>
 	</div>
 </template>
@@ -150,6 +154,7 @@
 	let selectedElementIds = $ref([]);
 	let movingElementId = $ref(null);
 	let hoveredCell = $ref(null);
+	let zoom = $ref(100);
 
 	const cloneElements = (elements) => elements.map((element) => ({ ...element }));
 	const createDraftElementId = () =>
@@ -220,26 +225,18 @@
 				[GRID_ELEMENT_TYPE.TEXT]: "Текст",
 				[GRID_ELEMENT_TYPE.DEVICE]: "Компьютер",
 				[GRID_ELEMENT_TYPE.CONSOLE]: "Консоль",
+				[GRID_ELEMENT_TYPE.VR]: "VR-зона",
+				[GRID_ELEMENT_TYPE.STEERING_WHEEL]: "Гоночный симулятор",
+				[GRID_ELEMENT_TYPE.TARGET]: "Игровая зона",
+				[GRID_ELEMENT_TYPE.BOARD_GAME]: "Настольные игры",
+				[GRID_ELEMENT_TYPE.ROOM_SERVICE]: "Зона обслуживания",
 				[GRID_ELEMENT_TYPE.TOILET]: "Туалет",
 				[GRID_ELEMENT_TYPE.COAT_RACK]: "Вешалка",
+				[GRID_ELEMENT_TYPE.SOFA]: "Диван",
+				[GRID_ELEMENT_TYPE.COFFEE]: "Кофейная зона",
+				[GRID_ELEMENT_TYPE.FOOD]: "Кухонная зона",
 			}[activeTool.element?.type] || "Размещение"
 		);
-	});
-	const interactionHint = $computed(() => {
-		if (activeTool.mode === "select") {
-			if (movingElement) return "Отпустите элемент над нужной ячейкой. Занятые элементы поменяются местами.";
-
-			if (selectedElementIds.length > 1) {
-				return `Выбрано элементов: ${selectedElementIds.length}. Их можно удалить вместе; Shift + клик изменяет выбор.`;
-			}
-
-			return selectedElement
-				? "Элемент выбран. Перетащите его мышью; Shift + клик добавляет к выбору."
-				: "Нажмите для выбора или зажмите элемент и перетащите его. Shift + клик выбирает несколько.";
-		}
-
-		if (previewElement && !previewValid) return "Это место занято или элемент выходит за границы сетки.";
-		return "Наведите на ячейку и нажмите, чтобы разместить элемент.";
 	});
 
 	function getElementCells(element) {

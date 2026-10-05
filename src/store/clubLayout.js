@@ -7,8 +7,16 @@ export const GRID_ELEMENT_TYPE = Object.freeze({
 	WALL: "wall",
 	DEVICE: "device",
 	CONSOLE: "console",
+	VR: "vr",
+	STEERING_WHEEL: "steering-wheel",
+	TARGET: "target",
+	BOARD_GAME: "board-game",
+	ROOM_SERVICE: "room-service",
 	TOILET: "toilet",
 	COAT_RACK: "coat-rack",
+	SOFA: "sofa",
+	COFFEE: "coffee",
+	FOOD: "food",
 	TEXT: "text",
 });
 
