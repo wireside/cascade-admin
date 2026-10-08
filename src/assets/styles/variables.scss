@@ -1,9 +1,0 @@
-﻿@forward "./_vuetify";
-@use "./_vuetify" as *;
-
-$transition-duration: 0.28s !default;
-$borders: (
-	half: 0.5px solid,
-	1: 1px solid,
-	2: 2px solid,
-);
