@@ -180,6 +180,27 @@
 	const devicePresentations = $computed(() =>
 		Object.fromEntries(deviceOptions.map((device) => [String(device.id), device]))
 	);
+	const initialDeviceElements = $computed(() =>
+		deviceOptions.map((device, index) => ({
+			id: `layout-device-${device.id}`,
+			type: device.type === DEVICE_TYPE.CONSOLE ? GRID_ELEMENT_TYPE.CONSOLE : GRID_ELEMENT_TYPE.DEVICE,
+			deviceId: String(device.id),
+			x: index % layoutStore.gridSize.width,
+			y: Math.floor(index / layoutStore.gridSize.width),
+		}))
+	);
+
+	function initializeEmptyLayout() {
+		if (layoutStore.elements.length || !initialDeviceElements.length) return;
+
+		layoutStore.replaceElements(initialDeviceElements);
+
+		if (editing.value) {
+			resetEditorState();
+		}
+	}
+
+	onBeforeMount(initializeEmptyLayout);
 
 	const movingElement = $computed(() => draftElements.find(({ id }) => id === movingElementId));
 	const buildInteractiveElement = (cell) => {
