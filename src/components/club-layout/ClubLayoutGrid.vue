@@ -1,5 +1,8 @@
 <template>
-	<div class="club-layout-grid-scroll overflow-auto pb-2">
+	<div
+		ref="gridViewport"
+		class="club-layout-grid-scroll overflow-auto"
+	>
 		<div
 			:style="gridStageStyle"
 			class="club-layout-grid-stage position-relative"
@@ -192,6 +195,9 @@
 	const CELL_SIZE = 72;
 	const GRID_GAP = 10;
 
+	const gridViewport = ref(null);
+	const { width: gridViewportWidth } = useElementSize(gridViewport, { width: 0, height: 0 }, { box: "border-box" });
+
 	let gridElement = $ref(null);
 	let pointerDrag = null;
 	let suppressClick = false;
@@ -208,13 +214,14 @@
 	const renderedElements = $computed(() =>
 		props.previewElement ? [...props.elements, props.previewElement] : props.elements
 	);
-	const zoomScale = $computed(() => Math.min(1.5, Math.max(0.5, props.zoom / 100) * 0.7));
 	const naturalGridWidth = $computed(
 		() => props.gridSize.width * CELL_SIZE + Math.max(0, props.gridSize.width - 1) * GRID_GAP
 	);
 	const naturalGridHeight = $computed(
 		() => props.gridSize.height * CELL_SIZE + Math.max(0, props.gridSize.height - 1) * GRID_GAP
 	);
+	const fitScale = $computed(() => (gridViewportWidth.value > 0 ? gridViewportWidth.value / naturalGridWidth : 1));
+	const zoomScale = $computed(() => fitScale * Math.min(1.5, Math.max(0.5, props.zoom / 100)));
 	const gridStageStyle = $computed(() => ({
 		width: `${naturalGridWidth * zoomScale}px`,
 		height: `${naturalGridHeight * zoomScale}px`,
@@ -439,6 +446,7 @@
 
 <style scoped lang="scss">
 	.club-layout-grid-scroll {
+		min-height: 0;
 		overscroll-behavior-x: contain;
 	}
 

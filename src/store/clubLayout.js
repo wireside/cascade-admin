@@ -55,8 +55,8 @@ export const WALL_ROTATIONS = Object.freeze({
 });
 
 export const DEFAULT_CLUB_GRID_SIZE = Object.freeze({
-	width: 20,
-	height: 10,
+	width: 19,
+	height: 11,
 });
 
 const DEFAULT_TEXT_COLOR = "white";

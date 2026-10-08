@@ -1,13 +1,13 @@
 <template>
 	<div
-		class="club-layout d-flex flex-column ga-3 text-white"
+		class="club-layout d-flex flex-column ga-3 text-white h-100"
 		@keydown.delete.prevent="editing && deleteSelectedElements()"
 	>
 		<v-row
 			v-if="editing"
 			align="center"
 			no-gutters
-			class="justify-space-between"
+			class="justify-space-between flex-grow-0"
 		>
 			<v-col
 				cols="6"
@@ -104,10 +104,11 @@
 		</div>
 
 		<div
-			:class="{ 'px-8 pt-5': !editing }"
-			class="position-relative"
+			:class="{ 'pt-5': !editing }"
+			class="club-layout__grid d-flex flex-column flex-1-1-0 position-relative"
 		>
 			<club-layout-grid
+				class="flex-1-1-0"
 				:grid-size="layoutStore.gridSize"
 				:elements="visibleElements"
 				:device-presentations="devicePresentations"
@@ -417,3 +418,10 @@
 		{ immediate: true }
 	);
 </script>
+
+<style scoped>
+	.club-layout,
+	.club-layout__grid {
+		min-height: 0;
+	}
+</style>

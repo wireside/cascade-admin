@@ -1,5 +1,5 @@
 <template>
-	<div class="d-flex flex-column ga-4">
+	<div class="d-flex flex-column ga-4 h-100">
 		<club-layout @device-click="openDeviceDetails" />
 
 		<devices-details-panel
