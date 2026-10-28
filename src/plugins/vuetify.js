@@ -2,6 +2,8 @@ import "vuetify/styles";
 import "../assets/styles/index.scss";
 import { en, ru } from "vuetify/locale";
 import { cascadeIcons, iconAliases } from "./icons";
+import { mdi } from "vuetify/iconsets/mdi";
+import "@mdi/font/css/materialdesignicons.css";
 import * as labs from "vuetify/labs/components";
 
 import { createVuetify } from "vuetify";
@@ -114,6 +116,7 @@ export default createVuetify({
 		aliases: iconAliases,
 		sets: {
 			cascade: cascadeIcons,
+			mdi,
 		},
 	},
 });

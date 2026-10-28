@@ -82,7 +82,7 @@
 				class="bg-white bg-opacity-5 text-white"
 			>
 				<v-icon
-					icon="identification-card"
+					icon="mdi:mdi-information-slab-circle-outline"
 					size="18"
 					class="opacity-60"
 				/>
