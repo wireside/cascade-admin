@@ -14,7 +14,7 @@
 meta:
   layout: default
   title: Карта клуба
-  icon: mdi-map-outline
+  icon: globe
 </route>
 
 <script setup>

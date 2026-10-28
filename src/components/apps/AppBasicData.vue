@@ -8,7 +8,7 @@
 			<v-text-field
 				v-model="name"
 				maxlength="50"
-				prepend-inner-icon="mdi-magnify"
+				prepend-inner-icon="magnifying-glass"
 				placeholder="Название приложения"
 				variant="outlined"
 				hide-details
@@ -44,7 +44,7 @@
 
 		<div class="app-basic-data__error d-flex align-center ga-2 rounded-md bg-red bg-opacity-20 pa-4 mt-2 text-red">
 			<v-icon
-				icon="mdi-alert-rhombus-outline"
+				icon="warning"
 				size="18"
 			/>
 			<span>Вы не создали ни одной группы. Создайте группы, чтобы распределять приложения.</span>

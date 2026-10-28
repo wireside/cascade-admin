@@ -23,13 +23,13 @@
 						:ripple="false"
 						width="29px"
 						height="29px"
-						icon="mdi:close"
+						icon="close"
 						variant="plain"
 						class="bg-white bg-opacity-3 border rounded-sm"
 						@click="onClose"
 					>
 						<v-icon
-							icon="mdi-close"
+							icon="close"
 							size="17"
 							color="white"
 							class="opacity-60"

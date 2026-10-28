@@ -16,7 +16,7 @@
 					<div class="game-media-settings__notice d-flex align-center rounded-md bg-white bg-opacity-2 pa-4 text-white">
 						<div class="opacity-50 d-flex align-center ga-2">
 							<v-icon
-								icon="mdi-information-outline"
+								icon="identification-card"
 								size="20"
 							/>
 							<span>Изображения могут обрезаться и масштабироваться</span>

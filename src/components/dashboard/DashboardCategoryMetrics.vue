@@ -38,10 +38,10 @@
 
 <script setup>
 	const categoryMetrics = [
-		{ label: "Товары", value: "12 080.45", icon: "mdi:store-outline" },
-		{ label: "Тарифы", value: "12 080", icon: "mdi:timelapse" },
-		{ label: "Услуги", value: "12 080.45", icon: "mdi:tag-outline" },
-		{ label: "Траты с депозита", value: "12 080.45", icon: "mdi:wallet-plus-outline" },
+		{ label: "Товары", value: "12 080.45", icon: "shopping-bag-open" },
+		{ label: "Тарифы", value: "12 080", icon: "clock" },
+		{ label: "Услуги", value: "12 080.45", icon: "tag" },
+		{ label: "Траты с депозита", value: "12 080.45", icon: "wallet" },
 	];
 
 	const testStore = useTestStore();

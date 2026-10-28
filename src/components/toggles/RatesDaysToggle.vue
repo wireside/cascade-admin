@@ -3,19 +3,19 @@
 		v-model="model"
 		:density="null"
 		mandatory
-		class="rates-days-toggle d-inline-flex rounded-0"
+		class="rates-days-toggle d-inline-flex bg-filter pa-1"
 	>
 		<v-btn
 			v-for="option in options"
 			:key="option.value"
 			:value="option.value"
-			:color="option.value === model ? 'primary' : 'white'"
-			:class="option.value === model ? 'text-black' : 'bg-opacity-5 text-white'"
+			:color="option.value === model ? 'primary' : 'transparent'"
+			:class="option.value === model ? 'text-on-primary' : 'text-secondary'"
 			:ripple="false"
 			variant="flat"
-			class="rates-days-toggle__button px-4 py-3"
+			class="rates-days-toggle__button px-4"
 			rounded="md"
-			height="40"
+			height="36"
 		>
 			<v-icon
 				:icon="option.icon"
@@ -31,14 +31,16 @@
 	const model = defineModel({ type: String, default: "calendar" });
 
 	const options = [
-		{ value: "calendar", label: "Календарь дней", icon: "mdi-controller" },
-		{ value: "rates", label: "Тарифы", icon: "mdi-controller" },
+		{ value: "calendar", label: "Календарь дней", icon: "calendar-blank" },
+		{ value: "rates", label: "Тарифы", icon: "clock" },
 	];
 </script>
 
 <style scoped lang="scss">
 	.rates-days-toggle {
-		gap: 5px;
+		gap: 2px;
+		height: 44px;
+		border-radius: 10px;
 
 		&__button :deep(.v-btn__overlay) {
 			opacity: 0;

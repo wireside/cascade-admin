@@ -1,16 +1,17 @@
 <template>
 	<v-btn
 		:ripple="false"
-		class="bg-background justify-start pl-2 opacity-100 font-weight-regular"
+		:aria-expanded="open"
+		class="justify-start pl-2 pr-2 opacity-100 font-weight-regular"
 		color="white"
-		variant="plain"
-		height="38px"
-		rounded="8px"
+		variant="text"
+		height="36"
+		rounded="xl"
 		@click="open = !open"
 	>
 		<div class="d-flex align-center">
 			<v-icon
-				:icon="'mdi-chevron-' + (open ? 'up' : 'down')"
+				:icon="open ? 'down' : 'right'"
 				size="16"
 				class="mr-1 opacity-20"
 			/>

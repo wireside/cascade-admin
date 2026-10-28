@@ -3,7 +3,7 @@
 		<v-btn
 			:disabled="page <= 1"
 			aria-label="Предыдущая страница"
-			icon="mdi-chevron-left"
+			icon="chevron-left"
 			variant="text"
 			color="white"
 			size="36"
@@ -39,7 +39,7 @@
 		<v-btn
 			:disabled="page >= totalPages"
 			aria-label="Следующая страница"
-			icon="mdi-chevron-right"
+			icon="right"
 			variant="text"
 			color="white"
 			size="36"

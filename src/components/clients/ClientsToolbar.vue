@@ -1,14 +1,14 @@
 <template>
-	<div class="d-flex align-center justify-space-between ga-4 flex-wrap">
+	<div class="s-page-toolbar d-flex align-center justify-space-between ga-4 flex-wrap">
 		<div class="d-flex align-center ga-2 flex-wrap">
 			<v-btn
 				variant="flat"
-				height="40"
+				height="44"
 				rounded="md"
 				class="px-4 bg-white bg-opacity-5 text-white"
 			>
 				<v-icon
-					icon="mdi-account-group-outline"
+					icon="users-three"
 					size="16"
 					class="mr-2"
 				/>
@@ -23,12 +23,12 @@
 
 			<v-btn
 				variant="flat"
-				height="40"
+				height="44"
 				rounded="md"
 				class="px-4 bg-white bg-opacity-5 text-white"
 			>
 				<v-icon
-					icon="mdi-account-cancel-outline"
+					icon="user-minus"
 					size="16"
 					class="mr-2"
 				/>
@@ -45,7 +45,7 @@
 				v-model="search"
 				placeholder="Найти клиента"
 				width="300"
-				height="40"
+				height="44"
 			/>
 		</div>
 
@@ -54,12 +54,12 @@
 				<v-btn
 					variant="flat"
 					color="red"
-					height="40"
+					height="44"
 					rounded="md"
 					class="px-4 bg-opacity-25 text-red"
 				>
 					<v-icon
-						icon="mdi-cancel"
+						icon="prohibit"
 						size="16"
 						class="mr-2"
 					/>
@@ -69,18 +69,18 @@
 				<v-btn
 					variant="flat"
 					color="primary"
-					height="40"
+					height="44"
 					rounded="md"
 					class="px-4 text-background"
 				>
 					<v-icon
-						icon="mdi-plus-circle-outline"
+						icon="plus"
 						size="16"
 						class="mr-2"
 					/>
 					Добавить в группу
 					<v-icon
-						icon="mdi-chevron-down"
+						icon="down"
 						size="16"
 						class="ml-1"
 					/>
@@ -88,7 +88,7 @@
 			</template>
 
 			<v-btn
-				icon="mdi-restore"
+				icon="clock-counter-clockwise"
 				variant="flat"
 				size="40"
 				rounded="md"

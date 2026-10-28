@@ -23,7 +23,7 @@
 			@click="handleDepositChange"
 		>
 			<v-icon
-				icon="mdi-square-edit-outline"
+				icon="pencil"
 				size="16"
 				:class="`opacity-${fieldOpacity * 100}`"
 			/>

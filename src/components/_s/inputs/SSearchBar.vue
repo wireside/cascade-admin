@@ -10,18 +10,26 @@
 				class="s-search-bar__field d-flex align-center ga-1 px-2 position-relative overflow-hidden rounded-md text-white font-weight-regular bg-white bg-opacity-5"
 			>
 				<v-icon
-					icon="mdi-magnify"
+					icon="magnifying-glass"
 					color="white"
 					size="16"
 					class="opacity-50"
 				/>
 
 				<input
+					ref="input"
 					v-model="model"
+					:aria-label="placeholder"
 					type="search"
 					class="s-search-bar__input flex-grow-1 flex-shrink-1"
 					:placeholder="placeholder"
 				/>
+				<span
+					v-if="shortcut && !model"
+					class="s-search-bar__shortcut text-muted text-no-wrap"
+				>
+					{{ shortcut }}
+				</span>
 
 				<button
 					v-if="model"
@@ -31,7 +39,7 @@
 					@click="clear"
 				>
 					<v-icon
-						icon="mdi-close"
+						icon="close"
 						color="white"
 						size="14"
 					/>
@@ -42,12 +50,15 @@
 </template>
 
 <script setup>
+	const input = $ref(null);
+	defineExpose({ focus: () => input?.focus() });
 	const model = defineModel({
 		type: String,
 		default: "",
 	});
 
 	const props = defineProps({
+		shortcut: { type: String, default: "" },
 		placeholder: {
 			type: String,
 			default: "Клиент",
@@ -80,6 +91,10 @@
 
 <style scoped lang="scss">
 	.s-search-bar {
+		&__shortcut {
+			font-size: 12px;
+			line-height: 16px;
+		}
 		min-width: 160px;
 
 		&__field {

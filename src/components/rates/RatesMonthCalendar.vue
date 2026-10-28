@@ -32,7 +32,7 @@
 					@click="emit('previous-year')"
 				>
 					<v-icon
-						icon="mdi-chevron-left"
+						icon="chevron-left"
 						size="16"
 					/>
 				</v-btn>
@@ -51,7 +51,7 @@
 					@click="emit('next-year')"
 				>
 					<v-icon
-						icon="mdi-chevron-right"
+						icon="right"
 						size="16"
 					/>
 				</v-btn>

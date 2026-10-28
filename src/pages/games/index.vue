@@ -159,7 +159,7 @@
 meta:
   layout: default
   title: Игры
-  icon: mdi-controller
+  icon: game-controller
   parentTitle: Приложения
 </route>
 

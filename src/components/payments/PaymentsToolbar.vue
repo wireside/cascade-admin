@@ -1,14 +1,14 @@
 <template>
-	<div class="payments-toolbar">
+	<div class="s-page-toolbar payments-toolbar">
 		<div class="payments-toolbar__main d-flex align-center ga-2 flex-wrap pb-4">
 			<v-btn
 				variant="flat"
-				height="40"
+				height="44"
 				rounded="md"
 				class="px-4 bg-white bg-opacity-5 text-white"
 			>
 				<v-icon
-					icon="mdi-cash-multiple"
+					icon="money"
 					size="16"
 					class="mr-2"
 				/>
@@ -25,7 +25,7 @@
 				v-model="search"
 				placeholder="Поиск платежей"
 				width="233"
-				height="40"
+				height="44"
 				class="payments-toolbar__search flex-grow-0"
 			/>
 		</div>
@@ -42,7 +42,7 @@
 		</div>
 
 		<v-btn
-			icon="mdi-restore"
+			icon="clock-counter-clockwise"
 			variant="flat"
 			size="40"
 			rounded="md"
@@ -118,7 +118,7 @@
 			&--floating {
 				height: 56px;
 				border-color: rgba(255, 255, 255, 0.1);
-				background-color: #151515;
+				background-color: rgb(var(--v-theme-panel));
 			}
 		}
 

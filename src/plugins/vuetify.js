@@ -1,9 +1,8 @@
 import "vuetify/styles";
 import "../assets/styles/index.scss";
 import { en, ru } from "vuetify/locale";
-import { aliases, mdi } from "vuetify/iconsets/mdi";
+import { cascadeIcons, iconAliases } from "./icons";
 import * as labs from "vuetify/labs/components";
-import "@mdi/font/css/materialdesignicons.css";
 
 import { createVuetify } from "vuetify";
 
@@ -14,14 +13,16 @@ export default createVuetify({
 	defaults: {
 		VBtn: {
 			variant: "flat",
-			color: "white",
+			color: "button",
+			height: 44,
+			rounded: "md",
 		},
 		VCheckbox: {
 			color: "primary",
 			density: "compact",
 			hideDetails: true,
-			falseIcon: "mdi-checkbox-blank-outline",
-			trueIcon: "mdi-check",
+			falseIcon: "stop",
+			trueIcon: "check",
 		},
 		VTextField: {
 			variant: "outlined",
@@ -54,19 +55,33 @@ export default createVuetify({
 					white: "#FFFFFF",
 					background: "#090909",
 					surface: "#111111",
+					sidebar: "#0E0E0E",
+					button: "#151515",
+					panel: "#191919",
+					row: "#141414",
+					"row-hover": "#1E1E1E",
+					"filter-label": "#868686",
+					menu: "#212121",
+					filter: "#1B1B1B",
+					muted: "#686868",
+					"on-primary": "#141414",
+					"on-button": "#FFFFFF",
+					success: "#34D399",
+					warning: "#DFBE00",
+					info: "#7FB0FF",
 					primary: "rgb(171, 244, 62)",
-					secondary: "#999999",
-					error: "#AF2E2D",
-					red: "#DE3E3D",
+					secondary: "#8A8A8A",
+					error: "#F87171",
+					red: "#F87171",
 					purple: "#B640B9",
 					"deep-purple": "#8D5CFC",
-					blue: "#257FF9",
+					blue: "#3B82F6",
 					orange: "#F37D1D",
-					green: "#0CA157",
+					green: "#34D399",
 					wall: "#4F4F4F",
 					control: "rgb(9, 9, 9)",
 					"content-primary": "#F6F6F6",
-					"content-secondary": "#8B8B8B",
+					"content-secondary": "#B3B3B3",
 				},
 				variables: {
 					"border-color": "#FFFFFF",
@@ -95,10 +110,10 @@ export default createVuetify({
 		messages: { ru, en },
 	},
 	icons: {
-		defaultSet: "mdi",
-		aliases,
+		defaultSet: "cascade",
+		aliases: iconAliases,
 		sets: {
-			mdi,
+			cascade: cascadeIcons,
 		},
 	},
 });

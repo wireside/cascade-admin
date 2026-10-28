@@ -46,7 +46,7 @@
 				class="d-flex align-center justify-end ga-2"
 			>
 				<v-btn
-					prepend-icon="mdi-restore"
+					prepend-icon="clock-counter-clockwise"
 					variant="flat"
 					color="surface"
 					height="44"
@@ -57,7 +57,7 @@
 					Отмена
 				</v-btn>
 				<v-btn
-					prepend-icon="mdi-content-save-outline"
+					prepend-icon="floppy-disk"
 					variant="tonal"
 					color="primary"
 					height="44"
@@ -82,7 +82,7 @@
 				class="bg-white bg-opacity-5 text-white"
 			>
 				<v-icon
-					icon="mdi-information-outline"
+					icon="identification-card"
 					size="18"
 					class="opacity-60"
 				/>
@@ -96,7 +96,7 @@
 				@click="enterEditMode"
 			>
 				<v-icon
-					icon="mdi-pencil-outline"
+					icon="pencil"
 					size="18"
 					class="opacity-60"
 				/>

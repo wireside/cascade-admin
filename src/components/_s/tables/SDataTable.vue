@@ -34,6 +34,7 @@
 			:height="tableHeight"
 			class="s-data-table overflow-hidden bg-transparent"
 			:class="{ 's-data-table--scrollable': tableBodyScrollable }"
+			:style="{ '--s-table-tone': `var(--v-theme-${tone})` }"
 			hide-default-footer
 			fixed-header
 			@wheel="onTableWheel"
@@ -43,22 +44,23 @@
 					<th
 						v-if="selectable && showSelectionColumn"
 						:style="selectionColumnStyle"
-						class="s-data-table__selection-cell text-center bg-transparent pa-0"
+						class="s-data-table__selection-cell text-start bg-transparent pa-0"
 					>
 						<v-btn
 							v-if="selectionMode === 'multiple'"
 							icon
-							variant="outlined"
-							color="white"
+							:variant="selectedRowCount ? 'flat' : 'outlined'"
+							:color="selectedRowCount ? tone : 'white'"
 							rounded="md"
-							size="18"
-							class="text-white opacity-50"
+							size="16"
+							:class="selectedRowCount ? 'text-on-primary' : 'text-white opacity-40'"
 							:aria-label="allRowsSelected ? 'Снять выделение со всех строк' : 'Выделить все строки'"
 							@click.stop="toggleAllSelection"
 						>
 							<v-icon
+								v-if="selectedRowCount"
 								:icon="selectionHeaderIcon"
-								size="12.6"
+								size="14"
 							/>
 						</v-btn>
 					</th>
@@ -69,9 +71,9 @@
 						:class="[
 							getColumnAlignmentClass(col, idx),
 							{
-								'pl-5': idx === 0,
-								'pr-5': idx === columns.length - 1,
-								'pr-1 pr-lg-2 pr-xl-6': idx < columns.length - 1,
+								'pl-3': idx === 0 && !(selectable && showSelectionColumn),
+								'pr-3': idx === columns.length - 1,
+								'pr-1 pr-lg-2 pr-xl-4': idx < columns.length - 1,
 								'cursor-pointer': isColumnSortable(col),
 							},
 						]"
@@ -79,11 +81,12 @@
 						class="text-white bg-transparent pa-0"
 						@click="toggleColumnSort(col)"
 					>
-						<span class="d-inline-flex align-center ga-1 opacity-50">
+						<span class="d-inline-flex align-center ga-1 opacity-60">
 							<span>{{ col.label }}</span>
 							<v-icon
+								v-if="isColumnSortable(col)"
 								:icon="getColumnSortIcon(col)"
-								size="16"
+								size="12"
 							/>
 						</span>
 					</th>
@@ -102,7 +105,8 @@
 							:aria-selected="selectable ? isSelected(rowId) : undefined"
 							:class="{
 								[hoverClass]: isHovering && !isSelected(rowId),
-								[`bg-${tone} bg-opacity-10`]: isSelected(rowId),
+								's-data-table__row--selected': isSelected(rowId),
+								's-data-table__row--menu-open': activeRowId === rowId,
 							}"
 							class="cursor-pointer"
 							@click.left="onRowClick($event, row, rowId)"
@@ -121,15 +125,15 @@
 									:variant="isSelected(rowId) ? 'flat' : 'outlined'"
 									:color="isSelected(rowId) ? tone : 'white'"
 									rounded="lg"
-									size="18"
+									size="16"
 									:class="isSelected(rowId) ? selectedButtonTextClass : 'text-white opacity-50'"
 									:aria-label="isSelected(rowId) ? 'Снять выделение со строки' : 'Выделить строку'"
 									@click.stop="toggleRowSelection(row, rowId)"
 								>
 									<v-icon
 										v-if="isSelected(rowId)"
-										icon="mdi-check"
-										size="12.6"
+										icon="check"
+										size="14"
 									/>
 								</v-btn>
 							</td>
@@ -140,14 +144,14 @@
 								:class="[
 									getColumnAlignmentClass(col, colIdx),
 									{
-										'pl-5': colIdx === 0,
-										'pr-5': colIdx === columns.length - 1,
-										'pr-1 pr-lg-2 pr-xl-6': colIdx < columns.length - 1,
+										'pl-3': colIdx === 0 && !(selectable && showSelectionColumn),
+										'pr-3': colIdx === columns.length - 1,
+										'pr-1 pr-lg-2 pr-xl-4': colIdx < columns.length - 1,
 										'font-weight-medium': col.strong,
 										's-data-table__cell--bordered': rowBorder,
 									},
 								]"
-								class="text-white"
+								class="text-white pl-0 py-0"
 							>
 								<span class="d-inline-flex align-center">
 									<slot
@@ -264,20 +268,21 @@
 		},
 		headerTone: {
 			type: String,
-			default: null,
+			default: "surface",
 		},
 		headerOpacity: {
 			type: [String, Number],
-			default: 20,
+			default: 100,
 		},
 		hoverClass: {
 			type: String,
-			default: "bg-background",
+			default: "s-data-table__row--hover",
 		},
 		selectable: {
 			type: Boolean,
 			default: false,
 		},
+		activeRowId: { type: [String, Number], default: null },
 		showSelectionColumn: {
 			type: Boolean,
 			default: true,
@@ -301,7 +306,7 @@
 		},
 		rowHeight: {
 			type: [String, Number],
-			default: 50,
+			default: 52,
 		},
 		rowBorder: {
 			type: Boolean,
@@ -378,7 +383,7 @@
 	const getCellHoverPopupSlotName = (col) => `cell-${col.key}-hover-popup`;
 	const hasCellHoverPopup = (col) => !!slots[getCellHoverPopupSlotName(col)];
 
-	const tableHeaderHeight = 38;
+	const tableHeaderHeight = 48;
 
 	const toSizeNumber = (value) => {
 		if (typeof value === "number") {
@@ -392,20 +397,20 @@
 	const resolvedRowHeight = computed(() => toSizeNumber(props.rowHeight) || 50);
 	const resolvedRowHeightStyle = computed(() => `${resolvedRowHeight.value}px`);
 
-	const selectionColumnWidth = $computed(() => (xlAndUp.value ? 58 : 42));
-	const columnRightPadding = $computed(() => (xlAndUp.value ? 24 : lgAndUp.value ? 8 : 4));
+	const selectionColumnWidth = $computed(() => (xlAndUp.value ? 60 : 44));
+	const columnRightPadding = $computed(() => (xlAndUp.value ? 16 : lgAndUp.value ? 8 : 4));
 
 	const selectionColumnStyle = computed(() => ({
 		width: `${selectionColumnWidth}px`,
 		minWidth: `${selectionColumnWidth}px`,
 		maxWidth: `${selectionColumnWidth}px`,
-		paddingInline: xlAndUp.value ? "20px 12px" : "8px",
+		paddingInline: xlAndUp.value ? "12px" : "8px",
 	}));
 
 	const resolveColumnWidth = (index) => {
 		const col = props.columns[index] || {};
-		const leftPadding = index === 0 ? 20 : 0;
-		const rightPadding = index === props.columns.length - 1 ? 20 : columnRightPadding;
+		const leftPadding = index === 0 && !(props.selectable && props.showSelectionColumn) ? 12 : 0;
+		const rightPadding = index === props.columns.length - 1 ? 12 : columnRightPadding;
 		const horizontalPadding = leftPadding + rightPadding;
 
 		if (col.width !== undefined && col.width !== null) {
@@ -564,7 +569,7 @@
 	});
 
 	const selectionHeaderIcon = computed(() => {
-		return selectedRowCount.value > 0 ? "mdi-minus" : "mdi-plus";
+		return allRowsSelected.value ? "check" : "minus";
 	});
 
 	const syncSelectedRows = () => {
@@ -672,10 +677,10 @@
 		const key = col.sortKey || col.key;
 
 		if (sortBy.value !== key) {
-			return "mdi-arrow-down";
+			return "arrow-down";
 		}
 
-		return sortDirection.value === "asc" ? "mdi-arrow-up" : "mdi-arrow-down";
+		return sortDirection.value === "asc" ? "arrow-up" : "arrow-down";
 	};
 
 	const getColumnAriaSort = (col) => {
@@ -801,10 +806,10 @@
 		border-radius: 10px !important;
 
 		&__selection-cell {
-			text-align: center;
+			text-align: start;
 
 			:deep(.v-btn) {
-				border-radius: 5.4px;
+				border-radius: 4px !important;
 			}
 		}
 	}
@@ -830,6 +835,9 @@
 	:deep(.s-data-table table) {
 		table-layout: fixed;
 		width: 100%;
+		border-collapse: separate;
+		border-spacing: 0 2px;
+		margin-top: -2px;
 	}
 
 	:deep(.s-data-table tbody tr:focus-visible) {
@@ -839,7 +847,8 @@
 
 	:deep(.s-data-table th),
 	:deep(.s-data-table td) {
-		border-bottom: 0 !important;
+		border: 0 !important;
+		box-shadow: none !important;
 		overflow: hidden;
 		text-overflow: clip !important;
 		white-space: nowrap;
@@ -847,6 +856,34 @@
 
 	:deep(.s-data-table td) {
 		height: v-bind(resolvedRowHeightStyle);
+		background: rgb(var(--v-theme-row));
+		line-height: 20px;
+		transition: background-color 120ms ease;
+	}
+
+	:deep(.s-data-table th) {
+		height: 48px;
+		font-size: 16px;
+		font-weight: 600;
+		line-height: 24px;
+		letter-spacing: -0.4px;
+	}
+	:deep(.s-data-table td:first-child),
+	:deep(.s-data-table th:first-child) {
+		border-radius: 10px 0 0 10px;
+	}
+	:deep(.s-data-table td:last-child),
+	:deep(.s-data-table th:last-child) {
+		border-radius: 0 10px 10px 0;
+	}
+	:deep(.s-data-table tbody tr:hover td) {
+		background: rgb(var(--v-theme-row-hover));
+	}
+	:deep(.s-data-table tbody tr.s-data-table__row--selected td) {
+		background: rgba(var(--s-table-tone), 0.1);
+	}
+	:deep(.s-data-table tbody tr.s-data-table__row--menu-open td) {
+		background: rgb(var(--v-theme-row-hover));
 	}
 
 	:deep(.s-data-table td.s-data-table__cell--bordered) {

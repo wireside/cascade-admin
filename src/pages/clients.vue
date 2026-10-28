@@ -6,6 +6,6 @@
 meta:
   layout: default
   title: Клиенты
-  icon: mdi-account-group-outline
+  icon: users-three
   parentTitle: Клиенты
 </route>

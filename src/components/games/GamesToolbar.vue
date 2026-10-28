@@ -1,14 +1,14 @@
 <template>
-	<div class="d-flex align-center justify-space-between ga-4 flex-wrap">
+	<div class="s-page-toolbar d-flex align-center justify-space-between ga-4 flex-wrap">
 		<div class="d-flex align-center ga-1 flex-wrap">
 			<v-btn
 				variant="flat"
-				height="40"
+				height="44"
 				rounded="md"
 				class="px-4 bg-white bg-opacity-5 text-white"
 			>
 				<v-icon
-					icon="mdi-controller"
+					icon="game-controller"
 					size="16"
 					class="mr-2"
 				/>
@@ -24,14 +24,14 @@
 			<v-btn
 				:ripple="null"
 				variant="flat"
-				height="40"
+				height="44"
 				rounded="md"
 				class="px-4 bg-white bg-opacity-5 text-white"
 				@click="expanded = !expanded"
 			>
 				<div class="opacity-50 d-flex align-center">
 					<v-icon
-						:icon="expanded ? 'mdi-chevron-up-circle-outline' : 'mdi-chevron-down-circle-outline'"
+						:icon="expanded ? 'chevron-up' : 'down'"
 						class="mr-1"
 						size="16"
 					/>
@@ -45,18 +45,18 @@
 				v-if="selectedGames.length"
 				variant="flat"
 				color="primary"
-				height="40"
+				height="44"
 				rounded="md"
-				class="px-4 bg-opacity-20 text-primary"
+				class="px-4 text-on-primary"
 			>
 				<v-icon
-					icon="mdi-plus-circle-outline"
+					icon="plus"
 					size="16"
 					class="mr-1"
 				/>
 				Добавить в группу
 				<v-icon
-					icon="mdi-chevron-down"
+					icon="down"
 					size="16"
 					class="ml-1"
 				/>
@@ -64,13 +64,13 @@
 
 			<v-btn
 				variant="flat"
-				color="blue"
-				height="40"
+				color="button"
+				height="44"
 				rounded="md"
-				class="px-4 bg-opacity-20 text-blue"
+				class="px-4 text-white"
 			>
 				<v-icon
-					icon="mdi-plus-circle-outline"
+					icon="plus"
 					size="16"
 					class="mr-1"
 				/>
@@ -80,18 +80,17 @@
 			<v-btn
 				variant="flat"
 				color="primary"
-				height="40"
+				height="44"
 				rounded="md"
-				class="px-4 bg-opacity-20 text-primary"
+				class="px-4 text-on-primary"
 				@click="emit('create-game')"
 			>
 				<v-icon
-					icon="mdi-plus-circle-outline"
-					color="primary"
+					icon="plus"
 					size="16"
 					class="mr-1"
 				/>
-				<span class="text-primary">Добавить игру</span>
+				<span>Добавить игру</span>
 			</v-btn>
 		</div>
 	</div>

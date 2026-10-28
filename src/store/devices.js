@@ -44,7 +44,44 @@ const MOCK_BOOTCAMPS = [
 	{
 		id: "2",
 		tone: "purple",
-		devices: createComputerRange(17, 21),
+		devices: createComputerRange(17, 21, {
+			17: {
+				status: { label: "В игре", tone: "primary" },
+				client: "Александр Волков",
+				tariff: "BOOTCAMP · 3 часа",
+				start: "15:30",
+				end: "18:30",
+				app: "Counter-Strike 2",
+			},
+			18: {
+				booking: { label: "Есть бронь", tone: "blue" },
+				nextBookingTime: "19:00",
+			},
+			19: {
+				status: { label: "В игре", tone: "primary" },
+				booking: { label: "Есть бронь", tone: "blue" },
+				nextBookingTime: "20:30",
+				client: "m1rage",
+				tariff: "Вечерний · 5 часов",
+				start: "14:00",
+				end: "19:00",
+				app: "Dota 2",
+			},
+			20: {
+				status: { label: "В игре", tone: "primary" },
+				client: "Мария Соколова",
+				tariff: "Почасовой",
+				start: "17:15",
+				end: "18:15",
+				app: "VALORANT",
+			},
+			21: {
+				status: { label: "Выключен", tone: "secondary" },
+				booking: { label: "Есть бронь", tone: "blue" },
+				nextBookingTime: "21:00",
+				app: "",
+			},
+		}),
 	},
 	{
 		id: "3",

@@ -1,7 +1,7 @@
 <template>
 	<s-dashboard-panel
 		title="Статус"
-		icon="mdi-monitor"
+		icon="sidebar"
 		width="368"
 	>
 		<template #header-action>
@@ -16,7 +16,7 @@
 				class="bg-opacity-5 bg-white"
 			>
 				<v-icon
-					icon="mdi-arrow-top-right"
+					icon="arrow-right"
 					size="25"
 					color="white"
 					class="opacity-30"
@@ -73,11 +73,11 @@
 <script setup>
 	const testStore = useTestStore();
 	const statusItems = [
-		{ label: "Устройства", value: "28", color: "secondary", icon: "mdi:monitor" },
-		{ label: "Включены", value: "27", color: "green", icon: "mdi:power" },
-		{ label: "Активные сеансы", value: "10", color: "blue", icon: "mdi:account" },
-		{ label: "Обслуживание", value: "2", color: "orange", icon: "mdi:traffic-cone" },
-		{ label: "Высокий доступ", value: "0", color: "red", icon: "mdi:code-tags" },
-		{ label: "Без оболочки", value: "1", color: "error", icon: "mdi:alert-circle-outline" },
+		{ label: "Устройства", value: "28", color: "secondary", icon: "sidebar" },
+		{ label: "Включены", value: "27", color: "green", icon: "power" },
+		{ label: "Активные сеансы", value: "10", color: "blue", icon: "user" },
+		{ label: "Обслуживание", value: "2", color: "orange", icon: "warning" },
+		{ label: "Высокий доступ", value: "0", color: "red", icon: "code" },
+		{ label: "Без оболочки", value: "1", color: "error", icon: "warning" },
 	];
 </script>

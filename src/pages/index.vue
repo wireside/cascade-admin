@@ -49,5 +49,5 @@
 meta:
   layout: default
   title: Дашборд
-  icon: mdi-chart-pie-outline
+  icon: chart-pie-slice
 </route>

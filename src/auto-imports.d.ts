@@ -80,6 +80,8 @@ declare global {
 	const mapStores: typeof import("pinia").mapStores;
 	const mapWritableState: typeof import("pinia").mapWritableState;
 	const markRaw: typeof import("vue").markRaw;
+	const navigation: typeof import("./composables/navigation.js").navigation;
+	const navigationPages: typeof import("./composables/navigation.js").navigationPages;
 	const nextTick: typeof import("vue").nextTick;
 	const onActivated: typeof import("vue").onActivated;
 	const onBeforeMount: typeof import("vue").onBeforeMount;
@@ -252,6 +254,7 @@ declare global {
 	const useMouseInElement: typeof import("@vueuse/core").useMouseInElement;
 	const useMousePressed: typeof import("@vueuse/core").useMousePressed;
 	const useMutationObserver: typeof import("@vueuse/core").useMutationObserver;
+	const useNavigation: typeof import("./composables/navigation.js").useNavigation;
 	const useNavigatorLanguage: typeof import("@vueuse/core").useNavigatorLanguage;
 	const useNetwork: typeof import("@vueuse/core").useNetwork;
 	const useNow: typeof import("@vueuse/core").useNow;
@@ -453,6 +456,8 @@ declare module "vue" {
 		readonly mapStores: UnwrapRef<(typeof import("pinia"))["mapStores"]>;
 		readonly mapWritableState: UnwrapRef<(typeof import("pinia"))["mapWritableState"]>;
 		readonly markRaw: UnwrapRef<(typeof import("vue"))["markRaw"]>;
+		readonly navigation: UnwrapRef<(typeof import("./composables/navigation.js"))["navigation"]>;
+		readonly navigationPages: UnwrapRef<(typeof import("./composables/navigation.js"))["navigationPages"]>;
 		readonly nextTick: UnwrapRef<(typeof import("vue"))["nextTick"]>;
 		readonly onActivated: UnwrapRef<(typeof import("vue"))["onActivated"]>;
 		readonly onBeforeMount: UnwrapRef<(typeof import("vue"))["onBeforeMount"]>;
@@ -623,6 +628,7 @@ declare module "vue" {
 		readonly useMouseInElement: UnwrapRef<(typeof import("@vueuse/core"))["useMouseInElement"]>;
 		readonly useMousePressed: UnwrapRef<(typeof import("@vueuse/core"))["useMousePressed"]>;
 		readonly useMutationObserver: UnwrapRef<(typeof import("@vueuse/core"))["useMutationObserver"]>;
+		readonly useNavigation: UnwrapRef<(typeof import("./composables/navigation.js"))["useNavigation"]>;
 		readonly useNavigatorLanguage: UnwrapRef<(typeof import("@vueuse/core"))["useNavigatorLanguage"]>;
 		readonly useNetwork: UnwrapRef<(typeof import("@vueuse/core"))["useNetwork"]>;
 		readonly useNow: UnwrapRef<(typeof import("@vueuse/core"))["useNow"]>;

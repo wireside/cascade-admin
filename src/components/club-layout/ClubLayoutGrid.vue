@@ -70,7 +70,7 @@
 						<v-icon
 							v-if="editing"
 							:color="devicePresentation(element).tone"
-							:icon="element.type === GRID_ELEMENT_TYPE.CONSOLE ? 'mdi-gamepad-variant-outline' : 'mdi-monitor'"
+							:icon="element.type === GRID_ELEMENT_TYPE.CONSOLE ? 'game-controller' : 'sidebar'"
 							size="21"
 						/>
 						<div
@@ -79,7 +79,7 @@
 							class="club-layout-grid__device-booking-icon position-absolute top-0 right-0 d-flex rounded-circle pa-1"
 						>
 							<v-icon
-								icon="mdi-calendar-check-outline"
+								icon="calendar-check"
 								size="13"
 							/>
 						</div>
@@ -89,7 +89,7 @@
 							class="club-layout-grid__device-booking position-absolute bottom-0 left-0 d-flex align-center ga-1 font-weight-medium"
 						>
 							<v-icon
-								icon="mdi-clock-outline"
+								icon="clock"
 								size="14"
 							/>
 							<span>{{ deviceBookingTime(element) }}</span>
@@ -293,17 +293,17 @@
 	};
 
 	const elementIcons = {
-		[GRID_ELEMENT_TYPE.VR]: "mdi-virtual-reality",
-		[GRID_ELEMENT_TYPE.STEERING_WHEEL]: "mdi-steering",
-		[GRID_ELEMENT_TYPE.TARGET]: "mdi-bullseye",
-		[GRID_ELEMENT_TYPE.BOARD_GAME]: "mdi-dice-multiple-outline",
-		[GRID_ELEMENT_TYPE.ROOM_SERVICE]: "mdi-room-service-outline",
-		[GRID_ELEMENT_TYPE.COAT_RACK]: "mdi-hanger",
-		[GRID_ELEMENT_TYPE.SOFA]: "mdi-sofa-outline",
-		[GRID_ELEMENT_TYPE.COFFEE]: "mdi-coffee-outline",
-		[GRID_ELEMENT_TYPE.FOOD]: "mdi-silverware-fork-knife",
+		[GRID_ELEMENT_TYPE.VR]: "virtual-reality",
+		[GRID_ELEMENT_TYPE.STEERING_WHEEL]: "steering-wheel",
+		[GRID_ELEMENT_TYPE.TARGET]: "target",
+		[GRID_ELEMENT_TYPE.BOARD_GAME]: "dice-five",
+		[GRID_ELEMENT_TYPE.ROOM_SERVICE]: "bell-simple-ringing",
+		[GRID_ELEMENT_TYPE.COAT_RACK]: "coat-hanger",
+		[GRID_ELEMENT_TYPE.SOFA]: "couch",
+		[GRID_ELEMENT_TYPE.COFFEE]: "coffee",
+		[GRID_ELEMENT_TYPE.FOOD]: "fork-knife",
 	};
-	const elementIcon = (type) => elementIcons[type] || "mdi-shape-outline";
+	const elementIcon = (type) => elementIcons[type] || "shapes";
 
 	const textAnchorPositions = {
 		[TEXT_DIRECTION.RIGHT]: {

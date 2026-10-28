@@ -18,7 +18,7 @@
 			class="position-relative d-flex flex-column align-center"
 		>
 			<v-icon
-				:icon="portrait ? 'mdi-image-outline' : 'mdi-image-plus-outline'"
+				:icon="portrait ? 'image' : 'image'"
 				size="20"
 				class="opacity-50 mb-2"
 			/>

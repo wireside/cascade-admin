@@ -16,7 +16,7 @@
 			>
 				<v-icon
 					v-if="selected"
-					icon="mdi-check"
+					icon="check"
 					size="12"
 				/>
 			</v-btn>
@@ -55,7 +55,7 @@
 				@click.stop="isEditingName ? saveName() : startNameEditing()"
 			>
 				<v-icon
-					:icon="isEditingName ? 'mdi-check' : 'mdi-pencil-outline'"
+					:icon="isEditingName ? 'check' : 'pencil'"
 					size="16"
 				/>
 			</v-btn>
@@ -103,11 +103,11 @@
 				@click.stop="emit('open-menu', dayType, $event)"
 			>
 				<v-icon
-					icon="mdi-brush-outline"
+					icon="paint-brush"
 					size="16"
 				/>
 				<v-icon
-					icon="mdi-chevron-down"
+					icon="down"
 					size="16"
 					class="ml-1"
 				/>
@@ -124,7 +124,7 @@
 				@click.stop="emit('delete', dayType)"
 			>
 				<v-icon
-					icon="mdi-trash-can-outline"
+					icon="trash"
 					size="16"
 				/>
 			</v-btn>

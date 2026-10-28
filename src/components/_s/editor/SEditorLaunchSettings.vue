@@ -14,7 +14,7 @@
 				>
 					<v-text-field
 						v-model="paths[index]"
-						prepend-inner-icon="mdi-folder-outline"
+						prepend-inner-icon="folder"
 						placeholder="Укажите путь до файла"
 						variant="outlined"
 						hide-details
@@ -33,7 +33,7 @@
 						@click="index === 0 ? addPath() : removePath(index)"
 					>
 						<v-icon
-							:icon="index === 0 ? 'mdi-plus-circle-outline' : 'mdi-trash-can-outline'"
+							:icon="index === 0 ? 'plus' : 'trash'"
 							size="13"
 						/>
 					</v-btn>
@@ -46,7 +46,7 @@
 		>
 			<div class="opacity-50 d-flex align-start ga-2">
 				<v-icon
-					icon="mdi-information-outline"
+					icon="identification-card"
 					size="18"
 					class="flex-shrink-0"
 				/>
@@ -63,7 +63,7 @@
 			<div class="s-editor-launch-settings__label text-white mb-3">Аргумент командной строки</div>
 			<v-text-field
 				v-model="launchArguments"
-				prepend-inner-icon="mdi-console-line"
+				prepend-inner-icon="terminal"
 				placeholder="Введите аргументы"
 				variant="outlined"
 				hide-details
@@ -74,7 +74,7 @@
 		<div class="d-flex align-center justify-space-between rounded-md bg-white bg-opacity-2 pa-4 mt-2">
 			<div class="d-flex align-center ga-1 text-white">
 				<v-icon
-					icon="mdi-xml"
+					icon="code"
 					color="primary"
 					size="16"
 				/>

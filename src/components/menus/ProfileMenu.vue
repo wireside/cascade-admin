@@ -8,14 +8,22 @@
 				v-bind="props"
 				height="40"
 				min-width="166"
-				class="bg-white bg-opacity-5 d-block profile-menu__dropdown"
+				:class="compact ? 'profile-menu__compact px-2' : 'bg-white bg-opacity-5'"
+				class="d-block profile-menu__dropdown"
 				:variant="null"
 				:ripple="null"
 			>
 				<div class="flex-grow-1 d-flex align-center text-white justify-start">
 					<div class="d-flex align-center ga-2 mr-5 w-100 flex-grow-1">
 						<v-avatar size="24">
+							<span
+								v-if="compact"
+								class="font-weight-bold text-on-primary"
+							>
+								{{ initials }}
+							</span>
 							<v-img
+								v-else
 								color="secondary"
 								alt="Default profile picture"
 								src="../../assets/images/profile-avatar.png"
@@ -24,7 +32,7 @@
 						<span>{{ user?.userName || "Киллов Я." }}</span>
 					</div>
 					<v-icon
-						icon="mdi-chevron-down"
+						icon="down"
 						size="16"
 						class="opacity-50"
 					/>
@@ -73,13 +81,14 @@
 			<div class="d-flex flex-column ga-1">
 				<v-btn
 					class="profile-menu__menu-btn w-100 px-4 rounded-md text-white justify-start text-none"
+					color="white"
 					height="48"
 					variant="text"
 					:ripple="false"
 				>
 					<div class="w-100 d-flex align-center ga-2">
 						<v-icon
-							icon="mdi-bullhorn-outline"
+							icon="megaphone"
 							size="24"
 						/>
 						<span>Блог</span>
@@ -88,13 +97,14 @@
 
 				<v-btn
 					class="profile-menu__menu-btn w-100 px-4 rounded-md text-white justify-start text-none"
+					color="white"
 					height="48"
 					variant="text"
 					:ripple="false"
 				>
 					<div class="w-100 d-flex align-center ga-2">
 						<v-icon
-							icon="mdi-bookmark-box-outline"
+							icon="book-bookmark"
 							size="24"
 						/>
 						<span>База знаний</span>
@@ -103,13 +113,14 @@
 
 				<v-btn
 					class="profile-menu__menu-btn w-100 px-4 rounded-md text-white justify-start opacity-100"
+					color="white"
 					height="48"
 					variant="plain"
 					:ripple="false"
 				>
 					<div class="w-100 d-flex align-center ga-2">
 						<v-icon
-							icon="mdi-translate"
+							icon="globe"
 							size="24"
 						/>
 						<span>Язык</span>
@@ -126,13 +137,14 @@
 
 				<v-btn
 					class="profile-menu__menu-btn w-100 px-4 rounded-md text-white justify-start text-none"
+					color="white"
 					height="48"
 					variant="text"
 					:ripple="false"
 				>
 					<div class="w-100 d-flex align-center ga-2">
 						<v-icon
-							icon="mdi-cog-outline"
+							icon="gear"
 							size="24"
 						/>
 						<span>Настройки</span>
@@ -148,7 +160,7 @@
 				>
 					<div class="w-100 d-flex align-center ga-2">
 						<v-icon
-							icon="mdi-logout"
+							icon="sign-out"
 							size="24"
 						/>
 						<span>Выйти из аккаунта</span>
@@ -160,9 +172,18 @@
 </template>
 
 <script setup>
+	const props = defineProps({ compact: { type: Boolean, default: false } });
 	const authStore = useAuthStore();
 
 	const user = $computed(() => authStore?.user);
+	const initials = $computed(() =>
+		(user?.userName || "Киллов Ян")
+			.split(/\s+/)
+			.map((part) => part[0])
+			.slice(0, 2)
+			.join("")
+			.toUpperCase()
+	);
 
 	const accountsList = $computed(() => {
 		if (user) {
@@ -199,6 +220,24 @@
 
 <style lang="scss" scoped>
 	.profile-menu {
+		&__compact.profile-menu__dropdown {
+			padding: 0 8px;
+			font-weight: 500;
+			width: 100%;
+			min-width: 0 !important;
+			height: 36px !important;
+			background: transparent !important;
+			:deep(.v-avatar) {
+				background: rgb(var(--v-theme-primary));
+				font-size: 10px;
+			}
+			:deep(.v-btn__content) {
+				width: 100%;
+			}
+			:deep(.v-icon) {
+				display: none;
+			}
+		}
 		&__dropdown {
 			padding: 7px 15px 9px 15px;
 
@@ -210,6 +249,12 @@
 		&__content {
 			border-radius: 12px;
 			background-color: #151515;
+			font-family: "SF Pro Display", sans-serif;
+			line-height: 100%;
+
+			:deep(.v-btn) {
+				font-weight: 500;
+			}
 		}
 
 		&__account-list-item {

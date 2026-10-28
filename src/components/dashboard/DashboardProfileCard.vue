@@ -25,7 +25,7 @@
 				class="mb-3"
 			>
 				<v-icon
-					icon="mdi-account"
+					icon="user"
 					size="38"
 				/>
 			</v-avatar>
@@ -33,7 +33,7 @@
 			<span class="opacity-60 mb-3">+7 (999) 999 90-99</span>
 			<div class="profile-card__badge bg-primary">
 				<v-icon
-					icon="mdi-timer-outline mr-1"
+					icon="clock mr-1"
 					size="14"
 				/>
 				<span class="text-background">{{ now }}</span>

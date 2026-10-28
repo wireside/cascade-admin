@@ -31,8 +31,8 @@
 
 <script setup>
 	const cashMetrics = [
-		{ label: "Наличных в кассе", value: "100 614", icon: "mdi:cash", tone: "primary" },
-		{ label: "На начало смены", value: "96 584", icon: "mdi:cash-sync", tone: "primary" },
+		{ label: "Наличных в кассе", value: "100 614", icon: "money", tone: "primary" },
+		{ label: "На начало смены", value: "96 584", icon: "arrows-clockwise", tone: "primary" },
 	];
 
 	const testStore = useTestStore();

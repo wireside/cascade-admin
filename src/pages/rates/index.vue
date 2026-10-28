@@ -53,5 +53,5 @@
 meta:
   layout: default
   title: Тарифы
-  icon: mdi-controller
+  icon: game-controller
 </route>

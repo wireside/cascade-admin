@@ -26,21 +26,28 @@
 			scroll-strategy="reposition"
 		>
 			<v-list
-				class="control-menu__content pa-0 pt-2 font-weight-medium bg-surface bg-opacity-80"
+				class="control-menu__content"
 				@wheel.prevent
 				@touchmove.prevent
 			>
+				<v-list-item
+					prepend-icon="identification-card"
+					title="Информация о ПК"
+					height="32"
+					@click="showDetails"
+				/>
+				<v-divider class="my-1" />
 				<v-list-subheader class="control-menu__label">Клиент</v-list-subheader>
 
 				<v-list-item
 					:density="null"
 					class="px-4 py-0"
-					height="34"
+					height="32"
 				>
 					<div class="d-flex w-100 align-center justify-space-between">
-						<div class="d-flex ga-1 align-center">
+						<div class="d-flex ga-2 align-center">
 							<v-icon
-								icon="mdi-clock-plus-outline"
+								icon="clock"
 								size="16"
 							/>
 							<span>Выбрать тариф</span>
@@ -52,13 +59,13 @@
 					:density="null"
 					:class="{ 'pointer-events-none opacity-60': !row.client.trim() }"
 					class="px-4 py-0"
-					height="34"
+					height="32"
 					@click="onDepositUp"
 				>
 					<div class="d-flex w-100 align-center justify-space-between">
-						<div class="d-flex ga-1 align-center">
+						<div class="d-flex ga-2 align-center">
 							<v-icon
-								icon="mdi-cash-plus"
+								icon="wallet"
 								size="16"
 							/>
 							<span>Пополнить депозит</span>
@@ -69,12 +76,12 @@
 				<v-list-item
 					:density="null"
 					class="px-4 py-0"
-					height="34"
+					height="32"
 				>
 					<div class="d-flex w-100 align-center justify-space-between">
-						<div class="d-flex ga-1 align-center">
+						<div class="d-flex ga-2 align-center">
 							<v-icon
-								icon="mdi-clock-edit-outline"
+								icon="clock"
 								size="16"
 							/>
 							<span>Бронирование</span>
@@ -82,7 +89,7 @@
 
 						<div>
 							<v-icon
-								icon="mdi-chevron-right"
+								icon="right"
 								size="18"
 							/>
 						</div>
@@ -93,7 +100,7 @@
 					:density="null"
 					class="pa-0"
 					:class="{ 'pointer-events-none opacity-60': !row.client.trim() }"
-					height="34"
+					height="32"
 				>
 					<penalty-control :row="row" />
 				</v-list-item>
@@ -102,13 +109,13 @@
 					:density="null"
 					:class="{ 'pointer-events-none opacity-60': !row.client.trim() }"
 					class="px-4 py-0"
-					height="34"
+					height="32"
 					@click="onNotification"
 				>
 					<div class="d-flex w-100 align-center justify-space-between">
-						<div class="d-flex ga-1 align-center">
+						<div class="d-flex ga-2 align-center">
 							<v-icon
-								icon="mdi-bell-outline"
+								icon="bell"
 								size="16"
 							/>
 							<span>Уведомление</span>
@@ -119,12 +126,12 @@
 				<v-list-item
 					:density="null"
 					class="px-4 py-0 pointer-events-none opacity-60"
-					height="34"
+					height="32"
 				>
 					<div class="d-flex w-100 align-center justify-space-between">
-						<div class="d-flex ga-1 align-center">
+						<div class="d-flex ga-2 align-center">
 							<v-icon
-								icon="mdi-swap-horizontal"
+								icon="arrows-down-up"
 								size="16"
 							/>
 							<span>Пересадить</span>
@@ -134,14 +141,14 @@
 
 				<v-list-item
 					:density="null"
-					class="px-4 py-0"
-					height="34"
+					class="text-red px-4 py-0"
+					height="32"
 					@click="onAction('end-session')"
 				>
 					<div class="d-flex w-100 align-center justify-space-between">
-						<div class="d-flex ga-1 align-center">
+						<div class="d-flex ga-2 align-center">
 							<v-icon
-								icon="mdi-clock-remove-outline"
+								icon="stop-circle"
 								size="16"
 							/>
 							<span>Завершить сеанс</span>
@@ -149,12 +156,13 @@
 					</div>
 				</v-list-item>
 
-				<v-list-subheader class="control-menu__label">Управление</v-list-subheader>
+				<v-divider class="my-1" />
+				<v-list-subheader class="control-menu__label">Устройство</v-list-subheader>
 
 				<v-list-item
 					:density="null"
 					class="pa-0"
-					height="34"
+					height="32"
 				>
 					<electricity-control :row="row" />
 				</v-list-item>
@@ -162,12 +170,12 @@
 				<v-list-item
 					:density="null"
 					class="px-4 py-0"
-					height="34"
+					height="32"
 				>
 					<div class="d-flex w-100 align-center justify-space-between">
-						<div class="d-flex ga-1 align-center">
+						<div class="d-flex ga-2 align-center">
 							<v-icon
-								icon="mdi-cog-outline"
+								icon="gear"
 								size="16"
 							/>
 							<span>Управление</span>
@@ -175,7 +183,7 @@
 
 						<div>
 							<v-icon
-								icon="mdi-chevron-right"
+								icon="right"
 								size="18"
 							/>
 						</div>
@@ -185,13 +193,13 @@
 				<v-list-item
 					:density="null"
 					class="px-4 py-0"
-					height="34"
+					height="32"
 					@click="onAction('shell')"
 				>
 					<div class="d-flex w-100 align-center justify-space-between">
-						<div class="d-flex ga-1 align-center">
+						<div class="d-flex ga-2 align-center">
 							<v-icon
-								icon="mdi-monitor-edit"
+								icon="sidebar"
 								size="16"
 							/>
 							<span>Оболочка</span>
@@ -199,7 +207,7 @@
 
 						<div>
 							<v-icon
-								icon="mdi-chevron-right"
+								icon="right"
 								size="18"
 							/>
 						</div>
@@ -248,7 +256,7 @@
 		},
 	});
 
-	const emit = defineEmits(["update:visible"]);
+	const emit = defineEmits(["update:visible", "show-details", "action"]);
 
 	const fallbackTarget = $ref(null);
 
@@ -293,5 +301,13 @@
 
 	const closeMenu = () => {
 		menuOpen = false;
+	};
+	const showDetails = () => {
+		closeMenu();
+		emit("show-details", props.row);
+	};
+	const onAction = (action) => {
+		closeMenu();
+		emit("action", { action, row: props.row });
 	};
 </script>

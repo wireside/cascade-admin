@@ -1,0 +1,67 @@
+.cascade-icon {
+	display: inline-block;
+	flex-shrink: 0;
+	width: 1em;
+	height: 1em;
+	background-color: currentColor;
+	mask: var(--cascade-icon) center / contain no-repeat;
+	&--up {
+		transform: rotate(180deg);
+	}
+	&--left {
+		transform: rotate(180deg);
+	}
+}
+
+.v-icon:has(.cascade-icon) {
+	line-height: 1;
+}
+.rotate-45 {
+	transform: rotate(45deg);
+}
+.text-on-primary {
+	color: rgb(var(--v-theme-on-primary)) !important;
+}
+
+.v-btn {
+	text-transform: none;
+	letter-spacing: 0;
+	line-height: 20px;
+}
+
+.s-page-toolbar {
+	.v-btn {
+		font-weight: 600;
+	}
+	.v-btn .v-icon {
+		font-size: 16px;
+	}
+	.v-btn__prepend {
+		margin-inline-start: 0;
+		margin-inline-end: 8px;
+	}
+	.v-btn__append {
+		margin-inline-start: 8px;
+		margin-inline-end: 0;
+	}
+}
+
+.v-btn:focus-visible,
+.v-list-item:focus-visible {
+	outline: 2px solid rgb(var(--v-theme-primary));
+	outline-offset: 2px;
+}
+
+.v-menu:not(.profile-menu) > .v-overlay__content > .v-sheet,
+.v-menu:not(.profile-menu) > .v-overlay__content > .v-list {
+	border-radius: 16px;
+	background: rgba(var(--v-theme-menu), 0.94);
+	backdrop-filter: blur(20px);
+	box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.6);
+}
+
+.v-menu:not(.profile-menu) .v-list-item {
+	border-radius: 8px;
+	font-size: 14px;
+	line-height: 20px;
+}

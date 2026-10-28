@@ -40,7 +40,7 @@
 meta:
   layout: default
   title: Настройка программы
-  icon: mdi-view-grid-outline
+  icon: four-leaf-clover
   parentTitle: Программы
   parentRoute: /apps/
 </route>

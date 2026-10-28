@@ -10,9 +10,9 @@
 		class="s-drag-handle text-white"
 	>
 		<v-icon
-			icon="mdi-arrow-expand-all"
+			icon="arrows-out"
 			size="16"
-			class="mdi-rotate-45 opacity-50"
+			class="rotate-45 opacity-50"
 		/>
 	</v-btn>
 </template>

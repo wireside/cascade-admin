@@ -3,7 +3,7 @@
 		v-model="model"
 		type="email"
 		placeholder="Введите почту"
-		prepend-inner-icon="mdi:email"
+		prepend-inner-icon="envelope"
 	/>
 </template>
 

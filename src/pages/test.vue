@@ -16,7 +16,7 @@
 						color="white"
 						variant="tonal"
 						:loading="loading"
-						prepend-icon="mdi-refresh"
+						prepend-icon="arrow-clockwise"
 						@click="reloadData"
 					>
 						Обновить
@@ -49,7 +49,7 @@
 									<template #prepend>
 										<div class="machine-card__avatar">
 											<v-icon
-												icon="mdi-monitor"
+												icon="sidebar"
 												size="20"
 											/>
 										</div>
@@ -95,7 +95,7 @@
 										v-if="!machine.device"
 										color="warning"
 										variant="flat"
-										prepend-icon="mdi-link-variant-plus"
+										prepend-icon="link"
 										:loading="actionKey === `bind:${machine.fingerprint}`"
 										@click="openBindDialog(machine)"
 									>
@@ -106,7 +106,7 @@
 										<v-btn
 											color="error"
 											variant="tonal"
-											prepend-icon="mdi-link-variant-off"
+											prepend-icon="link-break"
 											:loading="actionKey === `unbind:${machine.device.id}`"
 											@click="unbindDevice(machine.device.id)"
 										>
@@ -117,7 +117,7 @@
 											v-if="!machine.session"
 											color="primary"
 											variant="flat"
-											prepend-icon="mdi-timer-play-outline"
+											prepend-icon="clock"
 											:disabled="!machine.device"
 											@click="openSessionDialog(machine)"
 										>
@@ -128,7 +128,7 @@
 											v-if="machine.session?.status === 1"
 											color="warning"
 											variant="tonal"
-											prepend-icon="mdi-pause"
+											prepend-icon="stop"
 											:loading="actionKey === `pause:${machine.session.id}`"
 											@click="pauseSession(machine.session.id)"
 										>
@@ -139,7 +139,7 @@
 											v-if="machine.session?.status === 0"
 											color="success"
 											variant="tonal"
-											prepend-icon="mdi-play"
+											prepend-icon="play"
 											:loading="actionKey === `resume:${machine.session.id}`"
 											@click="resumeSession(machine.session.id)"
 										>
@@ -150,7 +150,7 @@
 											v-if="machine.session"
 											color="error"
 											variant="text"
-											prepend-icon="mdi-delete-outline"
+											prepend-icon="trash"
 											:loading="actionKey === `session-delete:${machine.session.id}`"
 											@click="deleteSession(machine.session.id)"
 										>
@@ -193,7 +193,7 @@
 									<template #prepend>
 										<div class="machine-card__avatar machine-card__avatar--offline">
 											<v-icon
-												icon="mdi-monitor-off"
+												icon="monitor-off"
 												size="20"
 											/>
 										</div>
@@ -231,7 +231,7 @@
 										v-if="machine.session"
 										color="error"
 										variant="text"
-										prepend-icon="mdi-delete-outline"
+										prepend-icon="trash"
 										:loading="actionKey === `session-delete:${machine.session.id}`"
 										@click="deleteSession(machine.session.id)"
 									>
@@ -241,7 +241,7 @@
 									<v-btn
 										color="error"
 										variant="tonal"
-										prepend-icon="mdi-link-variant-off"
+										prepend-icon="link-break"
 										:loading="actionKey === `unbind:${machine.device.id}`"
 										@click="unbindDevice(machine.device.id)"
 									>

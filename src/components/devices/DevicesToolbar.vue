@@ -1,116 +1,96 @@
 <template>
-	<div class="d-flex align-center justify-space-between ga-4 flex-wrap">
-		<div class="d-flex align-center ga-1 flex-wrap">
+	<div class="s-page-toolbar d-flex align-center justify-space-between ga-3 flex-wrap">
+		<v-sheet
+			color="filter"
+			class="devices-toolbar__filters d-flex pa-1 overflow-x-auto"
+			role="tablist"
+			aria-label="Фильтр устройств"
+		>
 			<v-btn
-				variant="flat"
-				height="40"
+				v-for="item in filters"
+				:key="item.value"
+				:color="filter === item.value ? 'primary' : 'transparent'"
+				:aria-selected="filter === item.value"
+				height="36"
 				rounded="md"
-				class="px-4 bg-white bg-opacity-5 text-white mr-2"
+				class="devices-toolbar__filter"
+				role="tab"
+				@click="filter = item.value"
 			>
-				<v-icon
-					icon="mdi-desktop-tower-monitor"
-					size="16"
-					class="mr-2"
-				/>
-				<span>Устройства</span>
-				<s-badge
-					:label="totalDevices"
-					tone="primary"
-					class="ml-2"
-					bg-opacity="20"
-				/>
+				<span :class="filter === item.value ? 'text-on-primary font-weight-semibold' : 'text-filter-label'">
+					{{ item.label }}
+				</span>
+				<span
+					:class="filter === item.value ? 'text-on-primary opacity-70' : 'text-white'"
+					class="devices-toolbar__count font-weight-semibold"
+				>
+					{{ item.count }}
+				</span>
 			</v-btn>
-
+		</v-sheet>
+		<div class="d-flex align-center ga-3 flex-wrap">
 			<v-btn
-				v-for="metric in metrics"
-				:key="metric.label"
-				variant="flat"
-				:color="metric.tone"
-				height="23"
-				rounded="md"
-				class="px-2 text-background devices-toolbar__metric"
+				prepend-icon="move"
+				append-icon="down"
+				height="44"
+				class="px-4"
 			>
-				<v-icon
-					:icon="metric.icon"
-					size="14"
-					class="mr-1"
-				/>
-				<span>{{ metric.label }}</span>
-				<span class="font-weight-bold ml-1">{{ metric.value }}</span>
-			</v-btn>
-		</div>
-
-		<div class="d-flex align-center ga-1 flex-wrap">
-			<v-btn
-				variant="flat"
-				color="primary"
-				height="40"
-				rounded="md"
-				class="px-4 bg-opacity-20 text-primary"
-			>
-				<v-icon
-					icon="mdi-arrow-top-right"
-					size="16"
-					class="mr-1"
-				/>
 				Переместить
-				<v-icon
-					icon="mdi-chevron-down"
-					size="16"
-					class="ml-1"
-				/>
 			</v-btn>
-
 			<v-btn
-				:variant="null"
-				color="white"
-				height="40"
-				rounded="md"
-				class="px-4 bg-white bg-opacity-20 text-white"
+				prepend-icon="folder"
+				height="44"
+				class="px-4"
 			>
-				<div class="opacity-50 d-flex align-center">
-					<v-icon
-						icon="mdi-plus-circle-outline"
-						size="16"
-						class="mr-1"
-					/>
-					<span>Добавить устройство</span>
-				</div>
+				Новая группа
 			</v-btn>
-
 			<v-btn
-				variant="flat"
-				color="blue"
-				height="40"
-				rounded="md"
-				class="px-4 bg-opacity-20 text-blue"
+				prepend-icon="folder"
+				color="primary"
+				height="44"
+				class="px-4 text-on-primary"
 			>
-				<v-icon
-					icon="mdi-plus-circle-outline"
-					size="16"
-					class="mr-1"
-				/>
-				Создать группу
+				Добавить устройство
 			</v-btn>
 		</div>
 	</div>
 </template>
 
 <script setup>
+	import { matchesDeviceFilter } from "@/utils/device";
+	const filter = defineModel("filter", { type: String, default: "all" });
 	const devicesStore = useDevicesStore();
-	const totalDevices = $computed(() => Math.max(devicesStore.devices.length, 15));
-
-	const metrics = [
-		{ label: "Включены", value: 15, tone: "green", icon: "mdi-power" },
-		{ label: "Активные сеансы", value: 3, tone: "blue", icon: "mdi-account-group-outline" },
-		{ label: "Обслуживание", value: 1, tone: "orange", icon: "mdi-alert-rhombus-outline" },
-		{ label: "Высокий доступ", value: 2, tone: "red", icon: "mdi-code-tags" },
-		{ label: "Без оболочки", value: 4, tone: "error", icon: "mdi-controller-classic-outline" },
+	const filterOptions = [
+		{ value: "all", label: "Все" },
+		{ value: "powered", label: "Включены" },
+		{ value: "session", label: "Сеансы" },
+		{ value: "service", label: "Обслуживание" },
+		{ value: "admin", label: "Высокий доступ" },
+		{ value: "shell", label: "Без оболочки" },
 	];
+	const filters = $computed(() =>
+		filterOptions.map((item) => ({
+			...item,
+			count: devicesStore.devices.filter((device) => matchesDeviceFilter(device, item.value)).length,
+		}))
+	);
 </script>
 
 <style scoped lang="scss">
-	.devices-toolbar__metric {
-		font-size: 12px;
+	.devices-toolbar {
+		&__filters {
+			max-width: 100%;
+			border-radius: 10px;
+			gap: 2px;
+		}
+		&__filter {
+			flex-shrink: 0;
+			min-width: 0;
+			font-weight: 500;
+			padding-inline: 14px;
+		}
+		&__count {
+			margin-inline-start: 6px;
+		}
 	}
 </style>

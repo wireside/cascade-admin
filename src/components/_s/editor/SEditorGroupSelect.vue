@@ -7,7 +7,7 @@
 		density="compact"
 		height="40"
 		hide-details
-		menu-icon="mdi-chevron-down"
+		menu-icon="down"
 		no-data-text="Группы пока не созданы"
 		class="s-editor-group-select rounded-md overflow-hidden bg-white bg-opacity-2 text-white"
 	>

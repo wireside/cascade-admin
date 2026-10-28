@@ -21,12 +21,15 @@
 			:row-border="false"
 			table-height="calc(100vh - 260px)"
 			tone="primary"
-			header-tone="white"
-			header-opacity="5"
-			hover-class="bg-primary-hover bg-opacity-10"
 			selectable
 			pagination
 		>
+			<template #cell-status="{ value }">
+				<s-status
+					:label="value.label"
+					:tone="value.tone === 'red' ? 'red' : 'success'"
+				/>
+			</template>
 			<template #footer="{ page: currentPage, totalPages, setPage, previousPage, nextPage }">
 				<div class="d-flex align-center justify-space-between ga-4 mt-3 flex-wrap">
 					<div class="text-white opacity-50">
@@ -36,7 +39,7 @@
 
 					<div class="d-flex align-center ga-1">
 						<v-btn
-							icon="mdi-chevron-left"
+							icon="chevron-left"
 							variant="text"
 							color="white"
 							size="32"
@@ -68,7 +71,7 @@
 						</template>
 
 						<v-btn
-							icon="mdi-chevron-right"
+							icon="right"
 							variant="text"
 							color="white"
 							size="32"

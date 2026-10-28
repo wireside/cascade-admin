@@ -16,7 +16,7 @@
 				@click="selectMode('select')"
 			>
 				<v-icon
-					icon="mdi-cursor-default-outline"
+					icon="cursor"
 					size="18"
 				/>
 			</v-btn>
@@ -37,7 +37,7 @@
 						title="Добавить текст"
 					>
 						<v-icon
-							icon="mdi-format-text"
+							icon="text-t"
 							size="18"
 						/>
 					</v-btn>
@@ -69,7 +69,7 @@
 						>
 							<v-icon
 								v-if="textDraft.color === color.value"
-								icon="mdi-check"
+								icon="check"
 								size="14"
 							/>
 						</v-btn>
@@ -153,7 +153,7 @@
 				@click="rotateWall"
 			>
 				<v-icon
-					icon="mdi-arrow-right"
+					icon="arrow-right"
 					size="18"
 				/>
 			</v-btn>
@@ -280,7 +280,7 @@
 					@click="emit('rotate-selected')"
 				>
 					<v-icon
-						icon="mdi-rotate-right"
+						icon="arrow-clockwise"
 						size="19"
 					/>
 				</v-btn>
@@ -315,7 +315,7 @@
 					@click="emit('delete-selected')"
 				>
 					<v-icon
-						icon="mdi-delete-outline"
+						icon="trash"
 						size="19"
 					/>
 				</v-btn>
@@ -357,31 +357,31 @@
 		{
 			deviceType: DEVICE_TYPE.COMPUTER,
 			elementType: GRID_ELEMENT_TYPE.DEVICE,
-			icon: "mdi-monitor",
+			icon: "sidebar",
 			label: "Разместить компьютер",
 			listTitle: "Свободные компьютеры",
 		},
 		{
 			deviceType: DEVICE_TYPE.CONSOLE,
 			elementType: GRID_ELEMENT_TYPE.CONSOLE,
-			icon: "mdi-gamepad-variant-outline",
+			icon: "game-controller",
 			label: "Разместить консоль",
 			listTitle: "Свободные консоли",
 		},
 	];
 	const gamingTools = [
-		{ type: GRID_ELEMENT_TYPE.VR, icon: "mdi-virtual-reality", label: "Добавить VR-зону" },
-		{ type: GRID_ELEMENT_TYPE.STEERING_WHEEL, icon: "mdi-steering", label: "Добавить гоночный симулятор" },
-		{ type: GRID_ELEMENT_TYPE.TARGET, icon: "mdi-bullseye", label: "Добавить игровую зону" },
-		{ type: GRID_ELEMENT_TYPE.BOARD_GAME, icon: "mdi-dice-multiple-outline", label: "Добавить настольные игры" },
+		{ type: GRID_ELEMENT_TYPE.VR, icon: "virtual-reality", label: "Добавить VR-зону" },
+		{ type: GRID_ELEMENT_TYPE.STEERING_WHEEL, icon: "steering-wheel", label: "Добавить гоночный симулятор" },
+		{ type: GRID_ELEMENT_TYPE.TARGET, icon: "target", label: "Добавить игровую зону" },
+		{ type: GRID_ELEMENT_TYPE.BOARD_GAME, icon: "dice-five", label: "Добавить настольные игры" },
 	];
 	const amenityTools = [
-		{ type: GRID_ELEMENT_TYPE.ROOM_SERVICE, icon: "mdi-room-service-outline", label: "Добавить зону обслуживания" },
-		{ type: GRID_ELEMENT_TYPE.COAT_RACK, icon: "mdi-hanger", label: "Добавить вешалку" },
+		{ type: GRID_ELEMENT_TYPE.ROOM_SERVICE, icon: "bell-simple-ringing", label: "Добавить зону обслуживания" },
+		{ type: GRID_ELEMENT_TYPE.COAT_RACK, icon: "coat-hanger", label: "Добавить вешалку" },
 		{ type: GRID_ELEMENT_TYPE.TOILET, text: "WC", label: "Добавить туалет" },
-		{ type: GRID_ELEMENT_TYPE.SOFA, icon: "mdi-sofa-outline", label: "Добавить диван" },
-		{ type: GRID_ELEMENT_TYPE.COFFEE, icon: "mdi-coffee-outline", label: "Добавить кофейную зону" },
-		{ type: GRID_ELEMENT_TYPE.FOOD, icon: "mdi-silverware-fork-knife", label: "Добавить кухонную зону" },
+		{ type: GRID_ELEMENT_TYPE.SOFA, icon: "couch", label: "Добавить диван" },
+		{ type: GRID_ELEMENT_TYPE.COFFEE, icon: "coffee", label: "Добавить кофейную зону" },
+		{ type: GRID_ELEMENT_TYPE.FOOD, icon: "fork-knife", label: "Добавить кухонную зону" },
 	];
 	const textColors = [
 		{ value: "white", preview: "white", label: "Белый" },
@@ -393,10 +393,10 @@
 	];
 	const textSizes = [12, 14, 16, 18, 20, 24];
 	const textDirections = [
-		{ value: TEXT_DIRECTION.RIGHT, icon: "mdi-arrow-right", label: "Слева направо" },
-		{ value: TEXT_DIRECTION.DOWN, icon: "mdi-arrow-down", label: "Сверху вниз" },
-		{ value: TEXT_DIRECTION.LEFT, icon: "mdi-arrow-left", label: "Справа налево" },
-		{ value: TEXT_DIRECTION.UP, icon: "mdi-arrow-up", label: "Снизу вверх" },
+		{ value: TEXT_DIRECTION.RIGHT, icon: "arrow-right", label: "Слева направо" },
+		{ value: TEXT_DIRECTION.DOWN, icon: "arrow-down", label: "Сверху вниз" },
+		{ value: TEXT_DIRECTION.LEFT, icon: "arrow-left", label: "Справа налево" },
+		{ value: TEXT_DIRECTION.UP, icon: "arrow-up", label: "Снизу вверх" },
 	];
 	const textAlignments = [
 		{ value: TEXT_ALIGNMENT.START, label: "Привязать к началу направления" },
@@ -414,24 +414,24 @@
 		const direction = props.selectedElement?.direction ?? TEXT_DIRECTION.RIGHT;
 		const icons = {
 			[TEXT_DIRECTION.RIGHT]: {
-				[TEXT_ALIGNMENT.START]: "mdi-format-align-left",
-				[TEXT_ALIGNMENT.CENTER]: "mdi-format-align-center",
-				[TEXT_ALIGNMENT.END]: "mdi-format-align-right",
+				[TEXT_ALIGNMENT.START]: "text-align-left",
+				[TEXT_ALIGNMENT.CENTER]: "text-align-center",
+				[TEXT_ALIGNMENT.END]: "text-align-right",
 			},
 			[TEXT_DIRECTION.DOWN]: {
-				[TEXT_ALIGNMENT.START]: "mdi-format-align-top",
-				[TEXT_ALIGNMENT.CENTER]: "mdi-format-align-middle",
-				[TEXT_ALIGNMENT.END]: "mdi-format-align-bottom",
+				[TEXT_ALIGNMENT.START]: "align-top",
+				[TEXT_ALIGNMENT.CENTER]: "align-center-vertical",
+				[TEXT_ALIGNMENT.END]: "align-bottom",
 			},
 			[TEXT_DIRECTION.LEFT]: {
-				[TEXT_ALIGNMENT.START]: "mdi-format-align-right",
-				[TEXT_ALIGNMENT.CENTER]: "mdi-format-align-center",
-				[TEXT_ALIGNMENT.END]: "mdi-format-align-left",
+				[TEXT_ALIGNMENT.START]: "text-align-right",
+				[TEXT_ALIGNMENT.CENTER]: "text-align-center",
+				[TEXT_ALIGNMENT.END]: "text-align-left",
 			},
 			[TEXT_DIRECTION.UP]: {
-				[TEXT_ALIGNMENT.START]: "mdi-format-align-bottom",
-				[TEXT_ALIGNMENT.CENTER]: "mdi-format-align-middle",
-				[TEXT_ALIGNMENT.END]: "mdi-format-align-top",
+				[TEXT_ALIGNMENT.START]: "align-bottom",
+				[TEXT_ALIGNMENT.CENTER]: "align-center-vertical",
+				[TEXT_ALIGNMENT.END]: "align-top",
 			},
 		};
 

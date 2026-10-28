@@ -20,7 +20,7 @@
 
 				<v-icon
 					v-if="!group.isDefault"
-					icon="mdi-pencil-outline"
+					icon="pencil"
 					size="18"
 					class="text-white opacity-50 flex-shrink-0"
 				/>
@@ -37,7 +37,7 @@
 					:class="{ 'pointer-events-none': !selectedInGroup }"
 				>
 					<v-icon
-						icon="mdi-trash-can-outline"
+						icon="trash"
 						size="16"
 					/>
 				</v-btn>
@@ -52,7 +52,7 @@
 					@click="isExpanded = !isExpanded"
 				>
 					<v-icon
-						:icon="isExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+						:icon="isExpanded ? 'chevron-up' : 'down'"
 						size="16"
 						class="opacity-50"
 					/>

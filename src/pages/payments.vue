@@ -18,9 +18,6 @@
 			filter-key="number"
 			table-height="auto"
 			tone="primary"
-			header-tone="white"
-			header-opacity="5"
-			hover-class="bg-primary-hover bg-opacity-10"
 			selection-mode="single"
 			pagination-location="toolbar"
 			class="payments-page__table"
@@ -53,6 +50,12 @@
 					</span>
 				</s-badge>
 			</template>
+			<template #cell-status="{ value }">
+				<s-status
+					:label="value.label"
+					:tone="value.tone === 'primary' ? 'success' : value.tone"
+				/>
+			</template>
 		</s-data-table>
 
 		<v-slide-x-reverse-transition>
@@ -70,7 +73,7 @@
 meta:
   layout: default
   title: Платежи
-  icon: mdi-timelapse
+  icon: clock
   parentTitle: Детализация
 </route>
 
@@ -95,12 +98,12 @@ meta:
 	const cardMethod = {
 		label: "Карта",
 		tone: "blue",
-		icon: "mdi-credit-card-outline",
+		icon: "credit-card",
 	};
 	const cashMethod = {
 		label: "Наличные",
 		tone: "primary",
-		icon: "mdi-cash",
+		icon: "money",
 	};
 
 	const receiptTemplates = [

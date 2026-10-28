@@ -44,7 +44,7 @@
 										class="deposit-modal__time bg-white bg-opacity-5 d-flex align-center justify-center ga-1 px-4 py-2 rounded-sm flex-grow-1"
 									>
 										<v-icon
-											icon="mdi-calendar-outline"
+											icon="calendar-blank"
 											size="14"
 											color="white"
 											opacity="0.7"
@@ -56,7 +56,7 @@
 										class="deposit-modal__time bg-white bg-opacity-5 d-flex align-center justify-center ga-1 px-4 py-2 rounded-sm flex-grow-1"
 									>
 										<v-icon
-											icon="mdi-calendar-blank-outline"
+											icon="calendar-blank"
 											size="14"
 											color="white"
 											opacity="0.7"
@@ -68,7 +68,7 @@
 										class="deposit-modal__time bg-white bg-opacity-5 d-flex align-center justify-center ga-1 px-4 py-2 rounded-sm flex-grow-1"
 									>
 										<v-icon
-											icon="mdi-timer-outline"
+											icon="clock"
 											size="14"
 											color="white"
 											opacity="0.7"
@@ -117,7 +117,7 @@
 							>
 								<div class="d-flex align-center ga-2 text-white">
 									<v-icon
-										icon="mdi-gavel"
+										icon="gavel"
 										size="18"
 									/>
 									<span>Заблокировать гостя</span>

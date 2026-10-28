@@ -2,7 +2,7 @@
 	<s-date-input
 		v-model="model"
 		placeholder="Введите дату рождения"
-		prepend-inner-icon="mdi:calendar"
+		prepend-inner-icon="calendar-blank"
 	/>
 </template>
 

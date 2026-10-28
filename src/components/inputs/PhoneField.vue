@@ -3,7 +3,7 @@
 		v-model="model"
 		mask="+7 (###) ###-##-##"
 		placeholder="Введите номер телефона"
-		prepend-inner-icon="mdi:phone"
+		prepend-inner-icon="phone"
 	/>
 </template>
 

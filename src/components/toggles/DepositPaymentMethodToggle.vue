@@ -91,9 +91,9 @@
 
 	const paymentMethods = [props.cashMethod, props.cardMethod, props.splitMethod];
 	const paymentMethodsIcons = {
-		[props.cashMethod]: "mdi:cash",
-		[props.cardMethod]: "solar:card-outline",
-		[props.splitMethod]: "ic:baseline-divide",
+		[props.cashMethod]: "money",
+		[props.cardMethod]: "credit-card",
+		[props.splitMethod]: "divide",
 	};
 
 	const normalizedDeposit = computed(() => Math.max(Number(props.deposit) || 0, 0));

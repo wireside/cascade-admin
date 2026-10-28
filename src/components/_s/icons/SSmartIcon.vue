@@ -1,7 +1,8 @@
 ﻿<template>
 	<v-icon
-		v-if="type === 'mdi'"
+		v-if="type === 'custom'"
 		:icon="icon"
+		:color="color"
 		:size="size"
 		:style="style"
 	/>
@@ -60,7 +61,6 @@
 
 	const theme = useTheme();
 
-	const mdiPrefix = "mdi:";
 	const svgPostfix = ".svg";
 	const pngPostfix = ".png";
 	const iconifySeparator = ":";
@@ -69,14 +69,12 @@
 		switch (true) {
 			case props.icon.includes(iconifySeparator):
 				return "iconify";
-			case props.icon.startsWith(mdiPrefix):
-				return "mdi";
 			case props.icon.endsWith(svgPostfix):
 				return "svg";
 			case props.icon.endsWith(pngPostfix):
 				return "png";
 			default:
-				return "";
+				return "custom";
 		}
 	});
 

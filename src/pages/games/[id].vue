@@ -48,7 +48,7 @@
 meta:
   layout: default
   title: Настройка игры
-  icon: mdi-controller
+  icon: game-controller
   parentTitle: Игры
   parentRoute: /games/
 </route>

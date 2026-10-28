@@ -18,7 +18,7 @@
 				>
 					<span class="d-flex flex-column align-center">
 						<v-icon
-							icon="mdi-image-outline"
+							icon="image"
 							size="20"
 							class="opacity-50 mb-2"
 						/>
@@ -71,7 +71,7 @@
 
 			<v-text-field
 				v-model="iconPath"
-				prepend-inner-icon="mdi-folder-outline"
+				prepend-inner-icon="folder"
 				placeholder="Укажите путь до файла"
 				variant="outlined"
 				hide-details

@@ -1,17 +1,17 @@
 <template>
-	<div class="d-flex justify-space-between align-center mb-4">
+	<div class="s-page-toolbar d-flex justify-space-between align-center mb-4">
 		<rates-days-toggle v-model="activeView" />
 
 		<v-btn
 			color="primary"
-			class="px-4 bg-opacity-20 text-primary"
+			class="px-4 text-on-primary"
 			rounded="md"
-			height="40"
+			height="44"
 			variant="flat"
 			@click="addItem"
 		>
 			<v-icon
-				icon="mdi-plus-circle-outline"
+				icon="plus"
 				size="16"
 				class="mr-1"
 			/>

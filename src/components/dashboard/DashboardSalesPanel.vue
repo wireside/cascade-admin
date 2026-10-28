@@ -1,7 +1,7 @@
 <template>
 	<s-dashboard-panel
 		title="Продажи"
-		icon="mdi-history"
+		icon="clock-counter-clockwise"
 	>
 		<template #header-action>
 			<v-btn-toggle
@@ -29,7 +29,6 @@
 			:columns="salesColumnsConfig"
 			:rows="salesRows"
 			:loading="loading"
-			row-border
 			table-height="312"
 		/>
 	</s-dashboard-panel>

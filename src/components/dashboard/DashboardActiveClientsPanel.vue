@@ -1,7 +1,7 @@
 <template>
 	<s-dashboard-panel
 		title="Активные клиенты"
-		icon="mdi-lightning-bolt-outline"
+		icon="lightning"
 		width="752"
 	>
 		<template #header-action>
@@ -30,7 +30,6 @@
 			:columns="clientColumns"
 			:rows="clientRows"
 			:loading="loading"
-			row-border
 			table-height="312"
 		/>
 	</s-dashboard-panel>

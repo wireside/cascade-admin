@@ -37,13 +37,13 @@
 	const testStore = useTestStore();
 
 	const summaryMetrics = [
-		{ label: "Выручка", value: "12 080.45", tone: "deep-purple", icon: "mdi:cash-register" },
-		{ label: "Наличные", value: "12 080.45", tone: "primary", icon: "mdi:cash", badge: "70%", badgeTone: "primary" },
+		{ label: "Выручка", value: "12 080.45", tone: "deep-purple", icon: "cash-register" },
+		{ label: "Наличные", value: "12 080.45", tone: "primary", icon: "money", badge: "70%", badgeTone: "primary" },
 		{
 			label: "Онлайн пополнения",
 			value: "12 080.45",
 			tone: "orange",
-			icon: "mdi:line-scan",
+			icon: "scan",
 			badge: "30%",
 			badgeTone: "orange",
 		},
@@ -51,7 +51,7 @@
 			label: "Карта",
 			value: "12 080.45",
 			tone: "blue",
-			icon: "mdi:credit-card-outline",
+			icon: "credit-card",
 			badge: "30%",
 			badgeTone: "blue",
 		},

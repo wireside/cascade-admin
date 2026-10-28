@@ -5,7 +5,7 @@
 	>
 		<v-btn
 			:disabled="model <= min"
-			icon="mdi-minus"
+			icon="minus"
 			variant="text"
 			color="secondary"
 			size="32"
@@ -21,7 +21,7 @@
 		</v-sheet>
 		<v-btn
 			:disabled="model >= max"
-			icon="mdi-plus"
+			icon="plus"
 			variant="text"
 			color="secondary"
 			size="32"

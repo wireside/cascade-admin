@@ -41,14 +41,14 @@
 				:disabled="payment.status.label === 'Отменён'"
 				variant="flat"
 				color="red"
-				height="40"
+				height="44"
 				block
 				rounded="md"
 				class="bg-opacity-25 text-red"
 				@click="emit('cancel', payment)"
 			>
 				<v-icon
-					icon="mdi-plus-circle-outline"
+					icon="plus"
 					size="16"
 					class="mr-2"
 				/>

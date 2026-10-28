@@ -9,7 +9,7 @@
 				<v-text-field
 					v-model="name"
 					maxlength="50"
-					prepend-inner-icon="mdi-magnify"
+					prepend-inner-icon="magnifying-glass"
 					placeholder="Название игры"
 					variant="outlined"
 					hide-details
@@ -28,7 +28,7 @@
 					@click="importFromSteam"
 				>
 					<v-icon
-						icon="mdi-content-copy"
+						icon="copy"
 						size="16"
 						class="mr-1"
 					/>
@@ -40,7 +40,7 @@
 		<div class="game-basic-data__notice rounded-md bg-white bg-opacity-2 pa-4 mt-2 text-white">
 			<div class="opacity-50 d-inline-flex align-start ga-2">
 				<v-icon
-					icon="mdi-information-outline"
+					icon="identification-card"
 					size="18"
 					class="flex-shrink-0"
 				/>
@@ -79,7 +79,7 @@
 
 		<div class="game-basic-data__error d-flex align-center ga-2 rounded-md bg-red bg-opacity-20 pa-4 mt-2 text-red">
 			<v-icon
-				icon="mdi-alert-rhombus-outline"
+				icon="warning"
 				size="18"
 			/>
 			<span>Вы не создали ни одной группы. Создайте группы, чтобы распределять игры.</span>

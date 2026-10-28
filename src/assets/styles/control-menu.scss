@@ -1,14 +1,53 @@
 .control-menu {
 	&__content {
 		overflow: hidden;
-		width: 237px;
-		backdrop-filter: blur(6px);
-		border-radius: 10px;
+		width: 232px;
+		padding: 8px !important;
+		backdrop-filter: blur(20px);
+		border-radius: 16px;
+		background: rgba(var(--v-theme-menu), 0.94) !important;
+		box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.6);
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		font-weight: 400;
+		.v-list-item {
+			min-height: 32px !important;
+			height: 32px !important;
+			&:not(.pa-0) {
+				padding-inline: 8px !important;
+			}
+			border-radius: 8px;
+			margin: 0;
+			padding-block: 0 !important;
+			&:hover {
+				background: rgba(var(--v-theme-white), 0.08);
+			}
+		}
+		.v-list-item__prepend .v-icon {
+			font-size: 16px;
+			width: 16px;
+			height: 16px;
+			opacity: 1;
+		}
+		.v-list-item__spacer {
+			width: 8px !important;
+		}
+		.v-list-item-title {
+			font-size: 14px;
+			font-weight: 400;
+			line-height: 20px;
+		}
+		.v-list-item .v-sheet {
+			border-radius: 8px;
+		}
 	}
 
 	&__label {
 		line-height: 20px;
-		min-height: 28px;
+		min-height: 24px;
+		font-size: 12px;
+		color: rgb(var(--v-theme-muted));
 	}
 
 	&__backdrop {
@@ -29,5 +68,5 @@
 }
 
 .control-menu__content .v-list-item__content {
-	font-size: 12px;
+	font-size: 14px;
 }

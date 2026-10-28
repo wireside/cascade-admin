@@ -7,20 +7,20 @@
 		no-click-animation
 		class="devices-details-dialog"
 		content-class="devices-details-dialog__content"
-		width="340"
-		max-width="340"
-		height="550"
+		width="352"
+		max-width="352"
+		height="566"
 		scroll-strategy="none"
 		transition="fade-transition"
 		@click:outside="emit('click-outside', $event)"
 		@keydown.esc="modalOpen = false"
 	>
 		<v-sheet
-			width="340"
-			height="550"
+			width="352"
+			height="566"
 			rounded="lg"
 			elevation="0"
-			class="devices-details-panel bg-surface bg-opacity-80 text-white px-6 pb-6 pt-5 overflow-hidden"
+			class="devices-details-panel bg-panel text-white px-5 pb-2 pt-4 overflow-y-auto"
 		>
 			<div
 				v-if="loading"
@@ -35,16 +35,17 @@
 			</div>
 
 			<template v-else>
-				<div class="d-flex align-center justify-space-between mb-5">
+				<div class="d-flex align-center justify-space-between pb-3">
 					<div class="devices-details-panel__title font-weight-medium text-truncate">
 						{{ deviceDetails.name }}
 					</div>
 
 					<div class="d-flex align-center ga-1">
-						<s-badge
+						<s-status
 							:label="deviceDetails.status.label"
-							:tone="deviceDetails.status.tone"
-							bg-opacity="25"
+							:tone="deviceStatusTone(deviceDetails)"
+							class="devices-details-panel__status"
+							pill
 						/>
 
 						<v-btn
@@ -52,43 +53,42 @@
 							:density="null"
 							variant="flat"
 							color="white"
-							width="29"
-							height="29"
+							width="28"
+							height="28"
 							rounded="sm"
 							class="bg-opacity-10 text-white"
 							@click="modalOpen = false"
 						>
 							<v-icon
-								icon="mdi-close"
-								size="18"
+								icon="close"
+								size="16"
 								class="opacity-70"
 							/>
 						</v-btn>
 					</div>
 				</div>
 
-				<div class="devices-details-panel__content d-flex flex-column ga-4">
+				<div class="devices-details-panel__content d-flex flex-column">
 					<div
 						v-for="item in specItems"
 						:key="item.label"
+						class="py-3"
 					>
-						<div class="devices-details-panel__label text-white opacity-60 mb-2">{{ item.label }}</div>
+						<div class="devices-details-panel__label text-secondary mb-1">{{ item.label }}</div>
 						<div class="devices-details-panel__value font-weight-medium text-white">{{ item.value }}</div>
 					</div>
 
-					<div>
-						<div class="devices-details-panel__label text-white opacity-60 mb-1">Диски</div>
+					<div class="devices-details-panel__disks d-flex flex-column py-3">
+						<div class="devices-details-panel__label text-secondary">Диски</div>
 
 						<div
 							v-for="disk in deviceDetails.disks"
 							:key="disk.name"
-							class="devices-details-panel__disk mb-2"
+							class="devices-details-panel__disk"
 						>
 							<div class="d-flex align-center ga-2 mb-1">
 								<div class="devices-details-panel__disk-name font-weight-medium">{{ disk.name }}</div>
-								<div
-									class="devices-details-panel__disk-track flex-1-1 bg-white bg-opacity-5 rounded-sm overflow-hidden"
-								>
+								<div class="devices-details-panel__disk-track flex-1-1 bg-white bg-opacity-6 overflow-hidden">
 									<div
 										class="devices-details-panel__disk-fill rounded-sm"
 										:class="`bg-${disk.tone}`"
@@ -102,15 +102,17 @@
 						</div>
 					</div>
 
-					<div>
-						<div class="devices-details-panel__label text-white opacity-60 mb-1">Активное приложение</div>
+					<div class="py-3">
+						<div class="devices-details-panel__label text-secondary mb-1">Активное приложение</div>
 						<div class="devices-details-panel__value font-weight-medium">{{ deviceDetails.app }}</div>
 					</div>
 
-					<div>
-						<div class="devices-details-panel__label text-white opacity-60 mb-1">Сеть</div>
+					<div class="py-3">
+						<div class="devices-details-panel__label text-secondary mb-1">Сеть</div>
 						<div class="devices-details-panel__value font-weight-medium">{{ deviceDetails.network.ip }}</div>
-						<div class="devices-details-panel__value font-weight-medium">{{ deviceDetails.network.mac }}</div>
+						<div class="devices-details-panel__mac text-content-secondary font-weight-semibold">
+							{{ deviceDetails.network.mac }}
+						</div>
 					</div>
 				</div>
 			</template>
@@ -119,6 +121,7 @@
 </template>
 
 <script setup>
+	import { deviceStatusTone } from "@/utils/device";
 	const modalOpen = defineModel("modalOpen", {
 		type: Boolean,
 		default: false,
@@ -204,21 +207,26 @@
 <style scoped lang="scss">
 	:global(.devices-details-dialog .v-overlay__content) {
 		position: fixed !important;
-		inset-block-start: 143px !important;
-		inset-inline-end: 20px !important;
+		inset-block-start: 165px !important;
+		inset-inline-end: 37px !important;
 		inset-block-end: auto !important;
 		inset-inline-start: auto !important;
 		margin: 0 !important;
-		width: 340px !important;
+		width: 352px !important;
 		max-width: calc(100vw - 40px) !important;
+		max-height: calc(100dvh - 185px) !important;
 	}
 
 	.devices-details-panel {
-		backdrop-filter: blur(6px);
-		border-radius: 10px !important;
+		border-radius: 14px !important;
+		box-shadow:
+			0 24px 48px -12px rgba(0, 0, 0, 0.5),
+			-24px 0 48px -16px rgba(0, 0, 0, 0.7);
 
 		&__title {
-			font-size: 18px;
+			font-size: 20px;
+			font-weight: 700;
+			line-height: 28px;
 		}
 
 		&__content {
@@ -226,32 +234,49 @@
 		}
 
 		&__label {
-			line-height: 17px;
+			line-height: 16px;
+			font-size: 12px;
+			font-weight: 600;
 		}
 
 		&__value {
 			font-size: 16px;
-			line-height: 20px;
+			line-height: 22px;
+			font-weight: 600 !important;
 		}
 
 		&__disk-name {
-			width: 18px;
+			width: 20px;
 			font-size: 16px;
-			line-height: 20px;
+			line-height: 22px;
 		}
 
 		&__disk-track {
-			height: 28px;
+			height: 20px;
+			border-radius: 6px;
 		}
 
 		&__disk-fill {
 			height: 100%;
+			border-radius: 6px !important;
 		}
 
 		&__disk-caption {
-			margin-inline-start: 26px;
+			margin-inline-start: 30px;
 			font-size: 12px;
-			line-height: 15px;
+			line-height: 16px;
+		}
+		&__disks {
+			gap: 10px;
+		}
+		&__disk > .d-flex {
+			gap: 10px !important;
+			margin-bottom: 6px !important;
+		}
+		&__mac {
+			font-size: 14px;
+			line-height: 20px;
+			margin-top: 4px;
 		}
 	}
 </style>

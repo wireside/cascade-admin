@@ -2,7 +2,7 @@
 	<s-text-field
 		v-model="model"
 		placeholder="Введите имя пользователя"
-		prepend-inner-icon="mdi:user"
+		prepend-inner-icon="user"
 	/>
 </template>
 

@@ -2,8 +2,8 @@
 	<s-text-field
 		v-model="model"
 		placeholder="Введите пароль"
-		prepend-inner-icon="mdi:lock"
-		:append-inner-icon="showPassword ? 'mdi:eye' : 'mdi:eye-off'"
+		prepend-inner-icon="lock"
+		:append-inner-icon="showPassword ? 'eye' : 'eye-slash'"
 		:type="showPassword ? 'text' : 'password'"
 		@click:append-inner="showPassword = !showPassword"
 	/>

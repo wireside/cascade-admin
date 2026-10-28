@@ -3,7 +3,7 @@
 		v-model="model"
 		mask="######"
 		placeholder="Введите код"
-		prepend-inner-icon="mdi:form-textbox"
+		prepend-inner-icon="textbox"
 	/>
 </template>
 

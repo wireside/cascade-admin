@@ -1,9 +1,13 @@
 <template>
 	<div class="d-flex flex-column ga-4">
-		<devices-toolbar />
+		<devices-toolbar v-model:filter="deviceFilter" />
 
 		<section class="d-flex flex-column ga-3">
-			<devices-section-panel @selection-change="onSectionSelectionChange" />
+			<devices-section-panel
+				:filter="deviceFilter"
+				@selection-change="onSectionSelectionChange"
+				@show-details="loadDeviceDetails"
+			/>
 		</section>
 
 		<devices-details-panel
@@ -19,10 +23,11 @@
 meta:
   layout: default
   title: Устройства
-  icon: mdi-desktop-tower-monitor
+  icon: sidebar
 </route>
 
 <script setup>
+	let deviceFilter = $ref("all");
 	let detailsPanelOpen = $ref(false);
 	let detailsLoading = $ref(false);
 	let detailsDevice = $ref(null);

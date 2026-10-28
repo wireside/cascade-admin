@@ -1,7 +1,7 @@
 <template>
 	<s-dashboard-panel
 		title="Ближайшие бронирования"
-		icon="mdi-magnify"
+		icon="magnifying-glass"
 		width="752"
 		class="dashboard-bookings-panel"
 	>
@@ -17,7 +17,7 @@
 				class="bg-opacity-5 bg-white"
 			>
 				<v-icon
-					icon="mdi-arrow-top-right"
+					icon="arrow-right"
 					size="25"
 					color="white"
 					class="opacity-30"

@@ -1,7 +1,7 @@
 <template>
 	<span
 		:style
-		class="s-badge position-relative rounded-md"
+		class="s-badge position-relative d-inline-flex align-center"
 	>
 		<div
 			:style="underlayStyle"
@@ -31,9 +31,7 @@
 	});
 
 	const theme = useTheme();
-	const currentThemeColors = theme.current.value.colors;
-
-	const resolvedColor = $computed(() => currentThemeColors[props.tone] || props.tone);
+	const resolvedColor = $computed(() => theme.current.value.colors[props.tone] || props.tone);
 
 	const style = $computed(() => ({
 		color: resolvedColor,
@@ -47,12 +45,14 @@
 
 <style scoped lang="scss">
 	.s-badge {
-		padding: 7px 10px !important;
-		line-height: 100% !important;
+		padding: 4px 8px;
+		line-height: 16px;
 		font-size: 12px;
+		font-weight: 600;
+		border-radius: 6px;
 
 		&__underlay {
-			border-radius: 8px;
+			border-radius: inherit;
 		}
 	}
 </style>

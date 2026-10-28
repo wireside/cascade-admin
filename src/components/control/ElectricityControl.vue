@@ -14,13 +14,13 @@
 			<v-sheet
 				v-bind="activatorProps"
 				:class="{ 'bg-white bg-opacity-8': menuOpen }"
-				class="px-4 py-0 d-flex align-center text-white bg-transparent"
-				height="34"
+				class="px-2 py-0 d-flex align-center text-white bg-transparent"
+				height="32"
 			>
 				<div class="d-flex w-100 align-center justify-space-between">
-					<div class="d-flex ga-1 align-center">
+					<div class="d-flex ga-2 align-center">
 						<v-icon
-							icon="mdi-flash-outline"
+							icon="lightning"
 							size="16"
 						/>
 						<span>Электропитание</span>
@@ -28,7 +28,7 @@
 
 					<div>
 						<v-icon
-							icon="mdi-chevron-right"
+							icon="right"
 							size="18"
 						/>
 					</div>
@@ -37,7 +37,7 @@
 		</template>
 
 		<v-list
-			class="control-menu__content pa-0 pt-2 font-weight-medium bg-surface bg-opacity-80"
+			class="control-menu__content"
 			@wheel.prevent
 			@touchmove.prevent
 		>
@@ -46,12 +46,12 @@
 				:key="action.key"
 				:density="null"
 				class="px-4 py-0"
-				height="34"
+				height="32"
 				:class="action.className"
 				@click="onAction(action.key)"
 			>
 				<div class="d-flex w-100 align-center justify-space-between">
-					<div class="d-flex ga-1 align-center">
+					<div class="d-flex ga-2 align-center">
 						<v-icon
 							:icon="action.icon"
 							size="16"
@@ -82,25 +82,25 @@
 		{
 			key: "power-on",
 			label: "Включить",
-			icon: "mdi-power",
+			icon: "power",
 			className: isPoweredOn ? "text-white opacity-60" : "text-primary",
 		},
 		{
 			key: "power-off",
 			label: "Выключить",
-			icon: "mdi-power",
+			icon: "power",
 			className: isPoweredOn ? "text-red" : "text-white opacity-60",
 		},
 		{
 			key: "reboot",
 			label: "Перезагрузить",
-			icon: "mdi-restart",
+			icon: "arrow-clockwise",
 			className: "text-white",
 		},
 		{
 			key: "logout",
 			label: "Выйти из системы",
-			icon: "mdi-logout",
+			icon: "sign-out",
 			className: "text-white",
 		},
 	]);

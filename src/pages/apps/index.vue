@@ -139,7 +139,7 @@
 meta:
   layout: default
   title: Программы
-  icon: mdi-view-grid-outline
+  icon: four-leaf-clover
   parentTitle: Приложения
 </route>
 
